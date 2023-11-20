@@ -1,24 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\aansong\\Documents\\GitHub\\Persol_HMS\\Persol_Hms.csproj": {}
+    "C:\\Users\\abufo\\source\\repos\\Persol_HMS\\Persol_Hms.csproj": {}
   },
   "projects": {
-    "C:\\Users\\aansong\\Documents\\GitHub\\Persol_HMS\\Persol_Hms.csproj": {
+    "C:\\Users\\abufo\\source\\repos\\Persol_HMS\\Persol_Hms.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\aansong\\Documents\\GitHub\\Persol_HMS\\Persol_Hms.csproj",
+        "projectUniqueName": "C:\\Users\\abufo\\source\\repos\\Persol_HMS\\Persol_Hms.csproj",
         "projectName": "Persol_Hms",
-        "projectPath": "C:\\Users\\aansong\\Documents\\GitHub\\Persol_HMS\\Persol_Hms.csproj",
-        "packagesPath": "C:\\Users\\aansong\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\aansong\\Documents\\GitHub\\Persol_HMS\\obj\\",
+        "projectPath": "C:\\Users\\abufo\\source\\repos\\Persol_HMS\\Persol_Hms.csproj",
+        "packagesPath": "C:\\Users\\abufo\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\abufo\\source\\repos\\Persol_HMS\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\aansong\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\abufo\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -27,6 +26,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -68,7 +68,8 @@
             "net47",
             "net471",
             "net472",
-            "net48"
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
           "warn": true,
@@ -80,7 +81,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.301\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100\\RuntimeIdentifierGraph.json"
         }
       }
     }

@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\Persol_Hms.props" />
+</Project>
