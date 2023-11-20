@@ -1,4 +1,4 @@
-namespace Persol_Hms.Models;
+namespace Persol_HMS.Models;
 
 public class ErrorViewModel
 {

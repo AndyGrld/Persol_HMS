@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Persol_Hms.Models;
+using Persol_HMS.Models;
 
-namespace Persol_Hms.Controllers;
+namespace Persol_HMS.Controllers;
 
 public class HomeController : Controller
 {
@@ -18,7 +18,7 @@ public class HomeController : Controller
         return View();
     }
 
-    public IActionResult Signup()
+    public IActionResult Privacy()
     {
         return View();
     }
