@@ -6,6 +6,10 @@
     "mssql1": {
       "type": "mssql",
       "connectionId": "ConnectionStrings:HMSdb"
+    },
+    "mssql2": {
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:Persol_HmsContextConnection"
     }
   }
 }
