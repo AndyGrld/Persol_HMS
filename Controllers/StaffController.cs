@@ -10,15 +10,16 @@ namespace Persol_HMS.Controllers
 {
     public class StaffController : Controller
     {
-        private readonly ApplicationDbContext db;
-        public StaffController(ApplicationDbContext _db){
-            db = _db;
+        // Doctor
+        private readonly ApplicationDbContext _context;
+
+        public StaffController(ApplicationDbContext context)
+        {
+            _context = context;
         }
 
-
-        // Doctor
         [HttpGet]
-        public IActionResult Doctor()
+        public IActionResult Doctor(string username)
         {
             return View();
         }
@@ -37,8 +38,8 @@ namespace Persol_HMS.Controllers
         {
             if(ModelState.IsValid)
             {
-                db.Patients.Add(newPatient);
-                await db.SaveChangesAsync();
+                _context.Patients.Add(newPatient);
+                await _context.SaveChangesAsync();
             }
             return RedirectToAction(nameof(RecordsClerk));
         }
@@ -48,7 +49,7 @@ namespace Persol_HMS.Controllers
         {
             if(patientNo == null)
             {
-                var patient = await db.Patients.FirstOrDefaultAsync(p => p.PatientNo == patientNo);
+                var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo == patientNo);
                 if (patient != null)
                 {
                     return RedirectToAction(nameof(RecordsClerk));
