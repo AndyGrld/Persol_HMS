@@ -3,7 +3,7 @@
     public interface ILabRepository
     {
         Task<IEnumerable<Lab>> GetAll();
-        Task<IEnumerable<Lab>> GetByIdAsync(int id);
+        Task<Lab> GetByIdAsync(int id);
         bool Add(Lab lab);
         bool Update(Lab lab);
         bool Delete(Lab lab);
