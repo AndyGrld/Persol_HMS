@@ -1,3 +1,84 @@
 @page
 
-<h1>Records Clerk</h1>
+<form>
+  <div class="form-check form-switch">
+    <input class="form-check-input" type="checkbox" role="switch" id="isNew" onclick="display()">
+    <label class="form-check-label" for="isNew">Has Patient been at the hospital before?</label>
+  </div><br/>
+
+  <div class="forOldPatient">
+    <div class="mb-3">
+      <label for="oldPatientId" class="form-label">Patient's Id Number</label>
+      <input type="email" class="form-control" id="oldPatientId" aria-describedby="emailHelp">
+    </div>
+  </div>
+
+  <div class="forNewPatient">
+    <div class="mb-3">
+      <label for="exampleInputPassword1" class="form-label">Patient's Firstname</label>
+      <input type="text" class="form-control" id="exampleInputPassword1">
+    </div>
+    <div class="mb-3">
+      <label for="exampleInputPassword1" class="form-label">Patient's Lastname</label>
+      <input type="text" class="form-control" id="exampleInputPassword1">
+    </div>
+    <div class="mb-3">
+      <label for="exampleInputPassword1" class="form-label">Patient's Date of Birth</label>
+      <input type="date" class="form-control" id="exampleInputPassword1">
+    </div>
+    <div class="mb-3">
+      <label for="exampleInputPassword1" class="form-label">Patient's Gender</label>
+      <br/>
+      <div class="btn-group-horizontal" role="group" aria-label="Vertical radio toggle button group">
+        <input type="radio" class="btn-check" name="vbtn-radio" id="vbtn-radio1" autocomplete="off" checked>
+        <label class="btn btn-outline-primary" for="vbtn-radio1">Male</label>
+        <input type="radio" class="btn-check" name="vbtn-radio" id="vbtn-radio2" autocomplete="off">
+        <label class="btn btn-outline-primary" for="vbtn-radio2">Female</label>
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="exampleInputPassword1" class="form-label">Select type of Insurance Card</label>
+      <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
+        <option selected>---</option>
+        <option value="NHIS">NHIS</option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label for="exampleInputPassword1" class="form-label">Patient's Insurance Id</label>
+      <input type="text" class="form-control" id="exampleInputPassword1">
+    </div>
+    <div class="mb-3">
+      <label for="exampleInputPassword1" class="form-label">Patient's Contact Number</label>
+      <input type="number" class="form-control" id="exampleInputPassword1">
+    </div>
+    <div class="mb-3">
+      <label for="exampleInputPassword1" class="form-label">Patient's Emergency Contact Name</label>
+      <input type="text" class="form-control" id="exampleInputPassword1">
+    </div>
+    <div class="mb-3">
+      <label for="exampleInputPassword1" class="form-label">Patient's Emergency Contact Number</label>
+      <input type="number" class="form-control" id="exampleInputPassword1">
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<script>
+  const toggle = document.getElementById("isNew")
+  const newContainer = document.querySelector(".forNewPatient")
+  const oldContainer = document.querySelector(".forOldPatient")
+  oldContainer.style.display = "none"
+  toggle.value = "off";
+
+  function display(){
+    toggle.value = toggle.value == "on" ? "off" : "on"
+    if(toggle.value == "on"){
+      oldContainer.style.display = "block"
+      newContainer.style.display = "none"
+    }else{
+      oldContainer.style.display = "none"
+      newContainer.style.display = "block"
+    }
+  }
+</script>

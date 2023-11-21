@@ -1,23 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\abufo\\source\\repos\\Persol_HMS\\Persol_Hms.csproj": {}
+    "C:\\Users\\aansong\\Documents\\GitHub\\Persol_HMS\\Persol_Hms.csproj": {}
   },
   "projects": {
-    "C:\\Users\\abufo\\source\\repos\\Persol_HMS\\Persol_Hms.csproj": {
+    "C:\\Users\\aansong\\Documents\\GitHub\\Persol_HMS\\Persol_Hms.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\abufo\\source\\repos\\Persol_HMS\\Persol_Hms.csproj",
+        "projectUniqueName": "C:\\Users\\aansong\\Documents\\GitHub\\Persol_HMS\\Persol_Hms.csproj",
         "projectName": "Persol_Hms",
-        "projectPath": "C:\\Users\\abufo\\source\\repos\\Persol_HMS\\Persol_Hms.csproj",
-        "packagesPath": "C:\\Users\\abufo\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\abufo\\source\\repos\\Persol_HMS\\obj\\",
+        "projectPath": "C:\\Users\\aansong\\Documents\\GitHub\\Persol_HMS\\Persol_Hms.csproj",
+        "packagesPath": "C:\\Users\\aansong\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\aansong\\Documents\\GitHub\\Persol_HMS\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\abufo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\aansong\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,7 +27,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -51,19 +51,33 @@
             },
             "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[6.0.6, )"
+              "version": "[6.0.23, )"
             },
             "Microsoft.AspNetCore.Identity.UI": {
               "target": "Package",
-              "version": "[6.0.6, )"
+              "version": "[6.0.23, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[6.0.23, )"
             },
             "Microsoft.EntityFrameworkCore.Sqlite": {
               "target": "Package",
               "version": "[6.0.6, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
               "target": "Package",
-              "version": "[6.0.0, )"
+              "version": "[6.0.23, )"
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[6.0.16, )"
+            },
+            "Microsoft.VisualStudio.Web.CodeGenerators.Mvc": {
+              "target": "Package",
+              "version": "[6.0.16, )"
             }
           },
           "imports": [
@@ -72,8 +86,7 @@
             "net47",
             "net471",
             "net472",
-            "net48",
-            "net481"
+            "net48"
           ],
           "assetTargetFallback": true,
           "warn": true,
@@ -85,7 +98,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.301\\RuntimeIdentifierGraph.json"
         }
       }
     }

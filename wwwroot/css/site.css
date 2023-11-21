@@ -16,3 +16,12 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.footer{
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  padding: 25px;
+  margin-top: 20px;
+}

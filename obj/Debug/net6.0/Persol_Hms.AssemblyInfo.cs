@@ -11,6 +11,7 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.AspNetCore.Identity.UI.UIFrameworkAttribute("Bootstrap5")]
 [assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("aspnet-Persol_HMS-06b1b8a4-5c25-4fec-b649-4aea62a2dc0c")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("Persol_Hms")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
