@@ -12,8 +12,7 @@ namespace Persol_HMS.Models
     {
         [Key]
         public int Id { get; set; }
-        
-        public string PatientNo { get; set; }
+        public string? PatientNo { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string ContactNo { get; set; }

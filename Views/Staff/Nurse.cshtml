@@ -1,3 +1,24 @@
 @page
 
-<h1>Nurse</h1>
+<form method="post" asp-action="CreatePatient">
+  <div class="forNewPatient">
+    <div class="mb-3">
+      <label for="exampleInputPassword1" class="form-label">Patient's Temperature</label>
+      <input type="number" class="form-control" id="exampleInputPassword1">
+    </div>
+    <div class="mb-3">
+      <label for="exampleInputPassword1" class="form-label">Patient's Height</label>
+      <input type="number" class="form-control" id="exampleInputPassword1">
+    </div>
+    <div class="mb-3">
+      <label for="exampleInputPassword1" class="form-label">Patient's Weight</label>
+      <input type="number" class="form-control" id="exampleInputPassword1">
+    </div>
+    <div class="mb-3">
+      <label for="exampleInputPassword1" class="form-label">Patient's Blood Pressure</label>
+      <input type="text" class="form-control" id="exampleInputPassword1">
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
