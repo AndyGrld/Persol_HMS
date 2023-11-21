@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Persol_Hms", "Persol_Hms.csproj", "{131E8E2F-56AD-44F5-AE11-E1ED21965212}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Persol_HMS", "Persol_HMS.csproj", "{19980E91-8336-435B-A38F-5521C1BD03C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{131E8E2F-56AD-44F5-AE11-E1ED21965212}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{131E8E2F-56AD-44F5-AE11-E1ED21965212}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{131E8E2F-56AD-44F5-AE11-E1ED21965212}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{131E8E2F-56AD-44F5-AE11-E1ED21965212}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19980E91-8336-435B-A38F-5521C1BD03C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19980E91-8336-435B-A38F-5521C1BD03C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19980E91-8336-435B-A38F-5521C1BD03C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19980E91-8336-435B-A38F-5521C1BD03C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {A24655B7-608E-492B-AD83-1F76BF2D0B09}
+		SolutionGuid = {56B23DE4-EE8E-4F94-B7CB-30325C560914}
 	EndGlobalSection
 EndGlobal

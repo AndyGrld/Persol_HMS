@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Persol_Hms.Models
+namespace Persol_HMS.Models
 {
     public class Drug
     {

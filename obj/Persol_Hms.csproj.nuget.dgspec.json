@@ -1,23 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\abufo\\source\\repos\\Persol_HMS\\Persol_Hms.csproj": {}
+    "C:\\Users\\aansong\\Documents\\c#\\Persol_HMS\\Persol_HMS\\Persol_HMS.csproj": {}
   },
   "projects": {
-    "C:\\Users\\abufo\\source\\repos\\Persol_HMS\\Persol_Hms.csproj": {
+    "C:\\Users\\aansong\\Documents\\c#\\Persol_HMS\\Persol_HMS\\Persol_HMS.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\abufo\\source\\repos\\Persol_HMS\\Persol_Hms.csproj",
-        "projectName": "Persol_Hms",
-        "projectPath": "C:\\Users\\abufo\\source\\repos\\Persol_HMS\\Persol_Hms.csproj",
-        "packagesPath": "C:\\Users\\abufo\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\abufo\\source\\repos\\Persol_HMS\\obj\\",
+        "projectUniqueName": "C:\\Users\\aansong\\Documents\\c#\\Persol_HMS\\Persol_HMS\\Persol_HMS.csproj",
+        "projectName": "Persol_HMS",
+        "projectPath": "C:\\Users\\aansong\\Documents\\c#\\Persol_HMS\\Persol_HMS\\Persol_HMS.csproj",
+        "packagesPath": "C:\\Users\\aansong\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\aansong\\Documents\\c#\\Persol_HMS\\Persol_HMS\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\abufo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\aansong\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,7 +27,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -45,10 +45,6 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
-            "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": {
-              "target": "Package",
-              "version": "[6.0.6, )"
-            },
             "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
               "target": "Package",
               "version": "[6.0.23, )"
@@ -57,13 +53,17 @@
               "target": "Package",
               "version": "[6.0.23, )"
             },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[6.0.25, )"
+            },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
               "version": "[6.0.23, )"
             },
             "Microsoft.EntityFrameworkCore.Sqlite": {
               "target": "Package",
-              "version": "[6.0.6, )"
+              "version": "[6.0.23, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
@@ -86,8 +86,7 @@
             "net47",
             "net471",
             "net472",
-            "net48",
-            "net481"
+            "net48"
           ],
           "assetTargetFallback": true,
           "warn": true,
@@ -99,7 +98,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.301\\RuntimeIdentifierGraph.json"
         }
       }
     }

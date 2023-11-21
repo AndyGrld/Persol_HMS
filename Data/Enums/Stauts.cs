@@ -1,4 +1,4 @@
-﻿namespace Persol_Hms.Data.Enums
+﻿namespace Persol_HMS.Data.Enums
 {
     public enum Stauts
     {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Persol_Hms.Models
+namespace Persol_HMS.Models
 {
     public class Department
     {

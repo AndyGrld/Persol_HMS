@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Persol_Hms.Areas.Identity.Pages.Account.Manage
+namespace Persol_HMS.Areas.Identity.Pages.Account.Manage
 {
     public class IndexModel : PageModel
     {

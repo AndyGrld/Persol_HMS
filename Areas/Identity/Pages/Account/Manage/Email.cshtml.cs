@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 
-namespace Persol_Hms.Areas.Identity.Pages.Account.Manage
+namespace Persol_HMS.Areas.Identity.Pages.Account.Manage
 {
     public class EmailModel : PageModel
     {

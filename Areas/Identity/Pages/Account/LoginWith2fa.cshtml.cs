@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
-namespace Persol_Hms.Areas.Identity.Pages.Account
+namespace Persol_HMS.Areas.Identity.Pages.Account
 {
     public class LoginWith2faModel : PageModel
     {

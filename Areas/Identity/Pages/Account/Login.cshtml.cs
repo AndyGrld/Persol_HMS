@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 
-namespace Persol_Hms.Areas.Identity.Pages.Account
+namespace Persol_HMS.Areas.Identity.Pages.Account
 {
     public class LoginModel : PageModel
     {

@@ -1,8 +1,7 @@
-﻿using Persol_Hms.Data.Enums;
-using Persol_Hms.Models;
+﻿using Persol_HMS.Data.Enums;
 using System.Globalization;
 
-namespace Persol_Hms.Data
+namespace Persol_HMS.Data
 {
     public class Seed
     {
