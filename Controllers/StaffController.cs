@@ -61,7 +61,22 @@ namespace Persol_HMS.Controllers
         [HttpGet]
         public IActionResult Nurse()
         {
-            return View();
+            return View(new Vital());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Nurse([Bind("PatientNo, Temperature, Height, Weight, BloodPressure")] Vital vital)
+        {
+            if(vital == null)
+            {
+                var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo == vital.PatientNo);
+                if (patient != null)
+                {
+                    return RedirectToAction(nameof(RecordsClerk));
+                }
+            }
+            return RedirectToAction(nameof(RecordsClerk));
         }
     }
 }

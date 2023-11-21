@@ -1,24 +1,23 @@
 @page
+@model Persol_HMS.Models.Vital
 
-<form method="post" asp-action="CreatePatient">
-  <div class="forNewPatient">
+<form asp-action="Nurse" autocomplete="off">
     <div class="mb-3">
-      <label for="exampleInputPassword1" class="form-label">Patient's Temperature</label>
-      <input type="number" class="form-control" id="exampleInputPassword1">
+      <label asp-for="Temperature" class="form-label">Patient's Temperature</label>
+      <input asp-for="Temperature" type="number" class="form-control" id="temperature">
     </div>
     <div class="mb-3">
-      <label for="exampleInputPassword1" class="form-label">Patient's Height</label>
-      <input type="number" class="form-control" id="exampleInputPassword1">
+      <label asp-for="Height" class="form-label">Patient's Height</label>
+      <input asp-for="Height" type="number" class="form-control">
     </div>
     <div class="mb-3">
-      <label for="exampleInputPassword1" class="form-label">Patient's Weight</label>
-      <input type="number" class="form-control" id="exampleInputPassword1">
+      <label asp-for="Weight" class="form-label">Patient's Weight</label>
+      <input asp-for="Weight" type="number" class="form-control">
     </div>
     <div class="mb-3">
-      <label for="exampleInputPassword1" class="form-label">Patient's Blood Pressure</label>
-      <input type="text" class="form-control" id="exampleInputPassword1">
+      <label asp-for="BloodPressure" class="form-label">Patient's Blood Pressure</label>
+      <input asp-for="BloodPressure" type="text" class="form-control">
     </div>
-  </div>
 
   <button type="submit" class="btn btn-primary">Submit</button>
 </form>
