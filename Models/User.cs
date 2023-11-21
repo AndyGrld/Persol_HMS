@@ -17,7 +17,7 @@ namespace Persol_HMS.Models
         public DateTime DateOfBirth { get; set; }
         public bool LockEnabled { get; set; }
         public int Attempts { get; set; }
-        public DateTime LockEnd { get; set; }
+        public DateTime? LockEnd { get; set; }
 
 
     }
