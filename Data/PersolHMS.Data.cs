@@ -1,4 +1,5 @@
-﻿using Persol_Hms.Models;
+﻿using Persol_Hms.Data.Enums;
+using Persol_Hms.Models;
 using System.Globalization;
 
 namespace Persol_Hms.Data
@@ -21,16 +22,22 @@ namespace Persol_Hms.Data
                         new Department()
                         {
                             DepartmentName = "Nursing",
-                            DepartmentCode = 001
+                            DepartmentCode = 002
                         },
                         new Department()
                         {
-                            DepartmentCode = 002,
+                            DepartmentCode = 003,
                             DepartmentName = "Doctor"
                         },
                         new Department()
                         {
+                            DepartmentCode = 001,
                             DepartmentName = "Records"
+                        },
+                        new Department()
+                        {
+                            DepartmentCode = 004,
+                            DepartmentName = "Lab"
                         }
                     });
                     context.SaveChanges();
