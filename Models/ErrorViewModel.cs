@@ -1,5 +1,5 @@
 namespace Persol_HMS.Models;
-
+using Persol_HMS.Models;
 public class ErrorViewModel
 {
     public string? RequestId { get; set; }
