@@ -4,11 +4,11 @@ using SQLitePCL;
 
 namespace Persol_HMS.Models.Repositories
 {
-    public class DugRepository : IDrugRepository
+    public class DrugRepository : IDrugRepository
     {
         private ApplicationDbContext _context;
 
-        public DugRepository(ApplicationDbContext context) 
+        public DrugRepository(ApplicationDbContext context) 
         {
             _context = context;
         }

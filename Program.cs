@@ -2,6 +2,8 @@ global using Persol_HMS.Data;
 global using Persol_HMS.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Persol_HMS.Data.Interfaces;
+using Persol_HMS.Models.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -15,6 +17,11 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddScoped<IDrugRepository, DrugRepository>();
+builder.Services.AddScoped<ILabRepository, LabRepository>();
+builder.Services.AddScoped<IMedicalRepository, MedicalRepository>();
+builder.Services.AddScoped<IPatientRepository, PatientRepository>();
+builder.Services.AddScoped<IVitalRepository, VitalRepository>();
 
 var app = builder.Build();
 

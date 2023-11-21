@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Persol_HMS.Data.Interfaces;
 
 namespace Persol_HMS.Models.Repositories
 {
-    public class LabRepository
+    public class LabRepository : ILabRepository
     {
         private ApplicationDbContext _context;
 
@@ -44,5 +45,7 @@ namespace Persol_HMS.Models.Repositories
             _context.Update(lab);
             return Save();
         }
+
+
     }
 }

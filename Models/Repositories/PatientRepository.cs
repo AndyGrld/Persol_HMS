@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Persol_HMS.Data.Interfaces;
 
 namespace Persol_HMS.Models.Repositories
 {
-    public class PatientRepository
+    public class PatientRepository : IPatientRepository
     {
         private ApplicationDbContext _context;
 
