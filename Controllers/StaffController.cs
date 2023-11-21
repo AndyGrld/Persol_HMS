@@ -66,7 +66,7 @@ namespace Persol_HMS.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Nurse([Bind("PatientNo, Temperature, Height, Weight, BloodPressure")] Vital vital)
+        public async Task<IActionResult> Nurse([Bind("Temperature, Height, Weight, BloodPressure")] Vital vital)
         {
             if(vital == null)
             {
