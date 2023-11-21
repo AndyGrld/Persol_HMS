@@ -45,9 +45,10 @@ namespace Persol_Hms.Data
                         {
                             Date = DateTime.Now,
                             DrugName = "Paracetamol",
-                            Dosage = ""
+                            Dosage = "2x daily",
+                            PatientNo = "HMS-1121-2023-K001"
                         }
-                    });
+                    }) ;
                 }
                 //Lab
                 if (!context.Labs.Any())

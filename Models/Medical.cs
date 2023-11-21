@@ -21,7 +21,7 @@ namespace Persol_Hms.Models
         public int WardNo { get; set; }
         public bool IsAdmitted { get; set; }
         public DateTime DateAdmitted { get; set; }
-
-
+        [ForeignKey(nameof(Patient))]
+        public string PatientNo { get; set; }
     }
 }

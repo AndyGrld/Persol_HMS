@@ -8,7 +8,7 @@ namespace Persol_Hms.Models
         [Key] 
         public int Id { get; set; }
         [ForeignKey(nameof(Patient))]
-        public int PatientId { get; set; }
+        public int PatientNo { get; set; }
         public double Temperature { get; set; }
         public double Height { get; set; }
         public double Weight { get; set; }
