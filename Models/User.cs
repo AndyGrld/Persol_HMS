@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Persol_HMS.Models
 {
-    public class Users
+    public class User
     {
         [Key]
         public int Id { get; set; }

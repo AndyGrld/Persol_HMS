@@ -1,8 +1,11 @@
-﻿namespace Persol_Hms.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Persol_Hms.Models
 {
     public class Department
     {
-        public int ID { get; set; }
+        [Key]
+        public int Id { get; set; }
         public string DepartmentName { get; set; }
         public string DepartmentCode { get; set; }
     }

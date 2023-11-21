@@ -1,8 +1,13 @@
-﻿namespace Persol_Hms.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Persol_Hms.Models
 {
-    public class Vitals
+    public class Vital
     {
-        public int VitalsID { get; set; }
+        [Key] 
+        public int Id { get; set; }
+        [ForeignKey(nameof(Patient))]
         public int PatientId { get; set; }
         public double Temperature { get; set; }
         public double Height { get; set; }
