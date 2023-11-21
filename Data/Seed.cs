@@ -4,9 +4,9 @@ using System.Globalization;
 
 namespace Persol_Hms.Data
 {
-    public class HMSData
+    public class Seed
     {
-        public static void Seed(IApplicationBuilder applicationBuilder)
+        public static void SeedData(IApplicationBuilder applicationBuilder)
         {
             using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
             {
