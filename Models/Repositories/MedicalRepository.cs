@@ -30,7 +30,7 @@ namespace Persol_HMS.Models.Repositories
 
         public async Task<Medical> GetByIdAsync(int id)
         {
-            return await _context.Medicals.FirstOrDefaultAsync(i => i.ID == id);
+            return await _context.Medicals.FirstOrDefaultAsync();
         }
 
         public bool Save()
@@ -41,7 +41,8 @@ namespace Persol_HMS.Models.Repositories
 
         public bool Update(Medical medical)
         {
-            throw new NotImplementedException();
+            _context.Update(medical);
+            return Save();
         }
     }
 }

@@ -28,9 +28,9 @@ namespace Persol_HMS.Models.Repositories
             return await _context.Vitals.ToListAsync();
         }
 
-        public async Task<Patient> GetByIdAsync(string patientNo)
+        public async Task<Vital> GetByIdAsync(int id)
         {
-            return await _context.Patients.FirstOrDefaultAsync(i => i.PatientNo == patientNo);
+            return await _context.Vitals.FirstOrDefaultAsync();
         }
 
         public bool Save()
@@ -41,7 +41,8 @@ namespace Persol_HMS.Models.Repositories
 
         public bool Update(Vital vital)
         {
-            throw new NotImplementedException();
+            _context.Update(vital);
+            return Save();
         }
     }
 }
