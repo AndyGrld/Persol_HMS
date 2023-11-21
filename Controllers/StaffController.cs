@@ -16,7 +16,7 @@ namespace Persol_HMS.Controllers
         }
 
         [HttpGet]
-        public IActionResult Doctor()
+        public IActionResult Doctor(string username)
         {
             return View();
         }
