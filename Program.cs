@@ -1,6 +1,5 @@
-global using Persol_HMS.Models;
 global using Persol_HMS.Data;
-global using Persol_HMS.Controllers;
+global using Persol_HMS.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Persol_Hms.Data;
@@ -10,7 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(connectionString));
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<Staff>(options => options.SignIn.RequireConfirmedAccount = true)

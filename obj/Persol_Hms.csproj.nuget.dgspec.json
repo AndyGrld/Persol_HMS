@@ -47,10 +47,11 @@
           "dependencies": {
             "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[6.0.6, )"
+              "version": "[6.0.0, )"
             },
             "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
               "target": "Package",
+<<<<<<< HEAD
               "version": "[6.0.23, )"
             },
             "Microsoft.AspNetCore.Identity.UI": {
@@ -60,6 +61,17 @@
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
               "version": "[6.0.23, )"
+=======
+              "version": "[6.0.0, )"
+            },
+            "Microsoft.AspNetCore.Identity.UI": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+>>>>>>> 02b9e774cd84099ba20ff9520f191d7196cc5cbd
             },
             "Microsoft.EntityFrameworkCore.Sqlite": {
               "target": "Package",
