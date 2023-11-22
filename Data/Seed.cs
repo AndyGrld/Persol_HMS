@@ -1,8 +1,4 @@
-﻿using Persol_HMS.Data.Enums;
-using System.Globalization;
-using Persol_HMS.Models;
-
-namespace Persol_HMS.Data
+﻿namespace Persol_HMS.Data
 {
     public class Seed
     {
@@ -14,6 +10,125 @@ namespace Persol_HMS.Data
 
                 context.Database.EnsureCreated();
 
+                if (!context.Users.Any())
+                {
+                    context.Users.AddRange(new List<User>
+                    {
+                        new User()
+                        {
+                            AccessFailedCount = 0,
+                            Attempts = 0,
+                            CreatedDate = DateTime.Now,
+                            DateOfBirth = new DateTime(2000,06,17),
+                            LockEnabled = false,
+                            EmailConfirmed = false,
+                            Email = "James@Gmail.com",
+                            DepartmentId = 001,
+                            FirstName = "James",
+                            LockEnd = DateTime.Now,
+                            MiddleName = null,
+                            LastName = "John",
+                            LockoutEnd = DateTime.Now,
+                            PasswordHash = "James123",
+                            Status = "Active",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "james@hospital.com",
+                            PhoneNumberConfirmed = false,
+                            NormalizedUserName = null,
+                            PhoneNumber = null,
+                            SecurityStamp = null,
+                            ConcurrencyStamp = null,
+                            TwoFactorEnabled = false,
+                            UserName = "James"
+                        },
+                        new User()
+                        {
+                            AccessFailedCount = 0,
+                            Attempts = 0,
+                            CreatedDate = DateTime.Now,
+                            DateOfBirth = new DateTime(2000,06,17),
+                            LockEnabled = false,
+                            EmailConfirmed = false,
+                            Email = "Paul@Gmail.com",
+                            DepartmentId = 003,
+                            FirstName = "Paul",
+                            LockEnd = DateTime.Now,
+                            MiddleName = null,
+                            LastName = "John",
+                            LockoutEnd = DateTime.Now,
+                            PasswordHash = "Paul123",
+                            Status = "Active",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "paul@hospital.com",
+                            PhoneNumberConfirmed = false,
+                            NormalizedUserName = null,
+                            PhoneNumber = null,
+                            SecurityStamp = null,
+                            ConcurrencyStamp = null,
+                            TwoFactorEnabled = false,
+                            UserName = "Paul"
+                        },
+
+                        new User()
+                        {
+                            AccessFailedCount = 0,
+                            Attempts = 0,
+                            CreatedDate = DateTime.Now,
+                            DateOfBirth = new DateTime(2000,06,17),
+                            LockEnabled = false,
+                            EmailConfirmed = false,
+                            Email = "Ama@Gmail.com",
+                            DepartmentId = 002,
+                            FirstName = "Ama",
+                            LockEnd = DateTime.Now,
+                            MiddleName = null,
+                            LastName = "John",
+                            LockoutEnd = DateTime.Now,
+                            PasswordHash = "Ama123",
+                            Status = "Active",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ama@hospital.com",
+                            PhoneNumberConfirmed = false,
+                            NormalizedUserName = null,
+                            PhoneNumber = null,
+                            SecurityStamp = null,
+                            ConcurrencyStamp = null,
+                            TwoFactorEnabled = false,
+                            UserName = "Ama"
+                        },
+
+                        new User()
+                        {
+                            AccessFailedCount = 0,
+                            Attempts = 0,
+                            CreatedDate = DateTime.Now,
+                            DateOfBirth = new DateTime(2000,06,17),
+                            LockEnabled = false,
+                            EmailConfirmed = false,
+                            Email = "Nana@Gmail.com",
+                            DepartmentId = 004,
+                            FirstName = "Nana",
+                            LockEnd = DateTime.Now,
+                            MiddleName = null,
+                            LastName = "John",
+                            LockoutEnd = DateTime.Now,
+                            PasswordHash = "Nana123",
+                            Status = "Active",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "nana@hospital.com",
+                            PhoneNumberConfirmed = false,
+                            NormalizedUserName = null,
+                            PhoneNumber = null,
+                            SecurityStamp = null,
+                            ConcurrencyStamp = null,
+                            TwoFactorEnabled = false,
+                            UserName = "Nana"
+                        }
+
+
+                    });
+
+                }
                 //Department
                 if (!context.Departments.Any())
                 {
@@ -132,7 +247,7 @@ namespace Persol_HMS.Data
                 if (!context.Symptoms.Any())
                 {
                     context.Symptoms.AddRange(new List<Symptom>()
-                    { 
+                    {
                         new Symptom()
                         {
                             Date = DateTime.Now,
@@ -145,7 +260,7 @@ namespace Persol_HMS.Data
                 //User
                 if (!context.Users.Any())
                 {
-                    
+
 
                 }
                 //Vital
@@ -166,5 +281,6 @@ namespace Persol_HMS.Data
                 }
             }
         }
+
     }
 }
