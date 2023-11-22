@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Persol_HMS.Migrations
+namespace Auth.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class migration01 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -21,31 +21,6 @@ namespace Persol_HMS.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetRoles", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUsers",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "TEXT", nullable: false),
-                    UserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "INTEGER", nullable: false),
-                    PasswordHash = table.Column<string>(type: "TEXT", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "TEXT", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "TEXT", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "TEXT", nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "INTEGER", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "INTEGER", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "TEXT", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "INTEGER", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -96,28 +71,6 @@ namespace Persol_HMS.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Medicals",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Date = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    VitalsID = table.Column<int>(type: "INTEGER", nullable: false),
-                    DrugsID = table.Column<int>(type: "INTEGER", nullable: false),
-                    SymptomsID = table.Column<int>(type: "INTEGER", nullable: false),
-                    Diagnoses = table.Column<string>(type: "TEXT", nullable: false),
-                    LabID = table.Column<int>(type: "INTEGER", nullable: false),
-                    WardNo = table.Column<int>(type: "INTEGER", nullable: false),
-                    IsAdmitted = table.Column<bool>(type: "INTEGER", nullable: false),
-                    DateAdmitted = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    PatientNo = table.Column<string>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Medicals", x => x.ID);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Patients",
                 columns: table => new
                 {
@@ -153,30 +106,6 @@ namespace Persol_HMS.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Queues", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Staff",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Username = table.Column<string>(type: "TEXT", nullable: false),
-                    FirstName = table.Column<string>(type: "TEXT", nullable: false),
-                    MiddleName = table.Column<string>(type: "TEXT", nullable: false),
-                    LastName = table.Column<string>(type: "TEXT", nullable: false),
-                    DepartmentID = table.Column<int>(type: "INTEGER", nullable: false),
-                    Password = table.Column<string>(type: "TEXT", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Status = table.Column<string>(type: "TEXT", nullable: false),
-                    DateOfBirth = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    LockEnabled = table.Column<bool>(type: "INTEGER", nullable: false),
-                    Attempts = table.Column<int>(type: "INTEGER", nullable: false),
-                    LockEnd = table.Column<DateTime>(type: "TEXT", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Staff", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -229,6 +158,99 @@ namespace Persol_HMS.Migrations
                         name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUsers",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "TEXT", nullable: false),
+                    FirstName = table.Column<string>(type: "TEXT", nullable: false),
+                    MiddleName = table.Column<string>(type: "TEXT", nullable: false),
+                    LastName = table.Column<string>(type: "TEXT", nullable: false),
+                    DepartmentId = table.Column<int>(type: "INTEGER", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Status = table.Column<string>(type: "TEXT", nullable: false),
+                    DateOfBirth = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    LockEnabled = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Attempts = table.Column<int>(type: "INTEGER", nullable: false),
+                    LockEnd = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    UserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "INTEGER", nullable: false),
+                    PasswordHash = table.Column<string>(type: "TEXT", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "TEXT", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "TEXT", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "TEXT", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "INTEGER", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "INTEGER", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "TEXT", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "INTEGER", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_Departments_DepartmentId",
+                        column: x => x.DepartmentId,
+                        principalTable: "Departments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Medicals",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Date = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    VitalsID = table.Column<int>(type: "INTEGER", nullable: false),
+                    DrugsID = table.Column<int>(type: "INTEGER", nullable: false),
+                    SymptomsID = table.Column<int>(type: "INTEGER", nullable: false),
+                    LabID = table.Column<int>(type: "INTEGER", nullable: false),
+                    Diagnoses = table.Column<string>(type: "TEXT", nullable: false),
+                    WardNo = table.Column<int>(type: "INTEGER", nullable: false),
+                    IsAdmitted = table.Column<bool>(type: "INTEGER", nullable: false),
+                    DateAdmitted = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    PatientNo = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Medicals", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Medicals_Drugs_DrugsID",
+                        column: x => x.DrugsID,
+                        principalTable: "Drugs",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Medicals_Labs_LabID",
+                        column: x => x.LabID,
+                        principalTable: "Labs",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Medicals_Patients_PatientNo",
+                        column: x => x.PatientNo,
+                        principalTable: "Patients",
+                        principalColumn: "PatientNo",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Medicals_Symptoms_SymptomsID",
+                        column: x => x.SymptomsID,
+                        principalTable: "Symptoms",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Medicals_Vitals_VitalsID",
+                        column: x => x.VitalsID,
+                        principalTable: "Vitals",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -350,10 +372,40 @@ namespace Persol_HMS.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_DepartmentId",
+                table: "AspNetUsers",
+                column: "DepartmentId");
+
+            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Medicals_DrugsID",
+                table: "Medicals",
+                column: "DrugsID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Medicals_LabID",
+                table: "Medicals",
+                column: "LabID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Medicals_PatientNo",
+                table: "Medicals",
+                column: "PatientNo");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Medicals_SymptomsID",
+                table: "Medicals",
+                column: "SymptomsID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Medicals_VitalsID",
+                table: "Medicals",
+                column: "VitalsID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -374,7 +426,16 @@ namespace Persol_HMS.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Departments");
+                name: "Medicals");
+
+            migrationBuilder.DropTable(
+                name: "Queues");
+
+            migrationBuilder.DropTable(
+                name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Drugs");
@@ -383,16 +444,7 @@ namespace Persol_HMS.Migrations
                 name: "Labs");
 
             migrationBuilder.DropTable(
-                name: "Medicals");
-
-            migrationBuilder.DropTable(
                 name: "Patients");
-
-            migrationBuilder.DropTable(
-                name: "Queues");
-
-            migrationBuilder.DropTable(
-                name: "Staff");
 
             migrationBuilder.DropTable(
                 name: "Symptoms");
@@ -401,10 +453,7 @@ namespace Persol_HMS.Migrations
                 name: "Vitals");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Departments");
         }
     }
 }
