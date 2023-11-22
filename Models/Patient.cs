@@ -21,6 +21,7 @@ namespace Persol_HMS.Models
         public string? PatientNo { get; set; }
 
         [Required(ErrorMessage = "The First Name is required.")]
+
         public string FirstName { get; set; }
 
         [Required(ErrorMessage = "The Last Name is required.")]

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Persol_Hms.Migrations
+namespace Persol_HMS.Migrations
 {
     public partial class InitialCreate : Migration
     {
@@ -121,9 +121,8 @@ namespace Persol_Hms.Migrations
                 name: "Patients",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
                     PatientNo = table.Column<string>(type: "TEXT", nullable: false),
+                    Id = table.Column<int>(type: "INTEGER", nullable: false),
                     FirstName = table.Column<string>(type: "TEXT", nullable: false),
                     LastName = table.Column<string>(type: "TEXT", nullable: false),
                     ContactNo = table.Column<string>(type: "TEXT", nullable: false),
@@ -137,7 +136,7 @@ namespace Persol_Hms.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Patients", x => x.Id);
+                    table.PrimaryKey("PK_Patients", x => x.PatientNo);
                 });
 
             migrationBuilder.CreateTable(
@@ -186,9 +185,9 @@ namespace Persol_Hms.Migrations
                 {
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    PatientNo = table.Column<string>(type: "TEXT", nullable: false),
                     Symptoms = table.Column<string>(type: "TEXT", nullable: false),
-                    Date = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    Date = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    PatientNo = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
