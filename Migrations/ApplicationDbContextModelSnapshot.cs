@@ -7,7 +7,7 @@ using Persol_HMS.Data;
 
 #nullable disable
 
-namespace Persol_Hms.Migrations
+namespace Persol_HMS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -331,9 +331,8 @@ namespace Persol_Hms.Migrations
 
             modelBuilder.Entity("Persol_HMS.Models.Patient", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("PatientNo")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("ContactNo")
                         .IsRequired()
@@ -361,6 +360,9 @@ namespace Persol_Hms.Migrations
                     b.Property<char>("Gender")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("Id")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("InsuranceNo")
                         .HasColumnType("TEXT");
 
@@ -371,11 +373,7 @@ namespace Persol_Hms.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("PatientNo")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
+                    b.HasKey("PatientNo");
 
                     b.ToTable("Patients");
                 });
