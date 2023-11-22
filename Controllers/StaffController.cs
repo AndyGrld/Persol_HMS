@@ -19,7 +19,15 @@ public class StaffController : Controller
         if (patientNo != null)
         {
             var patientDetails = _context.Patients.FirstOrDefault(p => p.PatientNo == patientNo);
-            return View(patientDetails);
+            if (patientDetails == null)
+            {
+                var medicalViewModel = new CreateMedicalViewModel{
+                    PatientNo = patientNo,
+                    FirstName = patientDetails.FirstName,
+                    LastName = patientDetails.LastName
+                };
+                return View(medicalViewModel);
+            }
         }
 
         else if (nextPatientInLine != null)
@@ -28,13 +36,18 @@ public class StaffController : Controller
 
             if (patientDetails != null)
             {
+                var medicalViewModel = new CreateMedicalViewModel{
+                    PatientNo = patientNo,
+                    FirstName = patientDetails.FirstName,
+                    LastName = patientDetails.LastName
+                };
                 var doctorQueue = Queue.GetOrCreateQueue(_context, patientDetails.PatientNo, DepartmentType.Doctor);
-                return View(patientDetails);
+                return View(medicalViewModel);
             }
         }
 
         // Handle case where there are no patients in the doctor's queue
-        return NotFound();
+        return View(new CreateMedicalViewModel());
     }
 
     [HttpPost]
@@ -125,10 +138,33 @@ public class StaffController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> RecordsClerk([Bind("FirstName, LastName, DateOfBirth, PatientNo, ContactNo, InsuranceType, InsuranceNo, Gender, EmergencyContactFirstName, EmergencyContactLastName, EmergencyContactNo")] Patient newPatient)
+    public async Task<IActionResult> GetRegisteredPatient([Bind("PatientNo")] Patient newPatient)
+    {
+        var patient = _context.Patients.FirstOrDefault(p => p.PatientNo.Equals(newPatient.PatientNo));
+        if(patient != null)
+        {
+            var nurseQueueNo = GetNextQueueNumber("Nurse");
+            var nurseQueue = new Queue
+            {
+                PatientNo = newPatient.PatientNo,
+                QueueNo = nurseQueueNo,
+                Status = "Nurse",
+                DateToday = DateTime.Now
+            };
+            _context.Queues.Add(nurseQueue);
+
+            await _context.SaveChangesAsync();
+        }
+        return RedirectToAction(nameof(RecordsClerk));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> CreatePatient([Bind("FirstName, LastName, DateOfBirth, ContactNo, InsuranceType, InsuranceNo, Gender, EmergencyContactFirstName, EmergencyContactLastName, EmergencyContactNo")] Patient newPatient)
     {
         if (ModelState.IsValid)
         {
+            newPatient.PatientNo = "HMS-1121-2023-K001";
             _context.Patients.Add(newPatient);
 
             // Automatically add the patient to the nurse queue with the next queue number
@@ -169,29 +205,25 @@ public class StaffController : Controller
     [HttpGet]
     public IActionResult Nurse(string? patientNo)
     {
-        if (patientNo != null)
-        {
-            var patientDetails = _context.Patients.FirstOrDefault(p => p.PatientNo == patientNo);
-            if (patientDetails != null)
-            {
-                return View(patientDetails);
-            }
-        }
-
         var nextPatientInLine = GetNextPatientInLine("Nurse");
 
-        var vitalModel = new Vital
+        if (nextPatientInLine != null)
         {
-            PatientNo = nextPatientInLine?.PatientNo // Ensure nextPatientInLine is not null
-        };
+            var vitalModel = new Vital
+            {
+                PatientNo = nextPatientInLine?.PatientNo // Ensure nextPatientInLine is not null
+            };
 
-        if (!string.IsNullOrEmpty(vitalModel.PatientNo))
-        {
-            var nurseQueue = Queue.GetOrCreateQueue(_context, vitalModel.PatientNo, DepartmentType.Nurse);
+            if (!string.IsNullOrEmpty(vitalModel.PatientNo))
+            {
+                var nurseQueue = Queue.GetOrCreateQueue(_context, vitalModel.PatientNo, DepartmentType.Nurse);
+            }
+
+            
+            return View(vitalModel);
         }
-
         
-        return View(vitalModel);
+        return View(new Vital());
     }
 
 
