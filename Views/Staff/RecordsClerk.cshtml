@@ -1,9 +1,7 @@
 
 @model Persol_HMS.Models.Patient
 
-@section ValidationSummary {
-    <div asp-validation-summary="All" class="text-danger"></div>
-}
+<partial name="_ValidationScriptsPartial.cshtml"/>
 
   <div class="form-check form-switch">
     <input class="form-check-input" type="checkbox" role="switch" id="isNew" onclick="display()">
