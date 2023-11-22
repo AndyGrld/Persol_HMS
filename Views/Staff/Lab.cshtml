@@ -1,0 +1,23 @@
+@model List<Queue>
+
+<h1>Lab Queue</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Patient No</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var patient in Model)
+        {
+            <tr>
+                <td>@patient.PatientNo</td>
+                <td>
+                    <a asp-controller="Lab" asp-action="ProcessPatient" asp-route-patientNo="@patient.PatientNo">Process</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

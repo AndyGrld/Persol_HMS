@@ -3,21 +3,21 @@
 
 <form asp-action="Nurse" autocomplete="off">
     <div class="mb-3">
-      <label asp-for="Temperature" class="form-label">Patient's Temperature</label>
-      <input asp-for="Temperature" type="number" class="form-control" id="temperature">
+        <label asp-for="Temperature" class="form-label">Patient's Temperature</label>
+        <input asp-for="Temperature" type="number" class="form-control" id="temperature">
     </div>
     <div class="mb-3">
-      <label asp-for="Height" class="form-label">Patient's Height</label>
-      <input asp-for="Height" type="number" class="form-control">
+        <label asp-for="Height" class="form-label">Patient's Height</label>
+        <input asp-for="Height" type="number" class="form-control">
     </div>
     <div class="mb-3">
-      <label asp-for="Weight" class="form-label">Patient's Weight</label>
-      <input asp-for="Weight" type="number" class="form-control">
+        <label asp-for="Weight" class="form-label">Patient's Weight</label>
+        <input asp-for="Weight" type="number" class="form-control">
     </div>
     <div class="mb-3">
-      <label asp-for="BloodPressure" class="form-label">Patient's Blood Pressure</label>
-      <input asp-for="BloodPressure" type="text" class="form-control">
+        <label asp-for="BloodPressure" class="form-label">Patient's Blood Pressure</label>
+        <input asp-for="BloodPressure" type="text" class="form-control">
     </div>
-
-  <button type="submit" class="btn btn-primary">Submit</button>
+    <input asp-for="PatientNo" type="hidden" />
+    <button type="submit" class="btn btn-primary">Submit</button>
 </form>

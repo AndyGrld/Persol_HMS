@@ -1,0 +1,65 @@
+@model QueueViewModel
+
+<h2>Doctor Queue</h2>
+
+<!-- ... other content ... -->
+
+@if (Model.PatientsInLine.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>PatientNo</th>
+                <th>QueueNo</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var patient in Model.PatientsInLine)
+            {
+                <tr>
+                    <td>@patient.PatientNo</td>
+                    <td>@patient.QueueNo</td>
+                    <td>
+                        <button class="diagnose-patient" data-patient-no="@patient.PatientNo">Diagnose Patient</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+<div class="pagination">
+        @if (Model.CurrentPage > 1)
+        {
+            <a href="@Url.Action("DoctorQueue", new { page = Model.CurrentPage - 1, search = Model.Search })">Previous</a>
+        }
+
+        @for (int i = 1; i <= Model.TotalPatients / Model.PageSize + 1; i++)
+        {
+            <a href="@Url.Action("DoctorQueue", new { page = i, search = Model.Search })" class="@(i == Model.CurrentPage ? "active" : "")">@i</a>
+        }
+
+        @if (Model.CurrentPage < Model.TotalPatients / Model.PageSize + 1)
+        {
+            <a href="@Url.Action("DoctorQueue", new { page = Model.CurrentPage + 1, search = Model.Search })">Next</a>
+        }
+    </div>
+}
+else
+{
+    <p>No patients in line.</p>
+}
+
+@section scripts {
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.diagnose-patient').click(function () {
+                var patientNo = $(this).data('patient-no');
+
+                // Redirect to the Doctor controller with the patientNo
+                window.location.href = '@Url.Action("Doctor", "Staff")?patientNo=' + encodeURIComponent(patientNo);
+            });
+        });
+    </script>
+}

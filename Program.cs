@@ -1,5 +1,6 @@
 global using Persol_HMS.Data;
 global using Persol_HMS.Models;
+global using Persol_HMS.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Persol_HMS.Data.Interfaces;

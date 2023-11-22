@@ -1,3 +1,25 @@
-@page
+@model Persol_HMS.Models.ViewModels.CreateMedicalViewModel
 
-<h1>Doctor</h1>
+<h2>Medical Records for Patient: @Model.PatientNo - @Model.FirstName @Model.LastName</h2>
+
+<form asp-action="SaveMedicalRecords" method="post" autocomplete="off">
+    <!-- ... Existing form fields for Diagnoses, WardNo, IsAdmitted, DateAdmitted ... -->
+
+    <div class="mb-3">
+        <label asp-for="DrugName" class="form-label">Drug Name</label>
+        <input asp-for="DrugName" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Dosage" class="form-label">Dosage</label>
+        <input asp-for="Dosage" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Symptoms" class="form-label">Symptoms</label>
+        <textarea asp-for="Symptoms" class="form-control" rows="4"></textarea>
+    </div>
+    
+    <input asp-for="PatientNo" type="hidden" />
+    <button type="submit" class="btn btn-primary">Save Medical Records</button>
+</form>
+
+<a asp-action="DoctorQueue" asp-controller="Staff">Go to Doctor Queue</a>
