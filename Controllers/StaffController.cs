@@ -137,35 +137,36 @@ public class StaffController : Controller
     }
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> GetRegisteredPatient([Bind("PatientNo")] Patient newPatient)
+    public async Task<IActionResult> CreateOrGetPatient([Bind("PatientNo, FirstName, LastName, DateOfBirth, ContactNo, InsuranceType, InsuranceNo, Gender, EmergencyContactFirstName, EmergencyContactLastName, EmergencyContactNo")] Patient newPatient)
     {
-        var patient = _context.Patients.FirstOrDefault(p => p.PatientNo.Equals(newPatient.PatientNo));
-        if(patient != null)
+        if (newPatient.PatientNo != String.Empty)
         {
-            var nurseQueueNo = GetNextQueueNumber("Nurse");
-            var nurseQueue = new Queue
+            var patient = _context.Patients.FirstOrDefault(p => p.PatientNo.Equals(newPatient.PatientNo));
+            if(patient != null)
             {
-                PatientNo = newPatient.PatientNo,
-                QueueNo = nurseQueueNo,
-                Status = "Nurse",
-                DateToday = DateTime.Now
-            };
-            _context.Queues.Add(nurseQueue);
+                var nurseQueueNo = GetNextQueueNumber("Nurse");
+                var nurseQueue = new Queue
+                {
+                    PatientNo = newPatient.PatientNo,
+                    QueueNo = nurseQueueNo,
+                    Status = "Nurse",
+                    DateToday = DateTime.Now
+                };
+                _context.Queues.Add(nurseQueue);
 
-            await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Nurse));
+            }
+            ViewBag.message = "patient not found";
+            return RedirectToAction(nameof(RecordsClerk));
         }
-        return RedirectToAction(nameof(RecordsClerk));
-    }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> CreatePatient([Bind("FirstName, LastName, DateOfBirth, ContactNo, InsuranceType, InsuranceNo, Gender, EmergencyContactFirstName, EmergencyContactLastName, EmergencyContactNo")] Patient newPatient)
-    {
-        if (ModelState.IsValid)
+        newPatient.PatientNo = "HMS-1121-2023-K01" + _context.Patients.Max(p => p.Id).ToString();
+        newPatient.Id = _context.Patients.Max(p => p.Id) + 1;
+        if (true)
         {
-            newPatient.PatientNo = "HMS-1121-2023-K001";
             _context.Patients.Add(newPatient);
+            _context.SaveChanges();
+            Console.WriteLine("Added patient");
 
             // Automatically add the patient to the nurse queue with the next queue number
             var nurseQueueNo = GetNextQueueNumber("Nurse");
@@ -179,8 +180,9 @@ public class StaffController : Controller
             _context.Queues.Add(nurseQueue);
 
             await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(RecordsClerk));
         }
-        return RedirectToAction(nameof(RecordsClerk));
+        return RedirectToAction(nameof(Doctor));
     }
 
     [HttpPost]
