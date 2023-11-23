@@ -16,7 +16,7 @@ namespace Persol_HMS.Models
         [ForeignKey(nameof(Symptom))]
         public int SymptomsID { get; set; }//
         [ForeignKey(nameof(Lab))]
-        public int LabID { get; set; }
+        public int? LabID { get; set; }
         public string Diagnoses { get; set; }//
         public int WardNo { get; set; }//
         public bool IsAdmitted { get; set; }//

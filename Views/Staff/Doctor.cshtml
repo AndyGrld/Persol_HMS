@@ -38,7 +38,10 @@
         </div>
     </div>
 
-    
+    <div class="form-group" id="WardNoDiv" style="display: none;">
+        <label asp-for="WardNo" class="control-label">Ward Number</label>
+        <input asp-for="WardNo" type="text" class="form-control" id="WardNo">
+    </div>
 
     
     @section Scripts {
@@ -67,4 +70,4 @@
     <button type="submit" class="btn btn-primary">Save Medical Records</button>
 </form>
 
-<a class="my-3" asp-action="DoctorQueue" asp-controller="Staff">Go to Doctor Queue</a>x
+<a class="my-3" asp-action="DoctorQueue" asp-controller="Staff">Go to Doctor Queue</a>

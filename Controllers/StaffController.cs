@@ -74,6 +74,7 @@ public class StaffController : Controller
             model.DrugName != null &&
             model.IsAdmitted != null && model.Symptoms != null)
         {
+            Console.WriteLine($"patients id number => {model.PatientNo}");
             var medicalRecord = new Medical
             {
                 PatientNo = model.PatientNo,
@@ -83,30 +84,27 @@ public class StaffController : Controller
                 IsAdmitted = model.IsAdmitted,
                 DateAdmitted =  DateTime.Now
             };
-            _context.Update(medicalRecord);
 
             var drug = new Drug
             {
+                ID = _context.Drugs.ToList().Count == 0 ? 1 : _context.Drugs.Max(d => d.ID) + 1,
                 PatientNo = model.PatientNo,
                 DrugName = model.DrugName,
                 Dosage = model.Dosage,
                 Date = DateTime.Now
             };
-            _context.Update(drug);
+            _context.Drugs.Add(drug);
             var symptom = new Symptom
             {
+                ID = _context.Symptoms.ToList().Count == 0 ? 1 : _context.Symptoms.Max(s => s.ID) + 1,
                 PatientNo = model.PatientNo,
                 Symptoms = model.Symptoms,
                 Date = DateTime.Now
             };
-            _context.Update(symptom);
-
-            
+            _context.Symptoms.Add(symptom);
 
             var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(model.PatientNo));
             var vital = await _context.Vitals.FirstOrDefaultAsync(v => v.PatientNo.Equals(model.PatientNo));
-            drug = await _context.Drugs.FirstOrDefaultAsync(d => d.PatientNo.Equals(model.PatientNo) && (d.Date.Minute < (DateTime.Now.Minute - 2))); // less than 2 minutes
-            symptom = await _context.Symptoms.FirstOrDefaultAsync(s => s.PatientNo.Equals(model.PatientNo) && (s.Date.Minute < (DateTime.Now.Minute - 2)));
 
             if(drug != null)
             {
@@ -215,9 +213,7 @@ public class StaffController : Controller
 
         await _context.SaveChangesAsync();
 
-            TempData["ConfirmationMessage"] = $"Patient created successfully. Patients Queue number is {nurseQueueNo}";
-            
-        // Redirect to RecordsClerk action after successful creation
+        TempData["R_ConfirmationMessage"] = $"Patient created successfully. Patients Queue number is {nurseQueueNo}";
         return RedirectToAction(nameof(RecordsClerk));
     }
 
@@ -278,6 +274,7 @@ public class StaffController : Controller
             {
                 var nurseQueue = Queue.GetOrCreateQueue(_context, vitalModel.PatientNo, DepartmentType.Nurse);
             }
+            ViewBag.Name = patientDetails.FirstName;
             return View(vitalModel);
         }
 

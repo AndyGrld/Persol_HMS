@@ -26,7 +26,9 @@
                     <td>@patient.PatientNo</td>
                     <td>@patient.QueueNo</td>
                     <td>
-                        <button class="check-vitals" data-patient-no="@patient.PatientNo">Check Labs</button>
+                        <a href="@Url.Action("Lab", new {patientNo = patient.PatientNo})">
+                            <button type="button" class="btn btn-primary">Check Labs</button>
+                        </a>
                     </td>
                 </tr>
             }
