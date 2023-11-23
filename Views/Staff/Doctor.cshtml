@@ -17,6 +17,7 @@
 <h2>@Model.FirstName @Model.LastName</h2>
 
 <form asp-action="SaveMedicalRecords" method="post" autocomplete="off">
+    <input type="hidden" asp-for="PatientNo" value="@Model.PatientNo"/>
     <div class="mb-3">
         <label asp-for="Symptoms" class="form-label">Symptoms</label>
         <textarea asp-for="Symptoms" class="form-control" rows="4"></textarea>
@@ -37,10 +38,7 @@
         </div>
     </div>
 
-    <div class="form-group" id="WardNoDiv" style="display: none;">
-        <label asp-for="WardNo" class="control-label">Ward Number</label>
-        <input asp-for="WardNo" type="text" class="form-control" id="WardNo">
-    </div>
+    
 
     
     @section Scripts {

@@ -61,13 +61,17 @@ public class StaffController : Controller
         }
 
         return RedirectToAction(nameof(DoctorQueue));
-    }
+    }   
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> SaveMedicalRecords(CreateMedicalViewModel model)
     {
-        if (ModelState.IsValid)
+        if (model.PatientNo != null &&
+            model.Diagnoses != null &&
+            model.Dosage != null &&
+            model.DrugName != null &&
+            model.IsAdmitted != null && model.Symptoms != null)
         {
             var medicalRecord = new Medical
             {
@@ -78,6 +82,7 @@ public class StaffController : Controller
                 IsAdmitted = model.IsAdmitted,
                 DateAdmitted = model.DateAdmitted ?? DateTime.Now
             };
+            _context.Update(medicalRecord);
 
             var drug = new Drug
             {
@@ -86,12 +91,14 @@ public class StaffController : Controller
                 Dosage = model.Dosage,
                 Date = DateTime.Now
             };
+            _context.Update(drug);
             var symptom = new Symptom
             {
                 PatientNo = model.PatientNo,
                 Symptoms = model.Symptoms,
                 Date = DateTime.Now
             };
+            _context.Update(symptom);
 
             _context.Drugs.Add(drug);
             await _context.SaveChangesAsync();
