@@ -6,6 +6,7 @@ namespace Persol_HMS.Models.ViewModels
     public class CreateMedicalViewModel
     {
         // Fields for patient information
+        [Required(ErrorMessage = "Please provide patient id number")]
         public string PatientNo { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -20,7 +21,8 @@ namespace Persol_HMS.Models.ViewModels
         [Required(ErrorMessage = "Ward Number is required.")]
         public int WardNo { get; set; }
 
-        [Display(Name = "Admitted?")]
+        [Display(Name = "Admitted")]
+        [Required(ErrorMessage = "Should the patient be admitted ?")]
         public bool IsAdmitted { get; set; }
 
         [Display(Name = "Date Admitted")]
