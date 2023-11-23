@@ -11,6 +11,8 @@ namespace Persol_HMS.Models.ViewModels
         public string LastName { get; set; }
 
         // Fields for medical records
+        [Required(ErrorMessage = "Symptoms is required.")]
+        public string symptoms { get; set; }
         [Required(ErrorMessage = "Diagnoses is required.")]
         public string Diagnoses { get; set; }
 
