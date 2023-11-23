@@ -1,0 +1,71 @@
+﻿@model QueueViewModel
+
+<h2>Lab Queue</h2>
+
+<form method="get" action="@Url.Action("LabQueue")">
+    <div class="mb-3">
+        <label for="search">Search by PatientNo:</label>
+        <input type="text" name="search" value="@Model.Search" />
+        <button type="submit">Search</button>
+    </div>
+</form>
+
+@if (Model.PatientsInLine.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>PatientNo</th>
+                <th>QueueNo</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var patient in Model.PatientsInLine)
+            {
+                <tr>
+                    <td>@patient.PatientNo</td>
+                    <td>@patient.QueueNo</td>
+                    <td>
+                        <button class="check-vitals" data-patient-no="@patient.PatientNo">Check Labs</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        @if (Model.CurrentPage > 1)
+        {
+            <a href="@Url.Action("LabQueue", new { page = Model.CurrentPage - 1, search = Model.Search })">Previous</a>
+        }
+
+        @for (int i = 1; i <= Model.TotalPatients / Model.PageSize + 1; i++)
+        {
+            <a href="@Url.Action("LabQueue", new { page = i, search = Model.Search })" class="@(i == Model.CurrentPage ? "active" : "")">@i</a>
+        }
+
+        @if (Model.CurrentPage < Model.TotalPatients / Model.PageSize + 1)
+        {
+            <a href="@Url.Action("LabQueue", new { page = Model.CurrentPage + 1, search = Model.Search })">Next</a>
+        }
+    </div>
+}
+else
+{
+    <p>No patients in line.</p>
+}
+
+@section scripts {
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.check-lab').click(function () {
+                var patientNo = $(this).data('patient-no');
+
+                // Redirect to the Nurse controller with the patientNo
+                window.location.href = '@Url.Action("Lab", "Staff")?patientNo=' + encodeURIComponent(patientNo);
+            });
+        });
+    </script>
+}
