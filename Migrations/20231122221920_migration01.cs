@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Auth.Migrations
+namespace Persol_Hms.Migrations
 {
     public partial class migration01 : Migration
     {

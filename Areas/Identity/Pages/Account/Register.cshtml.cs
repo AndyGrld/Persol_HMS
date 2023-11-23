@@ -94,14 +94,16 @@ namespace Persol_HMS.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
+                var departmentRole = Enum.GetName(typeof(DepartmentType), Input.DepartmentId);
 
+                await _userManager.AddToRoleAsync(user, departmentRole);
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
@@ -129,11 +131,34 @@ namespace Persol_HMS.Areas.Identity.Pages.Account
                     else
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
+
+                        switch (user.DepartmentId)
+                        {
+                            case 1:
+                                returnUrl = Url.Action("RecordsClerk", "StaffController");
+                                break;
+                            case 2:
+                                returnUrl = Url.Action("Nurse", "StaffController");
+                                break;
+                            case 3:
+                                returnUrl = Url.Action("Doctor", "StaffController");
+                                break;
+                            case 4:
+                                returnUrl = Url.Action("Lab", "StaffController");
+                                break;
+                            default:
+                                returnUrl = Url.Content("~/");
+                                break;
+                        }
+
                         return LocalRedirect(returnUrl);
                     }
                 }
+
+                // Log errors
                 foreach (var error in result.Errors)
                 {
+                    _logger.LogError($"Error creating user: {error.Description}");
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
@@ -154,7 +179,10 @@ namespace Persol_HMS.Areas.Identity.Pages.Account
                     DateOfBirth = Input.DateOfBirth,
                     UserName = Input.Email,
                     Email = Input.Email,
-                    DepartmentId = Input.DepartmentId
+                    DepartmentId = Input.DepartmentId,
+                    Status = "Active",
+                    CreatedDate = DateTime.Now,
+                    Attempts = 0
                 };
 
                 return user;

@@ -23,11 +23,13 @@ namespace Persol_HMS.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<User> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly UserManager<User> _userManager;
 
-        public LoginModel(SignInManager<User> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<User> signInManager, ILogger<LoginModel> logger, UserManager<User> userManager)  // Add UserManager to the constructor
         {
             _signInManager = signInManager;
             _logger = logger;
+            _userManager = userManager;  // Initialize _userManager
         }
 
         [BindProperty]
@@ -81,7 +83,31 @@ namespace Persol_HMS.Areas.Identity.Pages.Account
                 var result = await _signInManager.PasswordSignInAsync(Input.Username, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
+                    // Retrieve the user
+                    var user = await _userManager.FindByNameAsync(Input.Username);
+
                     _logger.LogInformation("User logged in.");
+
+                    // Redirect based on DepartmentId
+                    switch (user.DepartmentId)
+                        {
+                            case 1:
+                                returnUrl = Url.Action("RecordsClerk", "StaffController");
+                                break;
+                            case 2:
+                                returnUrl = Url.Action("Nurse", "StaffController");
+                                break;
+                            case 3:
+                                returnUrl = Url.Action("Doctor", "StaffController");
+                                break;
+                            case 4:
+                                returnUrl = Url.Action("Lab", "StaffController");
+                                break;
+                            default:
+                                returnUrl = Url.Content("~/");
+                                break;
+                        }
+
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)

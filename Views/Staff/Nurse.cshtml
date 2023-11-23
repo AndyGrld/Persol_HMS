@@ -1,7 +1,6 @@
-@page
 @model Persol_HMS.Models.Vital
 
-<form asp-action="Nurse" autocomplete="off">
+<form asp-controller="StaffController" asp-action="Nurse" autocomplete="off">
     <div class="mb-3">
         <label asp-for="Temperature" class="form-label">Patient's Temperature</label>
         <input asp-for="Temperature" type="number" class="form-control" id="temperature">
@@ -21,3 +20,5 @@
     <input asp-for="PatientNo" type="hidden" />
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
+
+<a asp-action="NurseQueue" asp-controller="Staff">Go to Nurse Queue</a>

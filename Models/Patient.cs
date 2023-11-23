@@ -36,9 +36,11 @@ namespace Persol_HMS.Models
         public DateTime DateOfBirth { get; set; }
 
         [Display(Name = "Insurance Type")]
+        [Required(ErrorMessage = "Insurance Type is required.")]
         public string? InsuranceType { get; set; }
 
         [Display(Name = "Insurance Number")]
+        [Required(ErrorMessage = "Insurance Id is required.")]
         public string? InsuranceNo { get; set; }
 
         [Required(ErrorMessage = "The Gender is required.")]

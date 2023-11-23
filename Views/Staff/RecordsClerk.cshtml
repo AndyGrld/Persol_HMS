@@ -1,7 +1,23 @@
 
 @model Persol_HMS.Models.Patient
 
-<span class="text-danger">@ViewBag.message</span>
+@if (TempData.ContainsKey("ConfirmationMessage"))
+{
+    <div class="alert alert-success">
+        @TempData["ConfirmationMessage"]
+    </div>
+}
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        <ul>
+            @foreach (var modelError in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <li>@modelError.ErrorMessage</li>
+            }
+        </ul>
+    </div>
+}
 
   <div class="form-check form-switch">
     <input class="form-check-input" type="checkbox" role="switch" id="isNew" onclick="display()">

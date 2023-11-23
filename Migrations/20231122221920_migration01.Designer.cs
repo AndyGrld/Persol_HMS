@@ -8,16 +8,16 @@ using Persol_HMS.Data;
 
 #nullable disable
 
-namespace Auth.Migrations
+namespace Persol_Hms.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231122121107_'migration01'")]
+    [Migration("20231122221920_migration01")]
     partial class migration01
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.23");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.25");
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {

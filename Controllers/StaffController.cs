@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -47,7 +48,7 @@ public class StaffController : Controller
         }
 
         // Handle case where there are no patients in the doctor's queue
-        return View(new CreateMedicalViewModel());
+        return RedirectToAction(nameof(DoctorQueue));
     }
 
     [HttpPost]
@@ -141,34 +142,27 @@ public class StaffController : Controller
     {
         if (newPatient.PatientNo != String.Empty)
         {
-            var patient = _context.Patients.FirstOrDefault(p => p.PatientNo.Equals(newPatient.PatientNo));
-            if(patient != null)
+            var patient = _context.Patients.FirstOrDefault(p => p.PatientNo == newPatient.PatientNo);
+            if (patient != null)
             {
-                var nurseQueueNo = GetNextQueueNumber("Nurse");
-                var nurseQueue = new Queue
-                {
-                    PatientNo = newPatient.PatientNo,
-                    QueueNo = nurseQueueNo,
-                    Status = "Nurse",
-                    DateToday = DateTime.Now
-                };
-                _context.Queues.Add(nurseQueue);
+                // Existing patient logic here
 
-                await _context.SaveChangesAsync();
+                // Assuming you want to redirect to Nurse action
                 return RedirectToAction(nameof(Nurse));
             }
-            ViewBag.message = "patient not found";
-            return RedirectToAction(nameof(RecordsClerk));
-        }
-        newPatient.PatientNo = "HMS-1121-2023-K01" + _context.Patients.Max(p => p.Id).ToString();
-        newPatient.Id = _context.Patients.Max(p => p.Id) + 1;
-        if (true)
-        {
-            _context.Patients.Add(newPatient);
-            _context.SaveChanges();
-            Console.WriteLine("Added patient");
 
-            // Automatically add the patient to the nurse queue with the next queue number
+            ModelState.AddModelError("PatientNo", "Patient not found");
+        }
+            // Generate and set the patient ID
+            int id = _context.Patients.ToList().Count == 0 ? 1 : _context.Patients.Max(p => p.Id) + 1;
+            newPatient.PatientNo = "HMS-1121-2023-K01" + id.ToString();
+            newPatient.Id = id;
+
+            // Insert the new patient into the database
+            _context.Patients.Add(newPatient);
+            await _context.SaveChangesAsync();
+
+            // Add the patient to the nurse queue
             var nurseQueueNo = GetNextQueueNumber("Nurse");
             var nurseQueue = new Queue
             {
@@ -180,9 +174,11 @@ public class StaffController : Controller
             _context.Queues.Add(nurseQueue);
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(RecordsClerk));
-        }
-        return RedirectToAction(nameof(Doctor));
+
+            TempData["ConfirmationMessage"] = "Patient created successfully.";
+            
+        // Redirect to RecordsClerk action after successful creation
+        return RedirectToAction(nameof(RecordsClerk));
     }
 
     [HttpPost]
@@ -205,6 +201,7 @@ public class StaffController : Controller
     }
 
     [HttpGet]
+    // [Authorize(Roles = "Nursing")]
     public IActionResult Nurse(string? patientNo)
     {
         var nextPatientInLine = GetNextPatientInLine("Nurse");
@@ -225,7 +222,7 @@ public class StaffController : Controller
             return View(vitalModel);
         }
         
-        return View(new Vital());
+        return RedirectToAction(nameof(NurseQueue));
     }
 
 
@@ -256,10 +253,10 @@ public class StaffController : Controller
                 _context.Queues.Add(doctorQueue);
 
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(RecordsClerk));
+                return RedirectToAction(nameof(Nurse));
             }
         }
-        return RedirectToAction(nameof(RecordsClerk));
+        return RedirectToAction(nameof(Nurse));
     }
 
         public IActionResult Lab()
