@@ -10,7 +10,8 @@ namespace Persol_HMS.Models
         [ForeignKey(nameof(Patient))]
         public string PatientNo { get; set; }
         public string LabName { get; set; }
-        public bool Result { get; set; }
+        [Required(ErrorMessage = "Please select a lab result.")]
+        public bool? Result { get; set; }
         public string Notes { get; set; }
         public DateTime Date { get; set; }
     }

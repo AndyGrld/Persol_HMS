@@ -1,23 +1,32 @@
-@model List<Queue>
+@model Persol_HMS.Models.Lab
 
-<h1>Lab Queue</h1>
+<form asp-controller="StaffController" asp-action="Lab" autocomplete="off">
+    <div class="mb-3">
+        <label asp-for="LabName" class="form-label">Patient's Lab Name</label>
+        <input asp-for="LabName" type="text" class="form-control" id="LabName">
+    </div>
+    <div class="mb-3">
+        <label asp-for="Result" class="form-label">Lab Result</label>
+        <div class="form-check">
+            <input asp-for="Result" type="radio" class="form-check-input" id="ResultTrue" value="true">
+            <label class="form-check-label" for="ResultTrue">Positive</label>
+        </div>
+        <div class="form-check">
+            <input asp-for="Result" type="radio" class="form-check-input" id="ResultFalse" value="false">
+            <label class="form-check-label" for="ResultFalse">Negative</label>
+        </div>
+    </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Patient No</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var patient in Model)
-        {
-            <tr>
-                <td>@patient.PatientNo</td>
-                <td>
-                    <a asp-controller="Lab" asp-action="ProcessPatient" asp-route-patientNo="@patient.PatientNo">Process</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+    <div class="mb-3">
+        <label asp-for="Notes" class="form-label">Lab Notes</label>
+        <input asp-for="Notes" type="text" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label asp-for="Date" class="form-label">Lab Date</label>
+        <input asp-for="Date" type="datetime" class="form-control">
+    </div>
+    <input asp-for="PatientNo" type="hidden" />
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<a asp-action="LabQueue" asp-controller="Staff">Go to Lab Queue</a>
