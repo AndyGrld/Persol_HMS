@@ -72,14 +72,13 @@ public class StaffController : Controller
             var medicalRecord = new Medical
             {
                 PatientNo = model.PatientNo,
+                Date = DateTime.Now,
                 Diagnoses = model.Diagnoses,
-                WardNo = model.WardNo,
+                WardNo = GenerateWardNumber(),
                 IsAdmitted = model.IsAdmitted,
                 DateAdmitted = model.DateAdmitted ?? DateTime.Now
             };
 
-            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(model.PatientNo));
-            var vital = await _context.Vitals.FirstOrDefaultAsync(v => v.PatientNo.Equals(model.PatientNo));
             var drug = new Drug
             {
                 PatientNo = model.PatientNo,
@@ -94,7 +93,27 @@ public class StaffController : Controller
                 Date = DateTime.Now
             };
 
-            // Save entities to the database if they don't exist
+            _context.Drugs.Add(drug);
+            await _context.SaveChangesAsync();
+
+            _context.Symptoms.Add(symptom);
+            await _context.SaveChangesAsync();
+
+            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(model.PatientNo));
+            var vital = await _context.Vitals.FirstOrDefaultAsync(v => v.PatientNo.Equals(model.PatientNo));
+            drug = await _context.Drugs.FirstOrDefaultAsync(d => d.PatientNo.Equals(model.PatientNo) && (d.Date.Minute < (DateTime.Now.Minute - 2))); // less than 2 minutes
+            symptom = await _context.Symptoms.FirstOrDefaultAsync(s => s.PatientNo.Equals(model.PatientNo) && (s.Date.Minute < (DateTime.Now.Minute - 2)));
+
+            if(drug != null)
+            {
+                medicalRecord.DrugsID = drug.ID;
+                medicalRecord.Drug = drug;
+            }
+            if(symptom != null)
+            {
+                medicalRecord.SymptomsID = symptom.ID;
+                medicalRecord.Symptom = symptom;
+            }
             if (patient != null)
             {
                 medicalRecord.Patient = patient;
@@ -103,15 +122,10 @@ public class StaffController : Controller
             if (vital != null)
             {
                 medicalRecord.Vital = vital;
+                medicalRecord.VitalsID = vital.Id;
             }
 
             _context.Medicals.Add(medicalRecord);
-            await _context.SaveChangesAsync();
-
-            _context.Drugs.Add(drug);
-            await _context.SaveChangesAsync();
-
-            _context.Symptoms.Add(symptom);
             await _context.SaveChangesAsync();
 
             // remove diagnosed patient from doctor and into lab
@@ -133,6 +147,12 @@ public class StaffController : Controller
 
         TempData["D_WarningMessage"] = $"Error processing patient's medical details. Please try again";
         return RedirectToAction(nameof(Doctor));
+    }
+
+    private int GenerateWardNumber()
+    {
+        int num = _context.Medicals.ToList().Count == 0 ? 1 : _context.Medicals.Max(m => m.WardNo) + 1;
+        return num;
     }
 
 
@@ -359,7 +379,7 @@ public class StaffController : Controller
                 await _context.SaveChangesAsync();
                 TempData["ConfirmationMessage"] = $"Patient's lab added successfully. " +
                     $"Patients Queue number is {labEntry.PatientNo}";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Doctor));
             }
             
         }
