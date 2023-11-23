@@ -165,7 +165,7 @@ public class StaffController : Controller
     [HttpPost]
     public async Task<IActionResult> CreateOrGetPatient([Bind("PatientNo, FirstName, LastName, DateOfBirth, ContactNo, InsuranceType, InsuranceNo, Gender, EmergencyContactFirstName, EmergencyContactLastName, EmergencyContactNo")] Patient newPatient)
     {
-        if (newPatient.PatientNo != String.Empty)
+        if (newPatient.PatientNo != null)
         {
             var patient = _context.Patients.FirstOrDefault(p => p.PatientNo == newPatient.PatientNo);
             if (patient != null)
