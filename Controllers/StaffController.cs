@@ -1,6 +1,7 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Persol_HMS.Models;
+using Persol_HMS.Views.Staff;
 
 public class StaffController : Controller
 {
@@ -32,7 +33,8 @@ public class StaffController : Controller
             var patientDetails = _context.Patients.FirstOrDefault(p => p.PatientNo == patientNo);
             if (patientDetails == null)
             {
-                var medicalViewModel = new CreateMedicalViewModel{
+                var medicalViewModel = new CreateMedicalViewModel
+                {
                     PatientNo = patientNo,
                     FirstName = patientDetails.FirstName,
                     LastName = patientDetails.LastName
@@ -47,7 +49,8 @@ public class StaffController : Controller
 
             if (patientDetails != null)
             {
-                var medicalViewModel = new CreateMedicalViewModel{
+                var medicalViewModel = new CreateMedicalViewModel
+                {
                     PatientNo = patientNo,
                     FirstName = patientDetails.FirstName,
                     LastName = patientDetails.LastName
@@ -166,54 +169,54 @@ public class StaffController : Controller
             TempData["R_WarningMessage"] = $"{newPatient.PatientNo} - Patient not found";
             return RedirectToAction(nameof(RecordsClerk));
         }
-            // Generate and set the patient ID
-            newPatient.PatientNo = GenerateNewId(newPatient);
-            newPatient.Id = _context.Patients.ToList().Count == 0 ? 1 : _context.Patients.Max(p => p.Id) + 1;
+        // Generate and set the patient ID
+        newPatient.PatientNo = GenerateNewId(newPatient);
+        newPatient.Id = _context.Patients.ToList().Count == 0 ? 1 : _context.Patients.Max(p => p.Id) + 1;
 
-            // Insert the new patient into the database
-            _context.Patients.Add(newPatient);
-            await _context.SaveChangesAsync();
+        // Insert the new patient into the database
+        _context.Patients.Add(newPatient);
+        await _context.SaveChangesAsync();
 
-            // Add the patient to the nurse queue
-            var nurseQueueNo = GetNextQueueNumber("Nurse");
-            var nurseQueue = new Queue
-            {
-                PatientNo = newPatient.PatientNo,
-                QueueNo = nurseQueueNo,
-                Status = "Nurse",
-                DateToday = DateTime.Now
-            };
-            _context.Queues.Add(nurseQueue);
+        // Add the patient to the nurse queue
+        var nurseQueueNo = GetNextQueueNumber("Nurse");
+        var nurseQueue = new Queue
+        {
+            PatientNo = newPatient.PatientNo,
+            QueueNo = nurseQueueNo,
+            Status = "Nurse",
+            DateToday = DateTime.Now
+        };
+        _context.Queues.Add(nurseQueue);
 
-            await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
 
-            TempData["R_ConfirmationMessage"] = $"Patient created successfully. Patients Queue number is {nurseQueueNo} in the nurse queue.";
+            TempData["ConfirmationMessage"] = $"Patient created successfully. Patients Queue number is {nurseQueueNo}";
             
         // Redirect to RecordsClerk action after successful creation
         return RedirectToAction(nameof(RecordsClerk));
     }
 
     public string GenerateNewId(Patient patient)
+    {
+        DateTime currentDate = DateTime.Now;
+        char[] name = patient.LastName.ToCharArray();
+        string id = $"HMS-{currentDate.Month}{currentDate.Day}-{currentDate.Year}-" +
+            $"{name[0].ToString().ToUpper()}";
+        int newId = _context.Patients.ToList().Count == 0 ? 1 : _context.Patients.Max(p => p.Id) + 1;
+        if (newId < 10)
         {
-            DateTime currentDate = DateTime.Now;
-            char[] name = patient.LastName.ToCharArray();
-            string id = $"HMS-{currentDate.Month}{currentDate.Day}-{currentDate.Year}-" +
-                $"{name[0].ToString().ToUpper()}";
-            int newId = _context.Patients.ToList().Count == 0 ? 1 : _context.Patients.Max(p => p.Id) + 1;
-            if (newId < 10)
-            {
-                id += $"00{newId}";
-            }
-            else if (newId < 100)
-            {
-                id += $"0{newId}";
-            }
-            else
-            {
-                id += $"{newId}";
-            }
-            return id;
+            id += $"00{newId}";
         }
+        else if (newId < 100)
+        {
+            id += $"0{newId}";
+        }
+        else
+        {
+            id += $"{newId}";
+        }
+        return id;
+    }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -263,9 +266,11 @@ public class StaffController : Controller
             {
                 var nurseQueue = Queue.GetOrCreateQueue(_context, vitalModel.PatientNo, DepartmentType.Nurse);
             }
+
+            
             return View(vitalModel);
         }
-        
+
         return RedirectToAction(nameof(NurseQueue));
     }
 
@@ -305,44 +310,62 @@ public class StaffController : Controller
         TempData["N_WarningMessage"] = $"Error processing patient's vitals. Please try again";
         return RedirectToAction(nameof(Nurse));
     }
+    [HttpGet]
+    public IActionResult Lab(string? patientNo)
+    {
+        var patientsInQueue = GetNextPatientInLine("Lab");
 
-        public IActionResult Lab()
+        if (patientsInQueue != null)
         {
-            var patientsInQueue = GetNextPatientInLine("Lab");
-
-            if (patientsInQueue != null)
+            var labEntry = new Persol_HMS.Models.Lab
             {
-                var labEntry = new Lab
-                {
-                    PatientNo = patientsInQueue.PatientNo
-                };
-                return View(patientsInQueue);
-            }
-
-            return View(new Lab());
-        }
-
-        public IActionResult ProcessLabPatient(string patientNo)
-        {
-            var labEntry = new Lab
-            {
-                PatientNo = patientNo,
-                LabName = "YourLabName",
-                Result = false,
-                Notes = "YourNotes",
-                Date = DateTime.Now
+                PatientNo = patientsInQueue.PatientNo
             };
-
-            _context.Labs.Add(labEntry);
-            _context.SaveChanges();
-
-            // TODO => Queue for lab ========
-            // ==============================
-            // ==============================
-
-            // Redirect back to the lab index
-            return RedirectToAction(nameof(Index));
+            if (!string.IsNullOrEmpty(labEntry.PatientNo))
+            {
+                var LabQueue = Queue.GetOrCreateQueue(_context, labEntry.PatientNo, DepartmentType.Lab);
+            }
+            return View(labEntry);
         }
+
+
+        return RedirectToAction(nameof(LabQueue));
+    }
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Lab([Bind("PatientNo, LabName, Result, Notes, Date")] Persol_HMS.Models.Lab lab)
+    {
+        if (!string.IsNullOrEmpty(lab.PatientNo) &&
+            lab.LabName != null &&
+            lab.Result != null &&
+            lab.Date != null &&
+            lab.Notes != null)
+        {
+            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo == lab.PatientNo);
+            if (patient != null)
+            {
+
+                _context.Add(lab);
+                var labEntry = new Persol_HMS.Models.Lab
+                {
+                    PatientNo = lab.PatientNo,
+                    LabName = lab.LabName,
+                    Result = lab.Result,
+                    Notes = lab.Notes,
+                    Date = lab.Date,
+                };
+                RemovePatientFromQueue("Lab", patient.PatientNo);
+                _context.Labs.Add(labEntry);
+                await _context.SaveChangesAsync();
+                TempData["ConfirmationMessage"] = $"Patient's lab added successfully. " +
+                    $"Patients Queue number is {labEntry.PatientNo}";
+                return RedirectToAction(nameof(Index));
+            }
+            
+        }
+        TempData["WarningMessage"] = $"Error processing patient's. Please try again";
+        return RedirectToAction(nameof(Lab));
+    }
 
     public IActionResult NurseQueue(int page = 1, string search = "")
     {
@@ -356,6 +379,30 @@ public class StaffController : Controller
             .ToList();
 
         var totalPatients = _context.Queues.Count(q => q.Status == "Nurse" && q.PatientNo.Contains(search));
+
+        var model = new QueueViewModel
+        {
+            PatientsInLine = patientsInLine,
+            CurrentPage = page,
+            PageSize = pageSize,
+            TotalPatients = totalPatients,
+            Search = search
+        };
+
+        return View(model);
+    }
+    public IActionResult LabQueue(int page = 1, string search = "")
+    {
+        int pageSize = 10;
+
+        var patientsInLine = _context.Queues
+            .Where(q => q.Status == "Lab" && q.PatientNo.Contains(search))
+            .OrderBy(q => q.DateToday) // Order by the time they entered the queue
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+
+        var totalPatients = _context.Queues.Count(q => q.Status == "Lab" && q.PatientNo.Contains(search));
 
         var model = new QueueViewModel
         {
