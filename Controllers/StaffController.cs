@@ -11,6 +11,16 @@ public class StaffController : Controller
         _context = context;
     }
 
+    // public IActionResult YourAction()
+    // {
+    //     if (User.Identity.IsAuthenticated)
+    //     {
+    //         string username = User.Identity.Name;
+    //     }
+
+    //     return View();
+    // }
+
     [HttpGet]
     public IActionResult Doctor(string? patientNo)
     {
