@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Persol_HMS.Data.Interfaces;
 using Persol_HMS.Models;
 using Persol_HMS.Views.Staff;
 
@@ -67,7 +68,8 @@ public class StaffController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> SaveMedicalRecords(CreateMedicalViewModel model)
     {
-        if (ModelState.IsValid)
+        if (model.PatientNo != null && model.Diagnoses != null && model.IsAdmitted != null &&
+            model.DrugName != null && model.Dosage != )
         {
             var medicalRecord = new Medical
             {
@@ -78,7 +80,8 @@ public class StaffController : Controller
                 IsAdmitted = model.IsAdmitted,
                 DateAdmitted =  DateTime.Now
             };
-
+            _context.Add(medicalRecord);
+            await _context.SaveChangesAsync();
             var drug = new Drug
             {
                 PatientNo = model.PatientNo,
@@ -86,18 +89,18 @@ public class StaffController : Controller
                 Dosage = model.Dosage,
                 Date = DateTime.Now
             };
+            _context.Add(medicalRecord);
+            await _context.SaveChangesAsync();
             var symptom = new Symptom
             {
                 PatientNo = model.PatientNo,
                 Symptoms = model.Symptoms,
                 Date = DateTime.Now
             };
+            _context.Add(symptom);
+            await _context.SaveChangesAsync();
 
-            _context.Drugs.Add(drug);
-            //await _context.SaveChangesAsync();
-
-            _context.Symptoms.Add(symptom);
-            //await _context.SaveChangesAsync();
+            
 
             var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(model.PatientNo));
             var vital = await _context.Vitals.FirstOrDefaultAsync(v => v.PatientNo.Equals(model.PatientNo));
@@ -109,6 +112,7 @@ public class StaffController : Controller
                 medicalRecord.DrugsID = drug.ID;
                 medicalRecord.Drug = drug;
             }
+            
             if(symptom != null)
             {
                 medicalRecord.SymptomsID = symptom.ID;
@@ -126,7 +130,7 @@ public class StaffController : Controller
             }
 
             _context.Medicals.Add(medicalRecord);
-            //await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             // remove diagnosed patient from doctor and into lab
             var labQueueNo = GetNextQueueNumber("Lab");
@@ -139,7 +143,7 @@ public class StaffController : Controller
             };
             RemovePatientFromQueue("Doctor", model.PatientNo);
             _context.Queues.Add(labQueue);
-            //await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             TempData["D_ConfirmationMessage"] = $"Patient's medical details added successfully. Patient's queue number is {labQueueNo} in the lab queue.";
             return RedirectToAction(nameof(Doctor));
