@@ -80,7 +80,7 @@ public class StaffController : Controller
                 Diagnoses = model.Diagnoses,
                 WardNo = GenerateWardNumber(),
                 IsAdmitted = model.IsAdmitted,
-                DateAdmitted = model.DateAdmitted ?? DateTime.Now
+                DateAdmitted =  DateTime.Now
             };
             _context.Update(medicalRecord);
 
@@ -101,10 +101,10 @@ public class StaffController : Controller
             _context.Update(symptom);
 
             _context.Drugs.Add(drug);
-            await _context.SaveChangesAsync();
+            //await _context.SaveChangesAsync();
 
             _context.Symptoms.Add(symptom);
-            await _context.SaveChangesAsync();
+            //await _context.SaveChangesAsync();
 
             var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(model.PatientNo));
             var vital = await _context.Vitals.FirstOrDefaultAsync(v => v.PatientNo.Equals(model.PatientNo));
@@ -133,7 +133,7 @@ public class StaffController : Controller
             }
 
             _context.Medicals.Add(medicalRecord);
-            await _context.SaveChangesAsync();
+            //await _context.SaveChangesAsync();
 
             // remove diagnosed patient from doctor and into lab
             var labQueueNo = GetNextQueueNumber("Lab");
@@ -146,7 +146,7 @@ public class StaffController : Controller
             };
             RemovePatientFromQueue("Doctor", model.PatientNo);
             _context.Queues.Add(labQueue);
-            await _context.SaveChangesAsync();
+            //await _context.SaveChangesAsync();
 
             TempData["D_ConfirmationMessage"] = $"Patient's medical details added successfully. Patient's queue number is {labQueueNo} in the lab queue.";
             return RedirectToAction(nameof(Doctor));
@@ -494,7 +494,7 @@ public class StaffController : Controller
         if (patientQueue != null)
         {
             _context.Queues.Remove(patientQueue);
-            _context.SaveChanges();
+            //_context.SaveChanges();
         }
     }
 
