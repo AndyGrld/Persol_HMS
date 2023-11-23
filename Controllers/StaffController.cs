@@ -62,14 +62,17 @@ public class StaffController : Controller
         }
 
         return RedirectToAction(nameof(DoctorQueue));
-    }
+    }   
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> SaveMedicalRecords(CreateMedicalViewModel model)
     {
-        if (model.PatientNo != null && model.Diagnoses != null && model.IsAdmitted != null &&
-            model.DrugName != null && model.Dosage != )
+        if (model.PatientNo != null &&
+            model.Diagnoses != null &&
+            model.Dosage != null &&
+            model.DrugName != null &&
+            model.IsAdmitted != null && model.Symptoms != null)
         {
             var medicalRecord = new Medical
             {
@@ -80,8 +83,8 @@ public class StaffController : Controller
                 IsAdmitted = model.IsAdmitted,
                 DateAdmitted =  DateTime.Now
             };
-            _context.Add(medicalRecord);
-            await _context.SaveChangesAsync();
+            _context.Update(medicalRecord);
+
             var drug = new Drug
             {
                 PatientNo = model.PatientNo,
@@ -89,16 +92,14 @@ public class StaffController : Controller
                 Dosage = model.Dosage,
                 Date = DateTime.Now
             };
-            _context.Add(medicalRecord);
-            await _context.SaveChangesAsync();
+            _context.Update(drug);
             var symptom = new Symptom
             {
                 PatientNo = model.PatientNo,
                 Symptoms = model.Symptoms,
                 Date = DateTime.Now
             };
-            _context.Add(symptom);
-            await _context.SaveChangesAsync();
+            _context.Update(symptom);
 
             
 
@@ -214,7 +215,9 @@ public class StaffController : Controller
 
         await _context.SaveChangesAsync();
 
-        TempData["R_ConfirmationMessage"] = $"Patient created successfully. Patients Queue number is {nurseQueueNo}";
+            TempData["ConfirmationMessage"] = $"Patient created successfully. Patients Queue number is {nurseQueueNo}";
+            
+        // Redirect to RecordsClerk action after successful creation
         return RedirectToAction(nameof(RecordsClerk));
     }
 
@@ -267,19 +270,15 @@ public class StaffController : Controller
         if (patientNo != null)
         {
             var patientDetails = _context.Patients.FirstOrDefault(p => p.PatientNo == patientNo);
-            if (patientDetails != null)
+            var vitalModel = new Vital
             {
-                var vitalModel = new Vital
-                {
-                    PatientNo = patientDetails.PatientNo
-                };
-                ViewBag.name = patientDetails?.FirstName;
-                if (!string.IsNullOrEmpty(vitalModel.PatientNo))
-                {
-                    var nurseQueue = Queue.GetOrCreateQueue(_context, vitalModel.PatientNo, DepartmentType.Nurse);
-                }
-                return View(vitalModel);
+                PatientNo = patientDetails?.PatientNo
+            };
+            if (!string.IsNullOrEmpty(vitalModel.PatientNo))
+            {
+                var nurseQueue = Queue.GetOrCreateQueue(_context, vitalModel.PatientNo, DepartmentType.Nurse);
             }
+            return View(vitalModel);
         }
 
         if (nextPatientInLine != null)
@@ -288,7 +287,6 @@ public class StaffController : Controller
             {
                 PatientNo = nextPatientInLine?.PatientNo // Ensure nextPatientInLine is not null
             };
-            ViewBag.name = nextPatientInLine?.FirstName;
             if (!string.IsNullOrEmpty(vitalModel.PatientNo))
             {
                 var nurseQueue = Queue.GetOrCreateQueue(_context, vitalModel.PatientNo, DepartmentType.Nurse);
@@ -315,7 +313,6 @@ public class StaffController : Controller
             var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo == vital.PatientNo);
             if (patient != null)
             {
-                vital.Date = DateTime.Now;
                 _context.Vitals.Update(vital);
 
                 // Automatically add the patient to the doctor queue with the next queue number
@@ -338,7 +335,6 @@ public class StaffController : Controller
         TempData["N_WarningMessage"] = $"Error processing patient's vitals. Please try again";
         return RedirectToAction(nameof(Nurse));
     }
-
     [HttpGet]
     public IActionResult Lab(string? patientNo)
     {

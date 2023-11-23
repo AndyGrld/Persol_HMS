@@ -15,19 +15,19 @@
 
 <form asp-controller="Staff" asp-action="Nurse" autocomplete="off">
     <div class="mb-3">
-        <label asp-for="Temperature" class="form-label">@ViewBag.Name's Temperature</label>
+        <label asp-for="Temperature" class="form-label">Patient's Temperature</label>
         <input asp-for="Temperature" type="number" class="form-control" id="temperature">
     </div>
     <div class="mb-3">
-        <label asp-for="Height" class="form-label">@ViewBag.Name's Height</label>
+        <label asp-for="Height" class="form-label">Patient's Height</label>
         <input asp-for="Height" type="number" class="form-control">
     </div>
     <div class="mb-3">
-        <label asp-for="Weight" class="form-label">@ViewBag.Name's Weight</label>
+        <label asp-for="Weight" class="form-label">Patient's Weight</label>
         <input asp-for="Weight" type="number" class="form-control">
     </div>
     <div class="mb-3">
-        <label asp-for="BloodPressure" class="form-label">@ViewBag.Name's Blood Pressure</label>
+        <label asp-for="BloodPressure" class="form-label">Patient's Blood Pressure</label>
         <input asp-for="BloodPressure" type="text" class="form-control">
     </div>
     <input asp-for="PatientNo" type="hidden" />
