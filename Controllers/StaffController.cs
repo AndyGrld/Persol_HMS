@@ -41,7 +41,7 @@ public class StaffController : Controller
             }
         }
 
-        else if (nextPatientInLine != null)
+        if (nextPatientInLine != null)
         {
             var patientDetails = _context.Patients.FirstOrDefault(p => p.PatientNo == nextPatientInLine.PatientNo);
 
@@ -57,7 +57,6 @@ public class StaffController : Controller
             }
         }
 
-        // Handle case where there are no patients in the doctor's queue
         return RedirectToAction(nameof(DoctorQueue));
     }
 
@@ -67,7 +66,6 @@ public class StaffController : Controller
     {
         if (ModelState.IsValid)
         {
-            // Map the properties from the view model to your data models
             var medicalRecord = new Medical
             {
                 PatientNo = model.PatientNo,
@@ -75,10 +73,8 @@ public class StaffController : Controller
                 WardNo = model.WardNo,
                 IsAdmitted = model.IsAdmitted,
                 DateAdmitted = model.DateAdmitted ?? DateTime.Now
-                // Add other properties as needed
             };
 
-            // Retrieve the foreign key IDs
             var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(model.PatientNo));
             var vital = await _context.Vitals.FirstOrDefaultAsync(v => v.PatientNo.Equals(model.PatientNo));
             var drug = new Drug
@@ -87,23 +83,12 @@ public class StaffController : Controller
                 DrugName = model.DrugName,
                 Dosage = model.Dosage,
                 Date = DateTime.Now
-                // Add other properties as needed
             };
             var symptom = new Symptom
             {
                 PatientNo = model.PatientNo,
                 Symptoms = model.Symptoms,
                 Date = DateTime.Now
-                // Add other properties as needed
-            };
-            var lab = new Lab
-            {
-                PatientNo = model.PatientNo,
-                LabName = "Lab Test", // Adjust accordingly
-                Result = false, // Adjust accordingly
-                Notes = "Lab Notes", // Adjust accordingly
-                Date = DateTime.Now
-                // Add other properties as needed
             };
 
             // Save entities to the database if they don't exist
@@ -126,18 +111,25 @@ public class StaffController : Controller
             _context.Symptoms.Add(symptom);
             await _context.SaveChangesAsync();
 
-            _context.Labs.Add(lab);
+            // remove diagnosed patient from doctor and into lab
+            var labQueueNo = GetNextQueueNumber("Lab");
+            var labQueue = new Queue
+            {
+                PatientNo = model.PatientNo,
+                QueueNo = labQueueNo,
+                Status = "Lab",
+                DateToday = DateTime.Now
+            };
+            RemovePatientFromQueue("Doctor", model.PatientNo);
+            _context.Queues.Add(labQueue);
             await _context.SaveChangesAsync();
 
-            // Remove the patient from the doctor queue since the doctor has attended to them
-            RemovePatientFromQueue("Doctor", model.PatientNo);
-
-            // Redirect to a success page or take further actions
-            return RedirectToAction("Success");
+            TempData["D_ConfirmationMessage"] = $"Patient's medical details added successfully. Patient's queue number is {labQueueNo} in the lab queue.";
+            return RedirectToAction(nameof(Doctor));
         }
 
-        // If the model is not valid, return to the same page to display validation errors
-        return View("Doctor", model);
+        TempData["D_WarningMessage"] = $"Error processing patient's medical details. Please try again";
+        return RedirectToAction(nameof(Doctor));
     }
 
 
@@ -168,10 +160,10 @@ public class StaffController : Controller
 
                 await _context.SaveChangesAsync();
 
-                TempData["ConfirmationMessage"] = $"Patient created successfully. Patients Queue number is {NurseQueueNo}";
+                TempData["R_ConfirmationMessage"] = $"Patient created successfully. Patients Queue number is {NurseQueueNo}";
                 return RedirectToAction(nameof(RecordsClerk));
             }
-            TempData["WarningMessage"] = $"{newPatient.PatientNo} - Patient not found";
+            TempData["R_WarningMessage"] = $"{newPatient.PatientNo} - Patient not found";
             return RedirectToAction(nameof(RecordsClerk));
         }
             // Generate and set the patient ID
@@ -195,7 +187,7 @@ public class StaffController : Controller
 
             await _context.SaveChangesAsync();
 
-            TempData["ConfirmationMessage"] = $"Patient created successfully. Patients Queue number is {nurseQueueNo}";
+            TempData["R_ConfirmationMessage"] = $"Patient created successfully. Patients Queue number is {nurseQueueNo} in the nurse queue.";
             
         // Redirect to RecordsClerk action after successful creation
         return RedirectToAction(nameof(RecordsClerk));
@@ -247,6 +239,19 @@ public class StaffController : Controller
     public IActionResult Nurse(string? patientNo)
     {
         var nextPatientInLine = GetNextPatientInLine("Nurse");
+        if (patientNo != null)
+        {
+            var patientDetails = _context.Patients.FirstOrDefault(p => p.PatientNo == patientNo);
+            var vitalModel = new Vital
+            {
+                PatientNo = patientDetails?.PatientNo
+            };
+            if (!string.IsNullOrEmpty(vitalModel.PatientNo))
+            {
+                var nurseQueue = Queue.GetOrCreateQueue(_context, vitalModel.PatientNo, DepartmentType.Nurse);
+            }
+            return View(vitalModel);
+        }
 
         if (nextPatientInLine != null)
         {
@@ -254,13 +259,10 @@ public class StaffController : Controller
             {
                 PatientNo = nextPatientInLine?.PatientNo // Ensure nextPatientInLine is not null
             };
-
             if (!string.IsNullOrEmpty(vitalModel.PatientNo))
             {
                 var nurseQueue = Queue.GetOrCreateQueue(_context, vitalModel.PatientNo, DepartmentType.Nurse);
             }
-
-            
             return View(vitalModel);
         }
         
@@ -281,7 +283,7 @@ public class StaffController : Controller
             var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo == vital.PatientNo);
             if (patient != null)
             {
-                _context.Vitals.Add(vital);
+                _context.Vitals.Update(vital);
 
                 // Automatically add the patient to the doctor queue with the next queue number
                 var doctorQueueNo = GetNextQueueNumber("Doctor");
@@ -296,11 +298,11 @@ public class StaffController : Controller
                 _context.Queues.Add(doctorQueue);
 
                 await _context.SaveChangesAsync();
-                TempData["ConfirmationMessage"] = $"Patient's vitals added successfully. Patients Queue number is {doctorQueueNo}";
+                TempData["N_ConfirmationMessage"] = $"Patient's vitals added successfully. Patient's queue number is {doctorQueueNo} in the doctor queue.";
                 return RedirectToAction(nameof(Nurse));
             }
         }
-        TempData["WarningMessage"] = $"Error processing patient's. Please try again";
+        TempData["N_WarningMessage"] = $"Error processing patient's vitals. Please try again";
         return RedirectToAction(nameof(Nurse));
     }
 
@@ -348,7 +350,7 @@ public class StaffController : Controller
 
         var patientsInLine = _context.Queues
             .Where(q => q.Status == "Nurse" && q.PatientNo.Contains(search))
-            .OrderBy(q => q.DateToday) // Order by the time they entered the queue
+            .OrderBy(q => q.DateToday)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToList();
@@ -373,7 +375,7 @@ public class StaffController : Controller
 
         var patientsInLine = _context.Queues
             .Where(q => q.Status == "Doctor" && q.PatientNo.Contains(search))
-            .OrderBy(q => q.DateToday) // Order by the time they entered the queue
+            .OrderBy(q => q.DateToday)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToList();

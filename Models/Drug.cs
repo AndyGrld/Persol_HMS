@@ -11,7 +11,5 @@ namespace Persol_HMS.Models
         public string DrugName { get; set; }
         public string Dosage { get; set; }
         public DateTime Date { get; set; }
-
-
     }
 }
