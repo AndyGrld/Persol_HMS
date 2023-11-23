@@ -7,6 +7,13 @@
         @TempData["ConfirmationMessage"]
     </div>
 }
+@if (TempData.ContainsKey("WarningMessage"))
+{
+    <div class="alert alert-danger">
+        @TempData["WarningMessage"]
+    </div>
+}
+
 @if (!ViewData.ModelState.IsValid)
 {
     <div class="alert alert-danger">
