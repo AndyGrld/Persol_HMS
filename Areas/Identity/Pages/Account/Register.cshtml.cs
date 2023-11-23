@@ -103,7 +103,7 @@ namespace Persol_HMS.Areas.Identity.Pages.Account
                 var user = CreateUser();
                 var departmentRole = Enum.GetName(typeof(DepartmentType), Input.DepartmentId);
 
-                await _userManager.AddToRoleAsync(user, departmentRole);
+                // await _userManager.AddToRoleAsync(user, departmentRole);
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
@@ -135,16 +135,16 @@ namespace Persol_HMS.Areas.Identity.Pages.Account
                         switch (user.DepartmentId)
                         {
                             case 1:
-                                returnUrl = Url.Action("RecordsClerk", "StaffController");
+                                returnUrl = Url.Action("RecordsClerk", "Staff");
                                 break;
                             case 2:
-                                returnUrl = Url.Action("Nurse", "StaffController");
+                                returnUrl = Url.Action("Nurse", "Staff");
                                 break;
                             case 3:
-                                returnUrl = Url.Action("Doctor", "StaffController");
+                                returnUrl = Url.Action("Doctor", "Staff");
                                 break;
                             case 4:
-                                returnUrl = Url.Action("Lab", "StaffController");
+                                returnUrl = Url.Action("Lab", "Staff");
                                 break;
                             default:
                                 returnUrl = Url.Content("~/");

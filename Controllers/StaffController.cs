@@ -155,18 +155,28 @@ public class StaffController : Controller
             var patient = _context.Patients.FirstOrDefault(p => p.PatientNo == newPatient.PatientNo);
             if (patient != null)
             {
-                // Existing patient logic here
+                // Add the patient to the nurse queue
+                var NurseQueueNo = GetNextQueueNumber("Nurse");
+                var NurseQueue = new Queue
+                {
+                    PatientNo = newPatient.PatientNo,
+                    QueueNo = NurseQueueNo,
+                    Status = "Nurse",
+                    DateToday = DateTime.Now
+                };
+                _context.Queues.Add(NurseQueue);
 
-                // Assuming you want to redirect to Nurse action
-                return RedirectToAction(nameof(Nurse));
+                await _context.SaveChangesAsync();
+
+                TempData["ConfirmationMessage"] = $"Patient created successfully. Patients Queue number is {NurseQueueNo}";
+                return RedirectToAction(nameof(RecordsClerk));
             }
-
-            ModelState.AddModelError("PatientNo", "Patient not found");
+            TempData["WarningMessage"] = $"{newPatient.PatientNo} - Patient not found";
+            return RedirectToAction(nameof(RecordsClerk));
         }
             // Generate and set the patient ID
-            int id = _context.Patients.ToList().Count == 0 ? 1 : _context.Patients.Max(p => p.Id) + 1;
-            newPatient.PatientNo = "HMS-1121-2023-K01" + id.ToString();
-            newPatient.Id = id;
+            newPatient.PatientNo = GenerateNewId(newPatient);
+            newPatient.Id = _context.Patients.ToList().Count == 0 ? 1 : _context.Patients.Max(p => p.Id) + 1;
 
             // Insert the new patient into the database
             _context.Patients.Add(newPatient);
@@ -185,11 +195,33 @@ public class StaffController : Controller
 
             await _context.SaveChangesAsync();
 
-            TempData["ConfirmationMessage"] = "Patient created successfully.";
+            TempData["ConfirmationMessage"] = $"Patient created successfully. Patients Queue number is {nurseQueueNo}";
             
         // Redirect to RecordsClerk action after successful creation
         return RedirectToAction(nameof(RecordsClerk));
     }
+
+    public string GenerateNewId(Patient patient)
+        {
+            DateTime currentDate = DateTime.Now;
+            char[] name = patient.LastName.ToCharArray();
+            string id = $"HMS-{currentDate.Month}{currentDate.Day}-{currentDate.Year}-" +
+                $"{name[0].ToString().ToUpper()}";
+            int newId = _context.Patients.ToList().Count == 0 ? 1 : _context.Patients.Max(p => p.Id) + 1;
+            if (newId < 10)
+            {
+                id += $"00{newId}";
+            }
+            else if (newId < 100)
+            {
+                id += $"0{newId}";
+            }
+            else
+            {
+                id += $"{newId}";
+            }
+            return id;
+        }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -260,12 +292,15 @@ public class StaffController : Controller
                     Status = "Doctor",
                     DateToday = DateTime.Now
                 };
+                RemovePatientFromQueue("Nurse", patient.PatientNo);
                 _context.Queues.Add(doctorQueue);
 
                 await _context.SaveChangesAsync();
+                TempData["ConfirmationMessage"] = $"Patient's vitals added successfully. Patients Queue number is {doctorQueueNo}";
                 return RedirectToAction(nameof(Nurse));
             }
         }
+        TempData["WarningMessage"] = $"Error processing patient's. Please try again";
         return RedirectToAction(nameof(Nurse));
     }
 
