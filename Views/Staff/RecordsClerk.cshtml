@@ -72,23 +72,19 @@
       <span asp-validation-for="Gender" class="text-danger"></span>
     </div>
     <div class="mb-3">
-      <label class="form-label">Select type of Insurance Card</label>
-      <select  asp-for="InsuranceType" class="form-select" id="floatingSelect" aria-label="Floating label select example">
-        <option value="NHIS">NHIS</option>
-        <option value="PHI">Persol_Hospital</option>
-      </select>
-      <span asp-validation-for="InsuranceType" class="text-danger"></span>
+      <label class="form-label">Enter Insurance Provider</label>
+      <input asp-for="InsuranceType" type="text" class="form-control">
     </div>
-    <div class="mb-3">
-      <label asp-for="InsuranceNo" class="form-label">Patient's Insurance Id</label>
-      <input asp-for="InsuranceNo" type="text" class="form-control">
-      <span asp-validation-for="InsuranceNo" class="text-danger"></span>
+        <div class="mb-3">
+        <label class="form-label">Enter Insurance Number</label>
+        <input asp-for="InsuranceNo" type="text" class="form-control">
     </div>
-    <div class="mb-3">
-      <label asp-for="ContactNo" class="form-label">Patient's Contact Number</label>
-      <input asp-for="ContactNo" type="number" class="form-control">
-      <span asp-validation-for="ContactNo" class="text-danger"></span>
-    </div>
+        <div class="form-group">
+            <label asp-for="ContactNo" class="control-label">Patient Contact Number</label>
+            <input asp-for="ContactNo" type="text" class="form-control" id="ContactNo">
+            <span asp-validation-for="ContactNo" class="text-danger"></span>
+        </div>
+
     <div class="mb-3">
       <label asp-for="EmergencyContactFirstName" class="form-label">Patient's Emergency Contact First Name</label>
       <input asp-for="EmergencyContactFirstName" type="text" class="form-control">
