@@ -1,15 +1,15 @@
 @model Persol_HMS.Models.Vital
 
-@if (TempData.ContainsKey("ConfirmationMessage"))
+@if (TempData.ContainsKey("N_ConfirmationMessage"))
 {
     <div class="alert alert-success">
-        @TempData["ConfirmationMessage"]
+        @TempData["N_ConfirmationMessage"]
     </div>
 }
-@if (TempData.ContainsKey("WarningMessage"))
+@if (TempData.ContainsKey("N_WarningMessage"))
 {
     <div class="alert alert-danger">
-        @TempData["WarningMessage"]
+        @TempData["N_WarningMessage"]
     </div>
 }
 
@@ -34,4 +34,4 @@
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 
-<a asp-action="NurseQueue" asp-controller="Staff">Go to Nurse Queue</a>
+<a class="my-3" asp-action="NurseQueue" asp-controller="Staff">Go to Nurse Queue</a>

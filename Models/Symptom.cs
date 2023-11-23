@@ -11,6 +11,5 @@ namespace Persol_HMS.Models
         public DateTime Date { get; set; }
         [ForeignKey(nameof(Patient))]
         public string PatientNo { get; set; }
-
     }
 }

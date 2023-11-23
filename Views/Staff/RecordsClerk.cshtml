@@ -1,16 +1,16 @@
 
 @model Persol_HMS.Models.Patient
 
-@if (TempData.ContainsKey("ConfirmationMessage"))
+@if (TempData.ContainsKey("R_ConfirmationMessage"))
 {
     <div class="alert alert-success">
-        @TempData["ConfirmationMessage"]
+        @TempData["R_ConfirmationMessage"]
     </div>
 }
-@if (TempData.ContainsKey("WarningMessage"))
+@if (TempData.ContainsKey("R_WarningMessage"))
 {
     <div class="alert alert-danger">
-        @TempData["WarningMessage"]
+        @TempData["R_WarningMessage"]
     </div>
 }
 
