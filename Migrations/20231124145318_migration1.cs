@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Persol_Hms.Migrations
+namespace Auth.Migrations
 {
-    public partial class migration01 : Migration
+    public partial class migration1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -310,7 +310,7 @@ namespace Persol_Hms.Migrations
                     VitalsID = table.Column<int>(type: "INTEGER", nullable: false),
                     DrugsID = table.Column<int>(type: "INTEGER", nullable: false),
                     SymptomsID = table.Column<int>(type: "INTEGER", nullable: false),
-                    LabID = table.Column<int>(type: "INTEGER", nullable: false),
+                    LabID = table.Column<int>(type: "INTEGER", nullable: true),
                     Diagnoses = table.Column<string>(type: "TEXT", nullable: false),
                     WardNo = table.Column<int>(type: "INTEGER", nullable: false),
                     IsAdmitted = table.Column<bool>(type: "INTEGER", nullable: false),
@@ -371,6 +371,11 @@ namespace Persol_Hms.Migrations
                 table: "Departments",
                 columns: new[] { "Id", "DepartmentCode", "DepartmentName" },
                 values: new object[] { 4, 4, "Lab" });
+
+            migrationBuilder.InsertData(
+                table: "Departments",
+                columns: new[] { "Id", "DepartmentCode", "DepartmentName" },
+                values: new object[] { 5, 5, "Admin" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

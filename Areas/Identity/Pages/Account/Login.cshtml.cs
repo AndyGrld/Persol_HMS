@@ -78,13 +78,15 @@ namespace Persol_HMS.Areas.Identity.Pages.Account
 
             if (user != null)
             {
-                user.Attempts++;
-
-                if (user.Attempts % 3 == 0)
-                {
-                    user.LockEnabled = true;
-                    user.LockEnd = DateTime.Now.AddMinutes(Math.Pow(2, user.Attempts / 3) * 5);
-                }
+				if(user.Attempts % 3 != 0)
+				{
+					user.Attempts++;
+					if (user.Attempts % 3 == 3)
+					{
+						user.LockEnabled = true;
+						user.LockEnd = DateTime.Now.AddMinutes((user.Attempts / 3) * 1);
+					}
+				}
 
                 await _userManager.UpdateAsync(user);
 
@@ -102,15 +104,6 @@ namespace Persol_HMS.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                // Check if the user is locked out based on custom logic
-                var lockoutInfo = await LockoutUser(Input.Username);
-                if (lockoutInfo.IsLocked)
-                {
-                    _logger.LogWarning("User account locked out.");
-                    ModelState.AddModelError(string.Empty, $"User account is locked out until {lockoutInfo.LockEnd}. Please try again later.");
-                    return Page();
-                }
-
                 var result = await _signInManager.PasswordSignInAsync(Input.Username, Input.Password, Input.RememberMe, lockoutOnFailure: true);
                 if (result.Succeeded)
                 {
@@ -144,6 +137,13 @@ namespace Persol_HMS.Areas.Identity.Pages.Account
                     }
 
                     return LocalRedirect(returnUrl);
+                }
+				var lockoutInfo = await LockoutUser(Input.Username);
+                if (lockoutInfo.IsLocked)
+                {
+                    _logger.LogWarning("User account locked out.");
+                    ModelState.AddModelError(string.Empty, $"User account is locked out until {lockoutInfo.LockEnd}. Please try again later.");
+                    return Page();
                 }
                 if (result.RequiresTwoFactor)
                 {

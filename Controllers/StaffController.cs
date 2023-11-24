@@ -416,7 +416,6 @@ public class StaffController : Controller
             if (patient != null)
             {
 
-                _context.Add(lab);
                 var labEntry = new Persol_HMS.Models.Lab
                 {
 					ID = _context.Labs.ToList().Count == 0 ? 1 : _context.Labs.Max(s => s.ID) + 1,
@@ -428,8 +427,12 @@ public class StaffController : Controller
                 };
                 RemovePatientFromQueue("Lab", patient.PatientNo);
                 _context.Labs.Add(labEntry);
+                await _context.SaveChangesAsync();
 				var medical = await _context.Medicals.FirstOrDefaultAsync(m => m.Date == DateTime.Now.Date);
-				medical.LabID = labEntry.ID;
+				if(medical != null)
+				{
+					medical.LabID = labEntry.ID;
+				}
                 await _context.SaveChangesAsync();
                 TempData["ConfirmationMessage"] = $"Patient's lab added successfully";
                 return RedirectToAction(nameof(Lab));
