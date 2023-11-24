@@ -37,9 +37,11 @@
                     @* <p>
                         <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
                     </p> *@
-                    <button type="button" class="my-2 w-100 btn btn-lg btn-primary">
-                        <a style="text-decoration: none; color: white" asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
-                    </button>
+                    <a style="text-decoration: none; color: white" asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">
+						<button type="button" class="my-2 w-100 btn btn-lg btn-primary">
+                        Register as a new user</button>
+					</a>
+                    
                     @* <p>
                         <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
                     </p> *@

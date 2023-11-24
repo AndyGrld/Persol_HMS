@@ -154,7 +154,8 @@ public class StaffController : Controller
 
     private int GenerateWardNumber()
     {
-        int num = _context.Medicals.ToList().Count == 0 ? 1 : _context.Medicals.Max(m => m.WardNo) + 1;
+		var maxWardNo = _context.Medicals.Max(m => (int?)m.WardNo);
+        int num = maxWardNo.HasValue ? maxWardNo.Value + 1 : 1;
         return num;
     }
 
