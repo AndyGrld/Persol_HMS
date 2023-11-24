@@ -14,7 +14,7 @@ namespace Persol_HMS.Models
 
         public int QueueNo { get; set; }
         public string Status { get; set; }
-        public DateTime DateCreated { get; set; }
+        public DateTime DateToday { get; set; }
 
         public static Queue GetOrCreateQueue(ApplicationDbContext context, string patientNo, DepartmentType department)
         {
@@ -22,7 +22,7 @@ namespace Persol_HMS.Models
 
             var existingQueue = context.Queues
                 .FirstOrDefault(q => q.PatientNo == patientNo &&
-                                    q.DateCreated.Date == currentDate &&
+                                    q.DateToday.Date == currentDate &&
                                     q.Status == department.ToString());
 
             if (existingQueue != null)
@@ -36,7 +36,7 @@ namespace Persol_HMS.Models
                 PatientNo = patientNo,
                 QueueNo = GetNextQueueNumber(context, department),
                 Status = department.ToString(),
-                DateCreated = currentDate
+                DateToday = currentDate
             };
 
             context.Queues.Add(newQueue);
@@ -49,7 +49,7 @@ namespace Persol_HMS.Models
         {
             // Get the maximum queue number for the specified department and date
             var maxQueueNumber = context.Queues
-                .Where(q => q.Status == department.ToString() && q.DateCreated.Date == DateTime.Now.Date)
+                .Where(q => q.Status == department.ToString() && q.DateToday.Date == DateTime.Now.Date)
                 .Max(q => (int?)q.QueueNo) ?? 0;
 
             return maxQueueNumber + 1;

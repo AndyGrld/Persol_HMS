@@ -236,7 +236,7 @@
                     {
                         new Queue()
                         {
-                            DateCreated = DateTime.Now,
+                            DateToday = DateTime.Now,
                             PatientNo = "HMS-1121-2023-K001",
                             QueueNo = 1,
                             Status = "In progess"
