@@ -8,7 +8,8 @@ namespace Persol_HMS.Models
         Doctor,
         Nurse,
         Lab,
-        RecordClerk
+        RecordClerk,
+		Admin
     }
 
     public class Department

@@ -8,16 +8,16 @@ using Persol_HMS.Data;
 
 #nullable disable
 
-namespace Persol_Hms.Migrations
+namespace Auth.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231124032124_migration01")]
-    partial class migration01
+    [Migration("20231124145318_migration1")]
+    partial class migration1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.25");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.23");
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -192,6 +192,12 @@ namespace Persol_Hms.Migrations
                             Id = 4,
                             DepartmentCode = 4,
                             DepartmentName = "Lab"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            DepartmentCode = 5,
+                            DepartmentName = "Admin"
                         });
                 });
 
@@ -613,7 +619,7 @@ namespace Persol_Hms.Migrations
                         .IsRequired();
 
                     b.HasOne("Persol_HMS.Models.Patient", "Patient")
-                        .WithMany()
+                        .WithMany("Medicals")
                         .HasForeignKey("PatientNo")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -661,6 +667,11 @@ namespace Persol_Hms.Migrations
                         .IsRequired();
 
                     b.Navigation("Department");
+                });
+
+            modelBuilder.Entity("Persol_HMS.Models.Patient", b =>
+                {
+                    b.Navigation("Medicals");
                 });
 #pragma warning restore 612, 618
         }
