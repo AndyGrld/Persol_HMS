@@ -104,7 +104,7 @@ namespace Persol_HMS.Areas.Identity.Pages.Account
                 var departmentRole = Enum.GetName(typeof(DepartmentType), Input.DepartmentId);
 
                 // await _userManager.AddToRoleAsync(user, departmentRole);
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                await _userStore.SetUserNameAsync(user, Input.UserName, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
