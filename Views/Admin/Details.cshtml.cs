@@ -6,13 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 
-namespace Persol_HMS.Views.Admin
+namespace Auth.Views.Admin
 {
-    public class Delete : PageModel
+    public class Details : PageModel
     {
-        private readonly ILogger<Delete> _logger;
+        private readonly ILogger<Details> _logger;
 
-        public Delete(ILogger<Delete> logger)
+        public Details(ILogger<Details> logger)
         {
             _logger = logger;
         }

@@ -513,14 +513,22 @@ public class StaffController : Controller
         return maxQueueNumber + 1;
     }
 
-    public IActionResult PatientList(string search)
+    public IActionResult PatientList(int page = 1, string search = "")
     {
+        int pageSize = 10;
         var patients = _context.Patients.AsQueryable();
 
         if (!string.IsNullOrEmpty(search))
         {
-            patients = patients.Where(p => p.PatientNo.Contains(search));
+            patients = patients.Where(p => p.PatientNo.Contains(search))
+                                .OrderBy(q => q.PatientNo)
+                                .Skip((page - 1) * pageSize)
+                                .Take(pageSize);
         }
+        ViewBag.TotalPatients = _context.Patients.Count();
+        ViewBag.PageSize = pageSize;
+        ViewBag.CurrentPage = page;
+        ViewBag.Search = search;
 
         return View(patients.ToList());
     }

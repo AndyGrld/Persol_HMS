@@ -1,6 +1,6 @@
 @model List<User>
 
-<table class="table">
+<table class="table table-hover">
     <thead>
         <tr>
             <th>Username</th>
@@ -19,11 +19,35 @@
                 <td>@user.LastName</td>
                 <td>@user.Department?.DepartmentName</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@user.Id">Details</a> |
-                    <a asp-action="Edit" asp-route-id="@user.Id">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@user.Id">Delete</a>
+                    <a href="@Url.Action("Details", new { id = user.Id })">
+                        <button type="button" class="m-1 btn btn-primary">Details</button>
+                    </a>
+                    <a href="@Url.Action("Edit", new { id = user.Id })">
+                        <button type="button" class="m-1 btn btn-warning">Edit</button>
+                    </a>
+                    <button type="button" class="m-1 btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Delete</button>
                 </td>
             </tr>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Are you sure you want to delete record?</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Data cannot be retrieved again.
+      </div>
+      <div class="modal-footer">
+        <a href="@Url.Action("Delete", new { id = user.Id })">
+            <button type="button" class="m-1 btn btn-danger">Yes</button>
+        </a>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+      </div>
+    </div>
+  </div>
+</div>
         }
     </tbody>
 </table>
+

@@ -4,14 +4,22 @@
     ViewData["Title"] = "Patient Medical Records";
 }
 
-<h2>@($"Medical Records for {Model.FirstName} {Model.LastName} ({Model.PatientNo})")</h2>
+<h2>@($"Medical Records for {Model.FirstName} {Model.LastName}")</h2>
+<h2>@($"{Model.PatientNo}")</h2>
 
 @foreach (var medical in Model.Medicals)
 {
-    <div class="card">
+    <div class="card my-3">
+        <div class="card-header row">
+            <div class="col">
+                Medical Record ID: @medical.ID
+            </div>
+            <div class="col">
+                @medical.Date.ToShortDateString()
+				@medical.Vital
+            </div>
+        </div>
         <div class="card-body">
-            <h5 class="card-title">Medical Record ID: @medical.ID</h5>
-            <p class="card-text">Date: @medical.Date.ToShortDateString()</p>
             <p class="card-text">Diagnoses: @medical.Diagnoses</p>
         </div>
     </div>

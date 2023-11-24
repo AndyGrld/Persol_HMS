@@ -12,11 +12,10 @@
 
         <dt class="col-sm-2">Last Name</dt>
         <dd class="col-sm-10">@Model.LastName</dd>
-
-        <!-- Add other properties as needed -->
-
     </dl>
 </div>
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a href="@Url.Action("Index")">
+        <button type="button" class="btn btn-primary">Back to List</button>
+    </a>
 </div>

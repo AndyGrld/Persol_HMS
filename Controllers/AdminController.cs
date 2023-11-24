@@ -98,27 +98,6 @@ public class AdminController : Controller
 
     public IActionResult Delete(string id)
     {
-        if (id == null)
-        {
-            return NotFound();
-        }
-
-        var user = _context.Users
-            .Include(u => u.Department)
-            .FirstOrDefault(u => u.Id == id);
-
-        if (user == null)
-        {
-            return NotFound();
-        }
-
-        return View(user);
-    }
-
-    [HttpPost, ActionName("Delete")]
-    [ValidateAntiForgeryToken]
-    public IActionResult DeleteConfirmed(string id)
-    {
         var user = _context.Users.Find(id);
         _context.Users.Remove(user);
         _context.SaveChanges();
