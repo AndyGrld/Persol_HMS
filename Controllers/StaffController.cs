@@ -86,7 +86,7 @@ public class StaffController : Controller
                 Diagnoses = model.Diagnoses,
                 WardNo = GenerateWardNumber(),
                 IsAdmitted = model.IsAdmitted,
-                DateAdmitted =  DateTime.Now
+                DateAdmitted =  DateTime.Now.Date
             };
 
             var drug = new Drug
@@ -95,7 +95,7 @@ public class StaffController : Controller
                 PatientNo = model.PatientNo,
                 DrugName = model.DrugName,
                 Dosage = model.Dosage,
-                Date = DateTime.Now
+                Date = DateTime.Now.Date
             };
             _context.Drugs.Add(drug);
             var symptom = new Symptom
@@ -103,7 +103,7 @@ public class StaffController : Controller
                 ID = _context.Symptoms.ToList().Count == 0 ? 1 : _context.Symptoms.Max(s => s.ID) + 1,
                 PatientNo = model.PatientNo,
                 Symptoms = model.Symptoms,
-                Date = DateTime.Now
+                Date = DateTime.Now.Date
             };
             _context.Symptoms.Add(symptom);
 
@@ -424,7 +424,7 @@ public class StaffController : Controller
                     LabName = lab.LabName,
                     Result = lab.Result,
                     Notes = lab.Notes,
-                    Date = lab.Date,
+                    Date = DateTime.Now.Date,
                 };
                 RemovePatientFromQueue("Lab", patient.PatientNo);
                 _context.Labs.Add(labEntry);
