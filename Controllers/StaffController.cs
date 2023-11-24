@@ -608,12 +608,35 @@ public class StaffController : Controller
         var patient = _context.Patients
             .Include(p => p.Medicals)
             .FirstOrDefault(p => p.PatientNo == patientNo);
-
-        if (patient == null)
+        var medical = _context.Medicals
+            .Include(p => p.Lab)
+            .FirstOrDefault(p => p.PatientNo == patientNo);
+        if (patient == null && medical != null)
         {
             return NotFound();
         }
 
         return View(patient);
     }
+    [Authorize]
+    public IActionResult DisplayMedicalAndVital(int medicalId)
+    {
+        // Assuming _context is your database context
+        var medical = _context.Medicals
+            .Include(m => m.Vital)
+            .Include(m => m.Symptom)
+            .Include(m => m.Drug)
+            .Include(m => m.Lab)
+            .FirstOrDefault(m => m.ID == medicalId);
+
+        if (medical == null)
+        {
+            return NotFound();
+        }
+
+        // Now, you can access Medical, Vital, Symptom, Drug, and Lab properties
+        // For example, you can pass this data to a view
+        return View(medical);
+    }
+
 }
