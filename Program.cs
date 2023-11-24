@@ -30,7 +30,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 {
     options.Password.RequireUppercase = false;
     options.Lockout.MaxFailedAccessAttempts = 3;
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
 });
 
 var app = builder.Build();
