@@ -57,5 +57,8 @@ namespace Persol_HMS.Models
         [Required(ErrorMessage = "The Emergency Contact Number is required.")]
         [RegularExpression(@"^\d{10,15}$", ErrorMessage = "Invalid Emergency Contact Number.")]
         public string EmergencyContactNo { get; set; }
+
+        [InverseProperty("Patient")]
+        public ICollection<Medical> Medicals { get; set; }
     }
 }

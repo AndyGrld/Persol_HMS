@@ -11,7 +11,7 @@ using Persol_HMS.Data;
 namespace Persol_Hms.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231122221920_migration01")]
+    [Migration("20231124032124_migration01")]
     partial class migration01
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -167,6 +167,32 @@ namespace Persol_Hms.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Departments");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 2,
+                            DepartmentCode = 2,
+                            DepartmentName = "Nursing"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            DepartmentCode = 3,
+                            DepartmentName = "Doctor"
+                        },
+                        new
+                        {
+                            Id = 1,
+                            DepartmentCode = 1,
+                            DepartmentName = "Records"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            DepartmentCode = 4,
+                            DepartmentName = "Lab"
+                        });
                 });
 
             modelBuilder.Entity("Persol_HMS.Models.Drug", b =>
@@ -192,6 +218,8 @@ namespace Persol_Hms.Migrations
 
                     b.HasKey("ID");
 
+                    b.HasIndex("PatientNo");
+
                     b.ToTable("Drugs");
                 });
 
@@ -216,7 +244,8 @@ namespace Persol_Hms.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("Result")
+                    b.Property<bool?>("Result")
+                        .IsRequired()
                         .HasColumnType("INTEGER");
 
                     b.HasKey("ID");
@@ -246,7 +275,8 @@ namespace Persol_Hms.Migrations
                     b.Property<bool>("IsAdmitted")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("LabID")
+                    b.Property<int?>("LabID")
+                        .IsRequired()
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("PatientNo")
@@ -333,7 +363,7 @@ namespace Persol_Hms.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("DateToday")
+                    b.Property<DateTime>("DateCreated")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PatientNo")
@@ -370,6 +400,8 @@ namespace Persol_Hms.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("PatientNo");
 
                     b.ToTable("Symptoms");
                 });
@@ -555,6 +587,17 @@ namespace Persol_Hms.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Persol_HMS.Models.Drug", b =>
+                {
+                    b.HasOne("Persol_HMS.Models.Patient", "Patient")
+                        .WithMany()
+                        .HasForeignKey("PatientNo")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Patient");
+                });
+
             modelBuilder.Entity("Persol_HMS.Models.Medical", b =>
                 {
                     b.HasOne("Persol_HMS.Models.Drug", "Drug")
@@ -596,6 +639,17 @@ namespace Persol_Hms.Migrations
                     b.Navigation("Symptom");
 
                     b.Navigation("Vital");
+                });
+
+            modelBuilder.Entity("Persol_HMS.Models.Symptom", b =>
+                {
+                    b.HasOne("Persol_HMS.Models.Patient", "Patient")
+                        .WithMany()
+                        .HasForeignKey("PatientNo")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Patient");
                 });
 
             modelBuilder.Entity("Persol_HMS.Models.User", b =>

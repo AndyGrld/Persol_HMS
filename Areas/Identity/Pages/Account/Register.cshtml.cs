@@ -177,7 +177,7 @@ namespace Persol_HMS.Areas.Identity.Pages.Account
                     MiddleName = Input.MiddleName,
                     LastName = Input.LastName,
                     DateOfBirth = Input.DateOfBirth,
-                    UserName = Input.Email,
+                    UserName = Input.UserName,
                     Email = Input.Email,
                     DepartmentId = Input.DepartmentId,
                     Status = "Active",

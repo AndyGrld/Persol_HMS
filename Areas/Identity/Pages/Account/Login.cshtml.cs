@@ -72,6 +72,28 @@ namespace Persol_HMS.Areas.Identity.Pages.Account
             ReturnUrl = returnUrl;
         }
 
+        private async Task<(bool IsLocked, DateTime? LockEnd)> LockoutUser(string username)
+        {
+            var user = await _userManager.FindByNameAsync(username);
+
+            if (user != null)
+            {
+                user.Attempts++;
+
+                if (user.Attempts % 3 == 0)
+                {
+                    user.LockEnabled = true;
+                    user.LockEnd = DateTime.Now.AddMinutes(Math.Pow(2, user.Attempts / 3) * 5);
+                }
+
+                await _userManager.UpdateAsync(user);
+
+                return (user.LockEnabled, user.LockEnd);
+            }
+
+            return (false, null);
+        }
+
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
@@ -80,33 +102,46 @@ namespace Persol_HMS.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(Input.Username, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                // Check if the user is locked out based on custom logic
+                var lockoutInfo = await LockoutUser(Input.Username);
+                if (lockoutInfo.IsLocked)
+                {
+                    _logger.LogWarning("User account locked out.");
+                    ModelState.AddModelError(string.Empty, $"User account is locked out until {lockoutInfo.LockEnd}. Please try again later.");
+                    return Page();
+                }
+
+                var result = await _signInManager.PasswordSignInAsync(Input.Username, Input.Password, Input.RememberMe, lockoutOnFailure: true);
                 if (result.Succeeded)
                 {
-                    // Retrieve the user
+                    // Reset attempts on successful login
                     var user = await _userManager.FindByNameAsync(Input.Username);
+                    user.Attempts = 0;
+                    user.LockEnabled = false;
+                    user.LockEnd = null;
+                    await _userManager.UpdateAsync(user);
 
                     _logger.LogInformation("User logged in.");
 
                     // Redirect based on DepartmentId
                     switch (user.DepartmentId)
-                        {
-                            case 1:
-                                returnUrl = Url.Action("RecordsClerk", "StaffController");
-                                break;
-                            case 2:
-                                returnUrl = Url.Action("Nurse", "StaffController");
-                                break;
-                            case 3:
-                                returnUrl = Url.Action("Doctor", "StaffController");
-                                break;
-                            case 4:
-                                returnUrl = Url.Action("Lab", "StaffController");
-                                break;
-                            default:
-                                returnUrl = Url.Content("~/");
-                                break;
-                        }
+                    {
+                        case 1:
+                            returnUrl = Url.Action("RecordsClerk", "Staff");
+                            break;
+                        case 2:
+                            returnUrl = Url.Action("Nurse", "Staff");
+                            break;
+                        case 3:
+                            returnUrl = Url.Action("Doctor", "Staff");
+                            break;
+                        case 4:
+                            returnUrl = Url.Action("Lab", "Staff");
+                            break;
+                        default:
+                            returnUrl = Url.Content("~/");
+                            break;
+                    }
 
                     return LocalRedirect(returnUrl);
                 }
@@ -117,12 +152,11 @@ namespace Persol_HMS.Areas.Identity.Pages.Account
                 if (result.IsLockedOut)
                 {
                     _logger.LogWarning("User account locked out.");
-                    return RedirectToPage("./Lockout");
+                    ModelState.AddModelError(string.Empty, "User account is locked out. Please try again later.");
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return Page();
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt. Please check your username and password.");
                 }
             }
 

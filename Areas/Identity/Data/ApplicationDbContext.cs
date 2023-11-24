@@ -15,9 +15,38 @@ public class ApplicationDbContext : IdentityDbContext<User>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        // Customize the ASP.NET Identity model and override the defaults if needed.
-        // For example, you can rename the ASP.NET Identity table names and more.
-        // Add your customizations after calling base.OnModelCreating(builder);
+
+        builder.Entity<Patient>()
+            .HasMany(p => p.Medicals)
+            .WithOne(m => m.Patient)
+            .HasForeignKey(m => m.PatientNo);
+
+        builder.Entity<Department>().HasData(
+            new Department()
+                        {
+                            Id = 2,
+                            DepartmentName = "Nursing",
+                            DepartmentCode = 002
+                        },
+                        new Department()
+                        {
+                            Id = 3,
+                            DepartmentCode = 003,
+                            DepartmentName = "Doctor"
+                        },
+                        new Department()
+                        {
+                            Id = 1,
+                            DepartmentCode = 001,
+                            DepartmentName = "Records"
+                        },
+                        new Department()
+                        {
+                            Id = 4,
+                            DepartmentCode = 004,
+                            DepartmentName = "Lab"
+                        }
+        );
     }
     public DbSet<Lab> Labs { get; set; }
     public DbSet<Medical> Medicals { get; set; }

@@ -15,7 +15,7 @@ namespace Persol_Hms.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.23");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.25");
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -165,6 +165,32 @@ namespace Persol_Hms.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Departments");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 2,
+                            DepartmentCode = 2,
+                            DepartmentName = "Nursing"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            DepartmentCode = 3,
+                            DepartmentName = "Doctor"
+                        },
+                        new
+                        {
+                            Id = 1,
+                            DepartmentCode = 1,
+                            DepartmentName = "Records"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            DepartmentCode = 4,
+                            DepartmentName = "Lab"
+                        });
                 });
 
             modelBuilder.Entity("Persol_HMS.Models.Drug", b =>
@@ -189,6 +215,8 @@ namespace Persol_Hms.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("PatientNo");
 
                     b.ToTable("Drugs");
                 });
@@ -245,6 +273,10 @@ namespace Persol_Hms.Migrations
                     b.Property<bool>("IsAdmitted")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("LabID")
+                        .IsRequired()
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("PatientNo")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -261,6 +293,8 @@ namespace Persol_Hms.Migrations
                     b.HasKey("ID");
 
                     b.HasIndex("DrugsID");
+
+                    b.HasIndex("LabID");
 
                     b.HasIndex("PatientNo");
 
@@ -327,7 +361,7 @@ namespace Persol_Hms.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("DateToday")
+                    b.Property<DateTime>("DateCreated")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PatientNo")
@@ -551,11 +585,28 @@ namespace Persol_Hms.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Persol_HMS.Models.Drug", b =>
+                {
+                    b.HasOne("Persol_HMS.Models.Patient", "Patient")
+                        .WithMany()
+                        .HasForeignKey("PatientNo")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Patient");
+                });
+
             modelBuilder.Entity("Persol_HMS.Models.Medical", b =>
                 {
                     b.HasOne("Persol_HMS.Models.Drug", "Drug")
                         .WithMany()
                         .HasForeignKey("DrugsID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Persol_HMS.Models.Lab", "Lab")
+                        .WithMany()
+                        .HasForeignKey("LabID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -578,6 +629,8 @@ namespace Persol_Hms.Migrations
                         .IsRequired();
 
                     b.Navigation("Drug");
+
+                    b.Navigation("Lab");
 
                     b.Navigation("Patient");
 

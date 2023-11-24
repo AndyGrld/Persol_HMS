@@ -38,22 +38,6 @@ namespace Persol_Hms.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Drugs",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    PatientNo = table.Column<string>(type: "TEXT", nullable: false),
-                    DrugName = table.Column<string>(type: "TEXT", nullable: false),
-                    Dosage = table.Column<string>(type: "TEXT", nullable: false),
-                    Date = table.Column<DateTime>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Drugs", x => x.ID);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Labs",
                 columns: table => new
                 {
@@ -101,26 +85,11 @@ namespace Persol_Hms.Migrations
                     PatientNo = table.Column<string>(type: "TEXT", nullable: false),
                     QueueNo = table.Column<int>(type: "INTEGER", nullable: false),
                     Status = table.Column<string>(type: "TEXT", nullable: false),
-                    DateToday = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Queues", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Symptoms",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Symptoms = table.Column<string>(type: "TEXT", nullable: false),
-                    Date = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    PatientNo = table.Column<string>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Symptoms", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -204,54 +173,45 @@ namespace Persol_Hms.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Medicals",
+                name: "Drugs",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Date = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    VitalsID = table.Column<int>(type: "INTEGER", nullable: false),
-                    DrugsID = table.Column<int>(type: "INTEGER", nullable: false),
-                    SymptomsID = table.Column<int>(type: "INTEGER", nullable: false),
-                    LabID = table.Column<int>(type: "INTEGER", nullable: false),
-                    Diagnoses = table.Column<string>(type: "TEXT", nullable: false),
-                    WardNo = table.Column<int>(type: "INTEGER", nullable: false),
-                    IsAdmitted = table.Column<bool>(type: "INTEGER", nullable: false),
-                    DateAdmitted = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    PatientNo = table.Column<string>(type: "TEXT", nullable: false)
+                    PatientNo = table.Column<string>(type: "TEXT", nullable: false),
+                    DrugName = table.Column<string>(type: "TEXT", nullable: false),
+                    Dosage = table.Column<string>(type: "TEXT", nullable: false),
+                    Date = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Medicals", x => x.ID);
+                    table.PrimaryKey("PK_Drugs", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Medicals_Drugs_DrugsID",
-                        column: x => x.DrugsID,
-                        principalTable: "Drugs",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Medicals_Labs_LabID",
-                        column: x => x.LabID,
-                        principalTable: "Labs",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Medicals_Patients_PatientNo",
+                        name: "FK_Drugs_Patients_PatientNo",
                         column: x => x.PatientNo,
                         principalTable: "Patients",
                         principalColumn: "PatientNo",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Symptoms",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Symptoms = table.Column<string>(type: "TEXT", nullable: false),
+                    Date = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    PatientNo = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Symptoms", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Medicals_Symptoms_SymptomsID",
-                        column: x => x.SymptomsID,
-                        principalTable: "Symptoms",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Medicals_Vitals_VitalsID",
-                        column: x => x.VitalsID,
-                        principalTable: "Vitals",
-                        principalColumn: "Id",
+                        name: "FK_Symptoms_Patients_PatientNo",
+                        column: x => x.PatientNo,
+                        principalTable: "Patients",
+                        principalColumn: "PatientNo",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -340,6 +300,78 @@ namespace Persol_Hms.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Medicals",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Date = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    VitalsID = table.Column<int>(type: "INTEGER", nullable: false),
+                    DrugsID = table.Column<int>(type: "INTEGER", nullable: false),
+                    SymptomsID = table.Column<int>(type: "INTEGER", nullable: false),
+                    LabID = table.Column<int>(type: "INTEGER", nullable: false),
+                    Diagnoses = table.Column<string>(type: "TEXT", nullable: false),
+                    WardNo = table.Column<int>(type: "INTEGER", nullable: false),
+                    IsAdmitted = table.Column<bool>(type: "INTEGER", nullable: false),
+                    DateAdmitted = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    PatientNo = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Medicals", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Medicals_Drugs_DrugsID",
+                        column: x => x.DrugsID,
+                        principalTable: "Drugs",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Medicals_Labs_LabID",
+                        column: x => x.LabID,
+                        principalTable: "Labs",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Medicals_Patients_PatientNo",
+                        column: x => x.PatientNo,
+                        principalTable: "Patients",
+                        principalColumn: "PatientNo",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Medicals_Symptoms_SymptomsID",
+                        column: x => x.SymptomsID,
+                        principalTable: "Symptoms",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Medicals_Vitals_VitalsID",
+                        column: x => x.VitalsID,
+                        principalTable: "Vitals",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Departments",
+                columns: new[] { "Id", "DepartmentCode", "DepartmentName" },
+                values: new object[] { 1, 1, "Records" });
+
+            migrationBuilder.InsertData(
+                table: "Departments",
+                columns: new[] { "Id", "DepartmentCode", "DepartmentName" },
+                values: new object[] { 2, 2, "Nursing" });
+
+            migrationBuilder.InsertData(
+                table: "Departments",
+                columns: new[] { "Id", "DepartmentCode", "DepartmentName" },
+                values: new object[] { 3, 3, "Doctor" });
+
+            migrationBuilder.InsertData(
+                table: "Departments",
+                columns: new[] { "Id", "DepartmentCode", "DepartmentName" },
+                values: new object[] { 4, 4, "Lab" });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -383,6 +415,11 @@ namespace Persol_Hms.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Drugs_PatientNo",
+                table: "Drugs",
+                column: "PatientNo");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Medicals_DrugsID",
                 table: "Medicals",
                 column: "DrugsID");
@@ -406,6 +443,11 @@ namespace Persol_Hms.Migrations
                 name: "IX_Medicals_VitalsID",
                 table: "Medicals",
                 column: "VitalsID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Symptoms_PatientNo",
+                table: "Symptoms",
+                column: "PatientNo");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -444,9 +486,6 @@ namespace Persol_Hms.Migrations
                 name: "Labs");
 
             migrationBuilder.DropTable(
-                name: "Patients");
-
-            migrationBuilder.DropTable(
                 name: "Symptoms");
 
             migrationBuilder.DropTable(
@@ -454,6 +493,9 @@ namespace Persol_Hms.Migrations
 
             migrationBuilder.DropTable(
                 name: "Departments");
+
+            migrationBuilder.DropTable(
+                name: "Patients");
         }
     }
 }

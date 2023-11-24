@@ -1,0 +1,18 @@
+@model Patient
+
+@{
+    ViewData["Title"] = "Patient Medical Records";
+}
+
+<h2>@($"Medical Records for {Model.FirstName} {Model.LastName} ({Model.PatientNo})")</h2>
+
+@foreach (var medical in Model.Medicals)
+{
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Medical Record ID: @medical.ID</h5>
+            <p class="card-text">Date: @medical.Date.ToShortDateString()</p>
+            <p class="card-text">Diagnoses: @medical.Diagnoses</p>
+        </div>
+    </div>
+}
