@@ -18,9 +18,12 @@
                 @medical.Date.ToShortDateString()
 				@medical.Vital
             </div>
-        </div>
+        </div
         <div class="card-body">
             <p class="card-text">Diagnoses: @medical.Diagnoses</p>
+        </div>
+        <div class="col">
+            <a href="@Url.Action("DisplayMedicalAndVital", new { medicalId = medical.ID })" class="btn btn-primary">View Details</a>
         </div>
     </div>
 }

@@ -1,0 +1,40 @@
+﻿@model Persol_HMS.Models.Medical
+
+<h2>Medical and Vital Information</h2>
+
+<div>
+    <h4>Medical Record</h4>
+    <dl class="row">
+        <dt class="col-sm-2">Date</dt>
+        <dd class="col-sm-10">@Model.Date</dd>
+
+        <!-- Add other Medical properties as needed -->
+    </dl>
+</div>
+
+<div>
+    <h4>Vital Information</h4>
+    <dl class="row">
+        <dt class="col-sm-2">Temperature</dt>
+        <dd class="col-sm-10">
+            @if (Model.Vital != null)
+            {
+                @Model.Vital.Temperature
+            }
+            else
+            {
+                <p>
+                    N / A
+                </p>
+            }
+        </dd>
+
+        <!-- Add other Vital properties as needed -->
+    </dl>
+</div>
+
+<div>
+    <h4>Symptom Information</h4>
+    <!-- Similar structure for displaying Symptom properties -->
+    <!-- Add other sections for Drug and Lab information -->
+</div>
