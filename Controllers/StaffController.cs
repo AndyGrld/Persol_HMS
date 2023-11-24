@@ -26,8 +26,12 @@ public class StaffController : Controller
     [HttpGet]
     public IActionResult Doctor(string? patientNo)
     {
-        // Automatically fetch the next patient in line for the doctor
         var nextPatientInLine = GetNextPatientInLine("Doctor");
+
+        if (patientNo == null && nextPatientInLine != null)
+        {
+            patientNo = nextPatientInLine.PatientNo; // Use the fetched patient number
+        }
 
         if (patientNo != null)
         {
@@ -44,25 +48,8 @@ public class StaffController : Controller
             }
         }
 
-        if (nextPatientInLine != null)
-        {
-            var patientDetails = _context.Patients.FirstOrDefault(p => p.PatientNo == nextPatientInLine.PatientNo);
-
-            if (patientDetails != null)
-            {
-                var medicalViewModel = new CreateMedicalViewModel
-                {
-                    PatientNo = patientNo,
-                    FirstName = patientDetails.FirstName,
-                    LastName = patientDetails.LastName
-                };
-                var doctorQueue = Queue.GetOrCreateQueue(_context, patientDetails.PatientNo, DepartmentType.Doctor);
-                return View(medicalViewModel);
-            }
-        }
-
         return RedirectToAction(nameof(DoctorQueue));
-    }   
+    }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -74,7 +61,6 @@ public class StaffController : Controller
             model.DrugName != null &&
             model.IsAdmitted != null && model.Symptoms != null)
         {
-            Console.WriteLine($"patients id number => {model.PatientNo}");
             var medicalRecord = new Medical
             {
                 PatientNo = model.PatientNo,
@@ -82,7 +68,7 @@ public class StaffController : Controller
                 Diagnoses = model.Diagnoses,
                 WardNo = GenerateWardNumber(),
                 IsAdmitted = model.IsAdmitted,
-                DateAdmitted =  DateTime.Now
+                DateAdmitted = DateTime.Now
             };
 
             var drug = new Drug
@@ -94,6 +80,7 @@ public class StaffController : Controller
                 Date = DateTime.Now
             };
             _context.Drugs.Add(drug);
+
             var symptom = new Symptom
             {
                 ID = _context.Symptoms.ToList().Count == 0 ? 1 : _context.Symptoms.Max(s => s.ID) + 1,
@@ -106,17 +93,18 @@ public class StaffController : Controller
             var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(model.PatientNo));
             var vital = await _context.Vitals.FirstOrDefaultAsync(v => v.PatientNo.Equals(model.PatientNo));
 
-            if(drug != null)
+            if (drug != null)
             {
                 medicalRecord.DrugsID = drug.ID;
                 medicalRecord.Drug = drug;
             }
-            
-            if(symptom != null)
+
+            if (symptom != null)
             {
                 medicalRecord.SymptomsID = symptom.ID;
                 medicalRecord.Symptom = symptom;
             }
+
             if (patient != null)
             {
                 medicalRecord.Patient = patient;
@@ -131,7 +119,7 @@ public class StaffController : Controller
             _context.Medicals.Add(medicalRecord);
             await _context.SaveChangesAsync();
 
-            // remove diagnosed patient from doctor and into lab
+            // Remove diagnosed patient from doctor and into lab
             var labQueueNo = GetNextQueueNumber("Lab");
             var labQueue = new Queue
             {
@@ -145,12 +133,13 @@ public class StaffController : Controller
             await _context.SaveChangesAsync();
 
             TempData["D_ConfirmationMessage"] = $"Patient's medical details added successfully. Patient's queue number is {labQueueNo} in the lab queue.";
-            return RedirectToAction(nameof(Doctor));
+            return RedirectToAction(nameof(Doctor), new { patientNo = model.PatientNo }); // Redirect to Doctor action with patient number
         }
 
         TempData["D_WarningMessage"] = $"Error processing patient's medical details. Please try again";
         return RedirectToAction(nameof(Doctor));
     }
+
 
     private int GenerateWardNumber()
     {
