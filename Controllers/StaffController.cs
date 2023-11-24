@@ -490,4 +490,30 @@ public class StaffController : Controller
         var maxQueueNumber = _context.Queues.Where(q => q.Status == status).Max(q => (int?)q.QueueNo) ?? 0;
         return maxQueueNumber + 1;
     }
+
+    public IActionResult PatientList(string search)
+    {
+        var patients = _context.Patients.AsQueryable();
+
+        if (!string.IsNullOrEmpty(search))
+        {
+            patients = patients.Where(p => p.PatientNo.Contains(search));
+        }
+        return View(patients);
+    }
+
+    public IActionResult PatientMedicalRecords(string patientNo)
+    {
+        var patient = _context.Patients
+            .Include(p => p.PatientNo == patientNo)
+            .FirstOrDefault(p => p.PatientNo == patientNo);
+        
+        if(patient == null)
+        {
+            return NotFound();
+        }
+
+        return View(patient);
+
+    }
 }
