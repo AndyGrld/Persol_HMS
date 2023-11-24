@@ -79,11 +79,10 @@ public class StaffController : Controller
             model.DrugName != null &&
             model.IsAdmitted != null && model.Symptoms != null)
         {
-            Console.WriteLine($"patients id number => {model.PatientNo}");
             var medicalRecord = new Medical
             {
                 PatientNo = model.PatientNo,
-                Date = DateTime.Now,
+                Date = DateTime.Now.Date,
                 Diagnoses = model.Diagnoses,
                 WardNo = GenerateWardNumber(),
                 IsAdmitted = model.IsAdmitted,
@@ -136,7 +135,6 @@ public class StaffController : Controller
             _context.Medicals.Add(medicalRecord);
             await _context.SaveChangesAsync();
 
-            // remove diagnosed patient from doctor and into lab
             var labQueueNo = GetNextQueueNumber("Lab");
             var labQueue = new Queue
             {
@@ -191,7 +189,6 @@ public class StaffController : Controller
             var patient = _context.Patients.FirstOrDefault(p => p.PatientNo == newPatient.PatientNo);
             if (patient != null)
             {
-                // Add the patient to the nurse queue
                 var NurseQueueNo = GetNextQueueNumber("Nurse");
                 var NurseQueue = new Queue
                 {
@@ -210,15 +207,12 @@ public class StaffController : Controller
             TempData["R_WarningMessage"] = $"{newPatient.PatientNo} - Patient not found";
             return RedirectToAction(nameof(RecordsClerk));
         }
-        // Generate and set the patient ID
         newPatient.PatientNo = GenerateNewId(newPatient);
         newPatient.Id = _context.Patients.ToList().Count == 0 ? 1 : _context.Patients.Max(p => p.Id) + 1;
 
-        // Insert the new patient into the database
         _context.Patients.Add(newPatient);
         await _context.SaveChangesAsync();
 
-        // Add the patient to the nurse queue
         var nurseQueueNo = GetNextQueueNumber("Nurse");
         var nurseQueue = new Queue
         {
@@ -266,13 +260,10 @@ public class StaffController : Controller
             var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo == patientNo);
             if (patient != null)
             {
-                // Do something with patient details
-                // e.g., return a view with patient details
                 return View("RecordsClerk", patient);
             }
         }
 
-        // Handle case where patient details are not found
         return RedirectToAction(nameof(RecordsClerk));
     }
 
@@ -306,7 +297,7 @@ public class StaffController : Controller
         {
             var vitalModel = new Vital
             {
-                PatientNo = nextPatientInLine?.PatientNo // Ensure nextPatientInLine is not null
+                PatientNo = nextPatientInLine?.PatientNo
             };
             ViewBag.Name = nextPatientInLine?.FirstName;
             if (!string.IsNullOrEmpty(vitalModel.PatientNo))
@@ -343,7 +334,6 @@ public class StaffController : Controller
             {
                 _context.Vitals.Update(vital);
 
-                // Automatically add the patient to the doctor queue with the next queue number
                 var doctorQueueNo = GetNextQueueNumber("Doctor");
                 var doctorQueue = new Queue
                 {
@@ -429,6 +419,7 @@ public class StaffController : Controller
                 _context.Add(lab);
                 var labEntry = new Persol_HMS.Models.Lab
                 {
+					ID = _context.Labs.ToList().Count == 0 ? 1 : _context.Labs.Max(s => s.ID) + 1,
                     PatientNo = lab.PatientNo,
                     LabName = lab.LabName,
                     Result = lab.Result,
@@ -437,6 +428,8 @@ public class StaffController : Controller
                 };
                 RemovePatientFromQueue("Lab", patient.PatientNo);
                 _context.Labs.Add(labEntry);
+				var medical = await _context.Medicals.FirstOrDefaultAsync(m => m.Date == DateTime.Now.Date);
+				medical.LabID = labEntry.ID;
                 await _context.SaveChangesAsync();
                 TempData["ConfirmationMessage"] = $"Patient's lab added successfully";
                 return RedirectToAction(nameof(Lab));
