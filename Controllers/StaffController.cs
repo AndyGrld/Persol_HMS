@@ -26,13 +26,6 @@ public class StaffController : Controller
     [HttpGet]
     public IActionResult Doctor(string? patientNo)
     {
-        var nextPatientInLine = GetNextPatientInLine("Doctor");
-
-        if (patientNo == null && nextPatientInLine != null)
-        {
-            patientNo = nextPatientInLine.PatientNo; // Use the fetched patient number
-        }
-
         if (patientNo != null)
         {
             var patientDetails = _context.Patients.FirstOrDefault(p => p.PatientNo.Equals(patientNo));
@@ -44,12 +37,32 @@ public class StaffController : Controller
                     FirstName = patientDetails.FirstName,
                     LastName = patientDetails.LastName
                 };
+                ViewBag.Name = patientDetails?.FirstName;
+                return View(medicalViewModel);
+            }
+        }
+
+        var nextPatientInLine = GetNextPatientInLine("Doctor");
+        if (nextPatientInLine != null)
+        {
+            var patientDetails = _context.Patients.FirstOrDefault(p => p.PatientNo == nextPatientInLine.PatientNo);
+
+            if (patientDetails != null)
+            {
+                var medicalViewModel = new CreateMedicalViewModel
+                {
+                    PatientNo = patientDetails.PatientNo,
+                    FirstName = patientDetails.FirstName,
+                    LastName = patientDetails.LastName
+                };
+                ViewBag.Name = nextPatientInLine?.FirstName;
+                var doctorQueue = Queue.GetOrCreateQueue(_context, patientDetails.PatientNo, DepartmentType.Doctor);
                 return View(medicalViewModel);
             }
         }
 
         return RedirectToAction(nameof(DoctorQueue));
-    }
+    }   
 
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -61,6 +74,7 @@ public class StaffController : Controller
             model.DrugName != null &&
             model.IsAdmitted != null && model.Symptoms != null)
         {
+            Console.WriteLine($"patients id number => {model.PatientNo}");
             var medicalRecord = new Medical
             {
                 PatientNo = model.PatientNo,
@@ -68,7 +82,7 @@ public class StaffController : Controller
                 Diagnoses = model.Diagnoses,
                 WardNo = GenerateWardNumber(),
                 IsAdmitted = model.IsAdmitted,
-                DateAdmitted = DateTime.Now
+                DateAdmitted =  DateTime.Now
             };
 
             var drug = new Drug
@@ -80,7 +94,6 @@ public class StaffController : Controller
                 Date = DateTime.Now
             };
             _context.Drugs.Add(drug);
-
             var symptom = new Symptom
             {
                 ID = _context.Symptoms.ToList().Count == 0 ? 1 : _context.Symptoms.Max(s => s.ID) + 1,
@@ -93,18 +106,17 @@ public class StaffController : Controller
             var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(model.PatientNo));
             var vital = await _context.Vitals.FirstOrDefaultAsync(v => v.PatientNo.Equals(model.PatientNo));
 
-            if (drug != null)
+            if(drug != null)
             {
                 medicalRecord.DrugsID = drug.ID;
                 medicalRecord.Drug = drug;
             }
-
-            if (symptom != null)
+            
+            if(symptom != null)
             {
                 medicalRecord.SymptomsID = symptom.ID;
                 medicalRecord.Symptom = symptom;
             }
-
             if (patient != null)
             {
                 medicalRecord.Patient = patient;
@@ -119,27 +131,26 @@ public class StaffController : Controller
             _context.Medicals.Add(medicalRecord);
             await _context.SaveChangesAsync();
 
-            // Remove diagnosed patient from doctor and into lab
+            // remove diagnosed patient from doctor and into lab
             var labQueueNo = GetNextQueueNumber("Lab");
             var labQueue = new Queue
             {
                 PatientNo = model.PatientNo,
                 QueueNo = labQueueNo,
                 Status = "Lab",
-                DateToday = DateTime.Now
+                DateCreated = DateTime.Now
             };
             RemovePatientFromQueue("Doctor", model.PatientNo);
             _context.Queues.Add(labQueue);
             await _context.SaveChangesAsync();
 
             TempData["D_ConfirmationMessage"] = $"Patient's medical details added successfully. Patient's queue number is {labQueueNo} in the lab queue.";
-            return RedirectToAction(nameof(Doctor), new { patientNo = model.PatientNo }); // Redirect to Doctor action with patient number
+            return RedirectToAction(nameof(Doctor));
         }
 
         TempData["D_WarningMessage"] = $"Error processing patient's medical details. Please try again";
         return RedirectToAction(nameof(Doctor));
     }
-
 
     private int GenerateWardNumber()
     {
@@ -169,7 +180,7 @@ public class StaffController : Controller
                     PatientNo = newPatient.PatientNo,
                     QueueNo = NurseQueueNo,
                     Status = "Nurse",
-                    DateToday = DateTime.Now
+                    DateCreated = DateTime.Now
                 };
                 _context.Queues.Add(NurseQueue);
 
@@ -196,7 +207,7 @@ public class StaffController : Controller
             PatientNo = newPatient.PatientNo,
             QueueNo = nurseQueueNo,
             Status = "Nurse",
-            DateToday = DateTime.Now
+            DateCreated = DateTime.Now
         };
         _context.Queues.Add(nurseQueue);
 
@@ -251,7 +262,6 @@ public class StaffController : Controller
     // [Authorize(Roles = "Nursing")]
     public IActionResult Nurse(string? patientNo)
     {
-        var nextPatientInLine = GetNextPatientInLine("Nurse");
         if (patientNo != null)
         {
             var patientDetails = _context.Patients.FirstOrDefault(p => p.PatientNo == patientNo);
@@ -263,16 +273,18 @@ public class StaffController : Controller
             {
                 var nurseQueue = Queue.GetOrCreateQueue(_context, vitalModel.PatientNo, DepartmentType.Nurse);
             }
-            ViewBag.Name = patientDetails.FirstName;
+            ViewBag.Name = patientDetails?.FirstName;
             return View(vitalModel);
         }
 
+        var nextPatientInLine = GetNextPatientInLine("Nurse");
         if (nextPatientInLine != null)
         {
             var vitalModel = new Vital
             {
                 PatientNo = nextPatientInLine?.PatientNo // Ensure nextPatientInLine is not null
             };
+            ViewBag.Name = nextPatientInLine?.FirstName;
             if (!string.IsNullOrEmpty(vitalModel.PatientNo))
             {
                 var nurseQueue = Queue.GetOrCreateQueue(_context, vitalModel.PatientNo, DepartmentType.Nurse);
@@ -308,7 +320,7 @@ public class StaffController : Controller
                     PatientNo = vital.PatientNo,
                     QueueNo = doctorQueueNo,
                     Status = "Doctor",
-                    DateToday = DateTime.Now
+                    DateCreated = DateTime.Now
                 };
                 RemovePatientFromQueue("Nurse", patient.PatientNo);
                 _context.Queues.Add(doctorQueue);
@@ -324,8 +336,22 @@ public class StaffController : Controller
     [HttpGet]
     public IActionResult Lab(string? patientNo)
     {
-        var patientsInQueue = GetNextPatientInLine("Lab");
+        if (patientNo != null)
+        {
+            var patientDetails = _context.Patients.FirstOrDefault(p => p.PatientNo == patientNo);
+            var labEntry = new Persol_HMS.Models.Lab
+            {
+                PatientNo = patientDetails.PatientNo
+            };
+            if (!string.IsNullOrEmpty(labEntry.PatientNo))
+            {
+                var labQueue = Queue.GetOrCreateQueue(_context, labEntry.PatientNo, DepartmentType.Lab);
+            }
+            ViewBag.Name = patientDetails.FirstName + " " + patientDetails.LastName;
+            return View(labEntry);
+        }
 
+        var patientsInQueue = GetNextPatientInLine("Lab");
         if (patientsInQueue != null)
         {
             var labEntry = new Persol_HMS.Models.Lab
@@ -336,12 +362,13 @@ public class StaffController : Controller
             {
                 var LabQueue = Queue.GetOrCreateQueue(_context, labEntry.PatientNo, DepartmentType.Lab);
             }
+            ViewBag.Name = patientsInQueue.FirstName + " " + patientsInQueue.LastName;
             return View(labEntry);
         }
 
-
         return RedirectToAction(nameof(LabQueue));
     }
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Lab([Bind("PatientNo, LabName, Result, Notes, Date")] Persol_HMS.Models.Lab lab)
@@ -368,9 +395,8 @@ public class StaffController : Controller
                 RemovePatientFromQueue("Lab", patient.PatientNo);
                 _context.Labs.Add(labEntry);
                 await _context.SaveChangesAsync();
-                TempData["ConfirmationMessage"] = $"Patient's lab added successfully. " +
-                    $"Patients Queue number is {labEntry.PatientNo}";
-                return RedirectToAction(nameof(Doctor));
+                TempData["ConfirmationMessage"] = $"Patient's lab added successfully";
+                return RedirectToAction(nameof(Lab));
             }
             
         }
@@ -384,7 +410,7 @@ public class StaffController : Controller
 
         var patientsInLine = _context.Queues
             .Where(q => q.Status == "Nurse" && q.PatientNo.Contains(search))
-            .OrderBy(q => q.DateToday)
+            .OrderBy(q => q.DateCreated)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToList();
@@ -408,7 +434,7 @@ public class StaffController : Controller
 
         var patientsInLine = _context.Queues
             .Where(q => q.Status == "Lab" && q.PatientNo.Contains(search))
-            .OrderBy(q => q.DateToday) // Order by the time they entered the queue
+            .OrderBy(q => q.DateCreated) // Order by the time they entered the queue
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToList();
@@ -433,7 +459,7 @@ public class StaffController : Controller
 
         var patientsInLine = _context.Queues
             .Where(q => q.Status == "Doctor" && q.PatientNo.Contains(search))
-            .OrderBy(q => q.DateToday)
+            .OrderBy(q => q.DateCreated)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToList();
@@ -452,13 +478,10 @@ public class StaffController : Controller
         return View(model);
     }
 
-
-
-    // Helper method to get the next patient in line for a given status
     private Patient GetNextPatientInLine(string status)
     {
         var nextPatientInLine = _context.Queues
-            .Where(q => q.Status == status)
+            .Where(q => q.Status == status && q.DateCreated.Date == DateTime.Now.Date)
             .OrderBy(q => q.QueueNo)
             .FirstOrDefault();
 
@@ -478,16 +501,15 @@ public class StaffController : Controller
         if (patientQueue != null)
         {
             _context.Queues.Remove(patientQueue);
-            //_context.SaveChanges();
+            _context.SaveChanges();
         }
     }
 
-
-
-    // Helper method to get the next queue number for a given status
     private int GetNextQueueNumber(string status)
     {
-        var maxQueueNumber = _context.Queues.Where(q => q.Status == status).Max(q => (int?)q.QueueNo) ?? 0;
+        var maxQueueNumber = _context.Queues
+            .Where(q => q.Status == status && q.DateCreated.Date == DateTime.Now.Date)
+            .Max(q => (int?)q.QueueNo) ?? 0;
         return maxQueueNumber + 1;
     }
 
@@ -499,21 +521,21 @@ public class StaffController : Controller
         {
             patients = patients.Where(p => p.PatientNo.Contains(search));
         }
-        return View(patients);
+
+        return View(patients.ToList());
     }
 
     public IActionResult PatientMedicalRecords(string patientNo)
     {
         var patient = _context.Patients
-            .Include(p => p.PatientNo == patientNo)
+            .Include(p => p.Medicals)
             .FirstOrDefault(p => p.PatientNo == patientNo);
-        
-        if(patient == null)
+
+        if (patient == null)
         {
             return NotFound();
         }
 
         return View(patient);
-
     }
 }

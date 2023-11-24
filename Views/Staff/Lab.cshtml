@@ -1,8 +1,10 @@
 @model Persol_HMS.Models.Lab
 
+<h2>Lab for Patient: @ViewBag.Name</h2>
+
 <form asp-controller="Staff" asp-action="Lab" autocomplete="off">
     <div class="mb-3">
-        <label asp-for="LabName" class="form-label">Patient's Lab Name</label>
+        <label asp-for="LabName" class="form-label">Lab Name</label>
         <input asp-for="LabName" type="text" class="form-control" id="LabName">
     </div>
     <div class="mb-3">
@@ -23,7 +25,7 @@
     </div>
     <div class="mb-3">
         <label asp-for="Date" class="form-label">Lab Date</label>
-        <input asp-for="Date" type="datetime" class="form-control">
+        <input asp-for="Date" type="date" class="form-control">
     </div>
     <input asp-for="PatientNo" type="hidden" />
     <button type="submit" class="btn btn-primary">Submit</button>
