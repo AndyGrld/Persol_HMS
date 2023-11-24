@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Persol_HMS.Data;
 using Persol_HMS.Models;
 
-// [Authorize(Roles = "Admin")]
+// [Authorize]
 public class AdminController : Controller
 {
     private readonly ApplicationDbContext _context;

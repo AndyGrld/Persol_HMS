@@ -1,6 +1,8 @@
+using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persol_HMS.Data.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Persol_HMS.Models;
 using Persol_HMS.Views.Staff;
 
@@ -13,19 +15,16 @@ public class StaffController : Controller
         _context = context;
     }
 
-    // public IActionResult YourAction()
-    // {
-    //     if (User.Identity.IsAuthenticated)
-    //     {
-    //         string username = User.Identity.Name;
-    //     }
-
-    //     return View();
-    // }
-
     [HttpGet]
+	[Authorize]
     public IActionResult Doctor(string? patientNo)
     {
+        var user = _context.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
+        if(user.DepartmentId != 3)
+        {
+            return RedirectToAction("Index", "Home");
+        }
+		
         if (patientNo != null)
         {
             var patientDetails = _context.Patients.FirstOrDefault(p => p.PatientNo.Equals(patientNo));
@@ -65,9 +64,15 @@ public class StaffController : Controller
     }   
 
     [HttpPost]
+    [Authorize]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> SaveMedicalRecords(CreateMedicalViewModel model)
     {
+        var user = _context.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
+        if(user.DepartmentId != 3)
+        {
+            return RedirectToAction("Index", "Home");
+        }
         if (model.PatientNo != null &&
             model.Diagnoses != null &&
             model.Dosage != null &&
@@ -161,14 +166,26 @@ public class StaffController : Controller
 
 
     [HttpGet]
+	[Authorize]
     public IActionResult RecordsClerk()
     {
+        var user = _context.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
+        if(user.DepartmentId != 1)
+        {
+            return RedirectToAction("Index", "Home");
+        }
         return View(new Patient());
     }
 
     [HttpPost]
+    [Authorize]
     public async Task<IActionResult> CreateOrGetPatient([Bind("PatientNo, FirstName, LastName, DateOfBirth, ContactNo, InsuranceType, InsuranceNo, Gender, EmergencyContactFirstName, EmergencyContactLastName, EmergencyContactNo")] Patient newPatient)
     {
+        var user = _context.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
+        if(user.DepartmentId != 1)
+        {
+            return RedirectToAction("Index", "Home");
+        }
         if (newPatient.PatientNo != null)
         {
             var patient = _context.Patients.FirstOrDefault(p => p.PatientNo == newPatient.PatientNo);
@@ -260,9 +277,15 @@ public class StaffController : Controller
     }
 
     [HttpGet]
+	[Authorize]
     // [Authorize(Roles = "Nursing")]
     public IActionResult Nurse(string? patientNo)
     {
+        var user = _context.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
+        if(user.DepartmentId != 2)
+        {
+            return RedirectToAction("Index", "Home");
+        }
         if (patientNo != null)
         {
             var patientDetails = _context.Patients.FirstOrDefault(p => p.PatientNo == patientNo);
@@ -300,9 +323,15 @@ public class StaffController : Controller
 
 
     [HttpPost]
+    [Authorize]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Nurse([Bind("PatientNo, Temperature, Height, Weight, BloodPressure")] Vital vital)
     {
+        var user = _context.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
+        if(user.DepartmentId != 2)
+        {
+            return RedirectToAction("Index", "Home");
+        }
         if (!string.IsNullOrEmpty(vital.PatientNo) &&
             vital.Temperature != null &&
             vital.Height != null &&
@@ -334,9 +363,16 @@ public class StaffController : Controller
         TempData["N_WarningMessage"] = $"Error processing patient's vitals. Please try again";
         return RedirectToAction(nameof(Nurse));
     }
+	
     [HttpGet]
+	[Authorize]
     public IActionResult Lab(string? patientNo)
     {
+        var user = _context.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
+        if(user.DepartmentId != 4)
+        {
+            return RedirectToAction("Index", "Home");
+        }
         if (patientNo != null)
         {
             var patientDetails = _context.Patients.FirstOrDefault(p => p.PatientNo == patientNo);
@@ -371,9 +407,15 @@ public class StaffController : Controller
     }
 
     [HttpPost]
+    [Authorize]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Lab([Bind("PatientNo, LabName, Result, Notes, Date")] Persol_HMS.Models.Lab lab)
     {
+        var user = _context.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
+        if(user.DepartmentId != 4)
+        {
+            return RedirectToAction("Index", "Home");
+        }
         if (!string.IsNullOrEmpty(lab.PatientNo) &&
             lab.LabName != null &&
             lab.Result != null &&
@@ -405,8 +447,15 @@ public class StaffController : Controller
         return RedirectToAction(nameof(Lab));
     }
 
+	
+	[Authorize]
     public IActionResult NurseQueue(int page = 1, string search = "")
     {
+        var user = _context.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
+        if(user.DepartmentId != 2)
+        {
+            return RedirectToAction("Index", "Home");
+        }
         int pageSize = 10;
 
         var patientsInLine = _context.Queues
@@ -429,8 +478,16 @@ public class StaffController : Controller
 
         return View(model);
     }
+	
+	
+	[Authorize]
     public IActionResult LabQueue(int page = 1, string search = "")
     {
+        var user = _context.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
+        if(user.DepartmentId != 4)
+        {
+            return RedirectToAction("Index", "Home");
+        }
         int pageSize = 10;
 
         var patientsInLine = _context.Queues
@@ -454,8 +511,16 @@ public class StaffController : Controller
         return View(model);
     }
 
+	
+	[Authorize]
     public IActionResult DoctorQueue(int page = 1, string search = "")
     {
+        var user = _context.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
+        if(user.DepartmentId != 3)
+        {
+            return RedirectToAction("Index", "Home");
+        }
+		
         int pageSize = 10;
 
         var patientsInLine = _context.Queues
@@ -514,6 +579,8 @@ public class StaffController : Controller
         return maxQueueNumber + 1;
     }
 
+	
+	[Authorize]
     public IActionResult PatientList(int page = 1, string search = "")
     {
         int pageSize = 10;
@@ -534,6 +601,8 @@ public class StaffController : Controller
         return View(patients.ToList());
     }
 
+	
+	[Authorize]
     public IActionResult PatientMedicalRecords(string patientNo)
     {
         var patient = _context.Patients
