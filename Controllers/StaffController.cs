@@ -87,7 +87,7 @@ public class StaffController : Controller
                 Diagnoses = model.Diagnoses,
                 WardNo = model.IsAdmitted == true ? GenerateWardNumber() : null,                
                 IsAdmitted = model.IsAdmitted,
-                DateAdmitted = DateTime.Now.Date
+                DateAdmitted = model.IsAdmitted == true ? DateTime.Now.Date : (DateTime?)null
             };
 
             var drug = new Drug
