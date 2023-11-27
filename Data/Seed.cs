@@ -181,7 +181,7 @@
                             Date = DateTime.Now,
                             PatientNo = "HMS-1121-2023-K001",
                             LabName = "Malaria",
-                            Result = true,
+                            Result = "Very ill",
                             Notes = ""
                         }
                     });

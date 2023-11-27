@@ -45,7 +45,7 @@ namespace Auth.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     PatientNo = table.Column<string>(type: "TEXT", nullable: false),
                     LabName = table.Column<string>(type: "TEXT", nullable: false),
-                    Result = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Result = table.Column<string>(type: "TEXT", nullable: false),
                     Notes = table.Column<string>(type: "TEXT", nullable: false),
                     Date = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
@@ -312,9 +312,9 @@ namespace Auth.Migrations
                     SymptomsID = table.Column<int>(type: "INTEGER", nullable: false),
                     LabID = table.Column<int>(type: "INTEGER", nullable: true),
                     Diagnoses = table.Column<string>(type: "TEXT", nullable: false),
-                    WardNo = table.Column<int>(type: "INTEGER", nullable: false),
+                    WardNo = table.Column<int>(type: "INTEGER", nullable: true),
                     IsAdmitted = table.Column<bool>(type: "INTEGER", nullable: false),
-                    DateAdmitted = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    DateAdmitted = table.Column<DateTime>(type: "TEXT", nullable: true),
                     PatientNo = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
