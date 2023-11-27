@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Persol_HMS.Models;
 using Persol_HMS.Views.Staff;
 
+[Authorize]
 public class StaffController : Controller
 {
     private readonly ApplicationDbContext _context;
@@ -15,36 +16,44 @@ public class StaffController : Controller
         _context = context;
     }
 
-    [HttpGet]
-	[Authorize]
-    public IActionResult Doctor(string? patientNo)
+    private bool IsUserAuthorized(int departmentId)
     {
         var user = _context.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
-        if(user.DepartmentId != 3)
+        return user?.DepartmentId == departmentId;
+    }
+
+    private IActionResult RedirectToHome()
+    {
+        return RedirectToAction("Index", "Home");
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Doctor(string? patientNo)
+    {
+        if (!IsUserAuthorized(3))
         {
-            return RedirectToAction("Index", "Home");
+            return RedirectToHome();
         }
-		
-        if (patientNo != null)
+
+        var patientDetails = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(patientNo));
+
+        if (patientDetails != null)
         {
-            var patientDetails = _context.Patients.FirstOrDefault(p => p.PatientNo.Equals(patientNo));
-            if (patientDetails != null)
+            var medicalViewModel = new CreateMedicalViewModel
             {
-                var medicalViewModel = new CreateMedicalViewModel
-                {
-                    PatientNo = patientNo,
-                    FirstName = patientDetails.FirstName,
-                    LastName = patientDetails.LastName
-                };
-                ViewBag.Name = patientDetails?.FirstName;
-                return View(medicalViewModel);
-            }
+                PatientNo = patientNo,
+                FirstName = patientDetails.FirstName,
+                LastName = patientDetails.LastName
+            };
+            ViewBag.Name = patientDetails?.FirstName;
+            return View(medicalViewModel);
         }
 
         var nextPatientInLine = GetNextPatientInLine("Doctor");
         if (nextPatientInLine != null)
         {
-            var patientDetails = _context.Patients.FirstOrDefault(p => p.PatientNo == nextPatientInLine.PatientNo);
+            // Remove the 'var' keyword here
+            patientDetails = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo == nextPatientInLine.PatientNo);
 
             if (patientDetails != null)
             {
@@ -61,23 +70,19 @@ public class StaffController : Controller
         }
 
         return RedirectToAction(nameof(DoctorQueue));
-    }   
+    }
 
     [HttpPost]
-    [Authorize]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> SaveMedicalRecords(CreateMedicalViewModel model)
     {
-        var user = _context.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
-        if(user.DepartmentId != 3)
+        if (!IsUserAuthorized(3))
         {
-            return RedirectToAction("Index", "Home");
+            return RedirectToHome();
         }
-        if (model.PatientNo != null &&
-            model.Diagnoses != null &&
-            model.Dosage != null &&
-            model.DrugName != null &&
-            model.IsAdmitted != null && model.Symptoms != null)
+
+        if (model.PatientNo != null && model.Diagnoses != null && model.Dosage != null &&
+            model.DrugName != null && model.IsAdmitted != null && model.Symptoms != null)
         {
             var medicalRecord = new Medical
             {
@@ -86,21 +91,22 @@ public class StaffController : Controller
                 Diagnoses = model.Diagnoses,
                 WardNo = GenerateWardNumber(),
                 IsAdmitted = model.IsAdmitted,
-                DateAdmitted =  DateTime.Now.Date
+                DateAdmitted = DateTime.Now.Date
             };
 
             var drug = new Drug
             {
-                ID = _context.Drugs.ToList().Count == 0 ? 1 : _context.Drugs.Max(d => d.ID) + 1,
+                ID = _context.Drugs.Count() == 0 ? 1 : _context.Drugs.Max(d => d.ID) + 1,
                 PatientNo = model.PatientNo,
                 DrugName = model.DrugName,
                 Dosage = model.Dosage,
                 Date = DateTime.Now.Date
             };
             _context.Drugs.Add(drug);
+
             var symptom = new Symptom
             {
-                ID = _context.Symptoms.ToList().Count == 0 ? 1 : _context.Symptoms.Max(s => s.ID) + 1,
+                ID = _context.Symptoms.Count() == 0 ? 1 : _context.Symptoms.Max(s => s.ID) + 1,
                 PatientNo = model.PatientNo,
                 Symptoms = model.Symptoms,
                 Date = DateTime.Now.Date
@@ -110,17 +116,18 @@ public class StaffController : Controller
             var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(model.PatientNo));
             var vital = await _context.Vitals.FirstOrDefaultAsync(v => v.PatientNo.Equals(model.PatientNo));
 
-            if(drug != null)
+            if (drug != null)
             {
                 medicalRecord.DrugsID = drug.ID;
                 medicalRecord.Drug = drug;
             }
-            
-            if(symptom != null)
+
+            if (symptom != null)
             {
                 medicalRecord.SymptomsID = symptom.ID;
                 medicalRecord.Symptom = symptom;
             }
+
             if (patient != null)
             {
                 medicalRecord.Patient = patient;
@@ -157,36 +164,33 @@ public class StaffController : Controller
 
     private int GenerateWardNumber()
     {
-		var maxWardNo = _context.Medicals.Max(m => (int?)m.WardNo);
+        var maxWardNo = _context.Medicals.Max(m => (int?)m.WardNo);
         int num = maxWardNo.HasValue ? maxWardNo.Value + 1 : 1;
         return num;
     }
 
 
     [HttpGet]
-	[Authorize]
-    public IActionResult RecordsClerk()
+    public async Task<IActionResult> RecordsClerk()
     {
-        var user = _context.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
-        if(user.DepartmentId != 1)
+        if (!IsUserAuthorized(1))
         {
-            return RedirectToAction("Index", "Home");
+            return RedirectToHome();
         }
         return View(new Patient());
     }
 
     [HttpPost]
-    [Authorize]
     public async Task<IActionResult> CreateOrGetPatient([Bind("PatientNo, FirstName, LastName, DateOfBirth, ContactNo, InsuranceType, InsuranceNo, Gender, EmergencyContactFirstName, EmergencyContactLastName, EmergencyContactNo")] Patient newPatient)
     {
-        var user = _context.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
-        if(user.DepartmentId != 1)
+        if (!IsUserAuthorized(1))
         {
-            return RedirectToAction("Index", "Home");
+            return RedirectToHome();
         }
+
         if (newPatient.PatientNo != null)
         {
-            var patient = _context.Patients.FirstOrDefault(p => p.PatientNo == newPatient.PatientNo);
+            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo == newPatient.PatientNo);
             if (patient != null)
             {
                 var NurseQueueNo = GetNextQueueNumber("Nurse");
@@ -207,8 +211,9 @@ public class StaffController : Controller
             TempData["R_WarningMessage"] = $"{newPatient.PatientNo} - Patient not found";
             return RedirectToAction(nameof(RecordsClerk));
         }
+
         newPatient.PatientNo = GenerateNewId(newPatient);
-        newPatient.Id = _context.Patients.ToList().Count == 0 ? 1 : _context.Patients.Max(p => p.Id) + 1;
+        newPatient.Id = _context.Patients.Count() == 0 ? 1 : _context.Patients.Max(p => p.Id) + 1;
 
         _context.Patients.Add(newPatient);
         await _context.SaveChangesAsync();
@@ -233,21 +238,16 @@ public class StaffController : Controller
     {
         DateTime currentDate = DateTime.Now;
         char[] name = patient.LastName.ToCharArray();
-        string id = $"HMS-{currentDate.Month}{currentDate.Day}-{currentDate.Year}-" +
+        string idPrefix = $"HMS-{currentDate.Month}{currentDate.Day}-{currentDate.Year}-" +
             $"{name[0].ToString().ToUpper()}";
-        int newId = _context.Patients.ToList().Count == 0 ? 1 : _context.Patients.Max(p => p.Id) + 1;
-        if (newId < 10)
+        string id;
+        int newId = 1;
+        do
         {
-            id += $"00{newId}";
-        }
-        else if (newId < 100)
-        {
-            id += $"0{newId}";
-        }
-        else
-        {
-            id += $"{newId}";
-        }
+            id = $"{idPrefix}{newId:D3}";
+            newId++;
+        } while (_context.Patients.Any(p => p.PatientNo == id));
+
         return id;
     }
 
@@ -268,14 +268,12 @@ public class StaffController : Controller
     }
 
     [HttpGet]
-	[Authorize]
     // [Authorize(Roles = "Nursing")]
     public IActionResult Nurse(string? patientNo)
     {
-        var user = _context.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
-        if(user.DepartmentId != 2)
+        if (!IsUserAuthorized(2))
         {
-            return RedirectToAction("Index", "Home");
+            return RedirectToHome();
         }
         if (patientNo != null)
         {
@@ -314,14 +312,12 @@ public class StaffController : Controller
 
 
     [HttpPost]
-    [Authorize]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Nurse([Bind("PatientNo, Temperature, Height, Weight, BloodPressure")] Vital vital)
     {
-        var user = _context.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
-        if(user.DepartmentId != 2)
+        if (!IsUserAuthorized(2))
         {
-            return RedirectToAction("Index", "Home");
+            return RedirectToHome();
         }
         if (!string.IsNullOrEmpty(vital.PatientNo) &&
             vital.Temperature != null &&
@@ -355,13 +351,11 @@ public class StaffController : Controller
     }
 	
     [HttpGet]
-	[Authorize]
     public IActionResult Lab(string? patientNo)
     {
-        var user = _context.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
-        if(user.DepartmentId != 4)
+        if (!IsUserAuthorized(4))
         {
-            return RedirectToAction("Index", "Home");
+            return RedirectToHome();
         }
         if (patientNo != null)
         {
@@ -397,14 +391,12 @@ public class StaffController : Controller
     }
 
     [HttpPost]
-    [Authorize]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Lab([Bind("PatientNo, LabName, Result, Notes, Date")] Persol_HMS.Models.Lab lab)
     {
-        var user = _context.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
-        if(user.DepartmentId != 4)
+        if (!IsUserAuthorized(4))
         {
-            return RedirectToAction("Index", "Home");
+            return RedirectToHome();
         }
         if (!string.IsNullOrEmpty(lab.PatientNo) &&
             lab.LabName != null &&
@@ -444,24 +436,27 @@ public class StaffController : Controller
     }
 
 	
-	[Authorize]
     public IActionResult NurseQueue(int page = 1, string search = "")
     {
-        var user = _context.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
-        if(user.DepartmentId != 2)
+        if (!IsUserAuthorized(2))
         {
-            return RedirectToAction("Index", "Home");
+            return RedirectToHome();
         }
+
         int pageSize = 10;
 
-        var patientsInLine = _context.Queues
-            .Where(q => q.Status == "Nurse" && q.PatientNo.Contains(search))
+        var query = _context.Queues
+            .Include(q => q.Patient)
+            .Where(q => q.Status == "Nurse" &&
+                        (q.PatientNo.Contains(search) ||
+                        q.Patient.FirstName.Contains(search) ||
+                        q.Patient.LastName.Contains(search)))
             .OrderBy(q => q.DateCreated)
             .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToList();
+            .Take(pageSize);
 
-        var totalPatients = _context.Queues.Count(q => q.Status == "Nurse" && q.PatientNo.Contains(search));
+        var patientsInLine = query.ToList();
+        var totalPatients = query.Count();
 
         var model = new QueueViewModel
         {
@@ -476,24 +471,27 @@ public class StaffController : Controller
     }
 	
 	
-	[Authorize]
     public IActionResult LabQueue(int page = 1, string search = "")
     {
-        var user = _context.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
-        if(user.DepartmentId != 4)
+        if (!IsUserAuthorized(4))
         {
-            return RedirectToAction("Index", "Home");
+            return RedirectToHome();
         }
+
         int pageSize = 10;
 
-        var patientsInLine = _context.Queues
-            .Where(q => q.Status == "Lab" && q.PatientNo.Contains(search))
-            .OrderBy(q => q.DateCreated) // Order by the time they entered the queue
+        var query = _context.Queues
+            .Include(q => q.Patient)
+            .Where(q => q.Status == "Lab" &&
+                        (q.PatientNo.Contains(search) ||
+                        q.Patient.FirstName.Contains(search) ||
+                        q.Patient.LastName.Contains(search)))
+            .OrderBy(q => q.DateCreated)
             .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToList();
+            .Take(pageSize);
 
-        var totalPatients = _context.Queues.Count(q => q.Status == "Lab" && q.PatientNo.Contains(search));
+        var patientsInLine = query.ToList();
+        var totalPatients = query.Count();
 
         var model = new QueueViewModel
         {
@@ -508,25 +506,27 @@ public class StaffController : Controller
     }
 
 	
-	[Authorize]
     public IActionResult DoctorQueue(int page = 1, string search = "")
     {
-        var user = _context.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
-        if(user.DepartmentId != 3)
+        if (!IsUserAuthorized(3))
         {
-            return RedirectToAction("Index", "Home");
+            return RedirectToHome();
         }
-		
+
         int pageSize = 10;
 
-        var patientsInLine = _context.Queues
-            .Where(q => q.Status == "Doctor" && q.PatientNo.Contains(search))
+        var query = _context.Queues
+            .Include(q => q.Patient)
+            .Where(q => q.Status == "Doctor" &&
+                        (q.PatientNo.Contains(search) ||
+                        q.Patient.FirstName.Contains(search) ||
+                        q.Patient.LastName.Contains(search)))
             .OrderBy(q => q.DateCreated)
             .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToList();
+            .Take(pageSize);
 
-        var totalPatients = _context.Queues.Count(q => q.Status == "Doctor" && q.PatientNo.Contains(search));
+        var patientsInLine = query.ToList();
+        var totalPatients = query.Count();
 
         var model = new QueueViewModel
         {
@@ -576,7 +576,6 @@ public class StaffController : Controller
     }
 
 	
-	[Authorize]
     public IActionResult PatientList(int page = 1, string search = "")
     {
         int pageSize = 10;
@@ -584,7 +583,10 @@ public class StaffController : Controller
 
         if (!string.IsNullOrEmpty(search))
         {
-            patients = patients.Where(p => p.PatientNo.Contains(search))
+            patients = patients.Where(p =>
+                                p.PatientNo.Contains(search) ||
+                                p.FirstName.Contains(search) ||
+                                p.LastName.Contains(search))
                                 .OrderBy(q => q.PatientNo)
                                 .Skip((page - 1) * pageSize)
                                 .Take(pageSize);
@@ -598,41 +600,42 @@ public class StaffController : Controller
     }
 
 	
-	[Authorize]
     public IActionResult PatientMedicalRecords(string patientNo)
     {
         var patient = _context.Patients
             .Include(p => p.Medicals)
+                .ThenInclude(m => m.Vital)
+            .Include(p => p.Medicals)
+                .ThenInclude(m => m.Symptom)
+            .Include(p => p.Medicals)
+                .ThenInclude(m => m.Drug)
+            .Include(p => p.Medicals)
+                .ThenInclude(m => m.Lab)
             .FirstOrDefault(p => p.PatientNo == patientNo);
-        var medical = _context.Medicals
-            .Include(p => p.Lab)
-            .FirstOrDefault(p => p.PatientNo == patientNo);
-        if (patient == null && medical != null)
+
+        if (patient == null)
         {
             return NotFound();
         }
 
-        return View(patient);
-    }
-    [Authorize]
-    public IActionResult DisplayMedicalAndVital(int medicalId)
-    {
-        // Assuming _context is your database context
-        var medical = _context.Medicals
-            .Include(m => m.Vital)
-            .Include(m => m.Symptom)
-            .Include(m => m.Drug)
-            .Include(m => m.Lab)
-            .FirstOrDefault(m => m.ID == medicalId);
-
-        if (medical == null)
+        var medicalViewModels = patient.Medicals.Select(m => new MedicalViewModel
         {
-            return NotFound();
-        }
+            ID = m.ID,
+            Date = m.Date,
+            Vital = m.Vital,
+            Diagnoses = m.Diagnoses,
+            Symptom = m.Symptom,
+            Drug = m.Drug,
+            Lab = m.Lab
+        }).ToList();
 
-        // Now, you can access Medical, Vital, Symptom, Drug, and Lab properties
-        // For example, you can pass this data to a view
-        return View(medical);
+        var viewModel = new PatientMedicalViewModel
+        {
+            Patient = patient,
+            MedicalRecords = medicalViewModels
+        };
+
+        return View(viewModel);
     }
 
 }

@@ -15,6 +15,7 @@ namespace Persol_HMS.Models
         public int QueueNo { get; set; }
         public string Status { get; set; }
         public DateTime DateCreated { get; set; }
+        public virtual Patient Patient { get; set; }
 
         public static Queue GetOrCreateQueue(ApplicationDbContext context, string patientNo, DepartmentType department)
         {

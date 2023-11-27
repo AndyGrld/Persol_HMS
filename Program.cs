@@ -29,8 +29,8 @@ builder.Services.AddScoped<IVitalRepository, VitalRepository>();
 builder.Services.Configure<IdentityOptions>(options =>
 {
     options.Password.RequireUppercase = false;
-    options.Lockout.MaxFailedAccessAttempts = 3;
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
+    options.Lockout.MaxFailedAccessAttempts = Int32.MaxValue;
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromDays(365);
 });
 
 var app = builder.Build();

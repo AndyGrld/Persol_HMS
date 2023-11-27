@@ -81,7 +81,7 @@ namespace Persol_HMS.Areas.Identity.Pages.Account
 				if(user.Attempts % 3 != 0)
 				{
 					user.Attempts++;
-					if (user.Attempts % 3 == 3)
+					if (user.Attempts % 3 == 0)
 					{
 						user.LockEnabled = true;
 						user.LockEnd = DateTime.Now.AddMinutes((user.Attempts / 3) * 1);
@@ -142,8 +142,16 @@ namespace Persol_HMS.Areas.Identity.Pages.Account
                 if (lockoutInfo.IsLocked)
                 {
                     _logger.LogWarning("User account locked out.");
-                    ModelState.AddModelError(string.Empty, $"User account is locked out until {lockoutInfo.LockEnd}. Please try again later.");
-                    return Page();
+                    if (lockoutInfo.LockEnd.HasValue && lockoutInfo.LockEnd.Value > DateTime.Now)
+                    {
+                        ModelState.AddModelError(string.Empty, $"User account is locked out until {lockoutInfo.LockEnd}. Please try again later.");
+                        return Page();
+                    }
+                    // If the lockout period has passed, unlock the account
+                    var user = await _userManager.FindByNameAsync(Input.Username);
+                    user.LockEnabled = false;
+                    user.LockEnd = null;
+                    await _userManager.UpdateAsync(user);
                 }
                 if (result.RequiresTwoFactor)
                 {
