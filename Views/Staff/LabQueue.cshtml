@@ -1,4 +1,4 @@
-﻿@model QueueViewModel
+﻿@model LabQueueViewModel
 
 <partial name="Navbar" />
 
@@ -16,11 +16,11 @@
         <h2>Lab Queue</h2>
         <form method="get" action="@Url.Action("LabQueue")">
             <div  class="input-group mb-3">
-                <input  class="form-control" name="search" value="@Model.Search" type="text" placeholder="Search by Patient Id Number">
+                <input  class="form-control" name="search" value="@Model.QueueViewModel.Search" type="text" placeholder="Search by Patient Id Number">
                 <button  class="btn btn-outline-primary" type="submit">Search</button>
             </div>
         </form>
-        @if (Model.PatientsInLine.Any())
+        @if (Model.QueueViewModel.PatientsInLine.Any())
         {
             <table class="table table-hover">
                 <thead>
@@ -31,33 +31,79 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var patient in Model.PatientsInLine)
+                    @foreach (var patient in Model.QueueViewModel.PatientsInLine)
                     {
                         <tr>
                             <td>@patient.PatientNo</td>
                             <td>@patient.QueueNo</td>
                             <td>
-                                <a href="@Url.Action("Lab", new {patientNo = patient.PatientNo})">
-                                    <button type="button" class="btn btn-primary">Check Labs</button>
-                                </a>
+								<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+									Check Labs
+								</button>
                             </td>
                         </tr>
+
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">firstname</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form asp-controller="Staff" asp-action="Lab" autocomplete="off">
+                                            <div class="mb-3">
+                                                <label asp-for="Lab.LabName" class="form-label">Lab Name</label>
+                                                <input asp-for="Lab.LabName" type="text" class="form-control" id="LabName">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label asp-for="Lab.Result" class="form-label">Lab Result</label>
+                                                <div class="form-check">
+                                                    <input asp-for="Lab.Result" type="radio" class="form-check-input" id="ResultTrue" value="true">
+                                                    <label class="form-check-label" for="ResultTrue">Positive</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input asp-for="Lab.Result" type="radio" class="form-check-input" id="ResultFalse" value="false">
+                                                    <label class="form-check-label" for="ResultFalse">Negative</label>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label asp-for="Lab.Notes" class="form-label">Lab Notes</label>
+                                                <input asp-for="Lab.Notes" type="text" class="form-control">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label asp-for="Lab.Date" class="form-label">Lab Date</label>
+                                                <input asp-for="Lab.Date" type="date" class="form-control">
+                                            </div>
+                                            <input asp-for="Lab.PatientNo" value="@patient.PatientNo" type="hidden" />
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     }
                 </tbody>
             </table>
+			
+			
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center">
-                    @if (Model.CurrentPage > 1)
+                    @if (Model.QueueViewModel.CurrentPage > 1)
                     {
-                        <li class="page-item"><a class="page-link" href="@Url.Action("LabQueue", new { page = Model.CurrentPage - 1, search = Model.Search })">Previous</a></li>
+                        <li class="page-item"><a class="page-link" href="@Url.Action("LabQueue", new { page = Model.QueueViewModel.CurrentPage - 1, search = Model.QueueViewModel.Search })">Previous</a></li>
                     }
-                    @for (int i = 1; i <= Model.TotalPatients / Model.PageSize + 1; i++)
+                    @for (int i = 1; i <= Model.QueueViewModel.TotalPatients / Model.QueueViewModel.PageSize + 1; i++)
                     {
-                        <li class="page-item"><a href="@Url.Action("LabQueue", new { page = i, search = Model.Search })" class="@(i == Model.CurrentPage ? "active page-link" : "page-link")">@i</a></li>
+                        <li class="page-item"><a href="@Url.Action("LabQueue", new { page = i, search = Model.QueueViewModel.Search })" class="@(i == Model.QueueViewModel.CurrentPage ? "active page-link" : "page-link")">@i</a></li>
                     }
-                    @if (Model.CurrentPage < Model.TotalPatients / Model.PageSize + 1)
+                    @if (Model.QueueViewModel.CurrentPage < Model.QueueViewModel.TotalPatients / Model.QueueViewModel.PageSize + 1)
                     {
-                        <li class="page-item"><a class="page-link" href="@Url.Action("LabQueue", new { page = Model.CurrentPage + 1, search = Model.Search })">Next</a></li>
+                        <li class="page-item"><a class="page-link" href="@Url.Action("LabQueue", new { page = Model.QueueViewModel.CurrentPage + 1, search = Model.QueueViewModel.Search })">Next</a></li>
                     }
                 </ul>
             </nav>
