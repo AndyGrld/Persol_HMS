@@ -37,6 +37,7 @@
         </a>
     </div>
     <div class="right">
+    <h2 id="title" class="text-center">Create a new patient</h2>
         <div class="form-check form-switch">
             <input class="form-check-input" type="checkbox" role="switch" id="isNew" onclick="display()">
             <label class="form-check-label" for="isNew">Has Patient been at the hospital before?</label>
@@ -120,6 +121,7 @@
             const toggle = document.getElementById("isNew")
             const newContainer = document.querySelector(".forNewPatient")
             const oldContainer = document.querySelector(".forOldPatient")
+            const title = document.querySelector("#title")
             oldContainer.style.display = "none"
             toggle.value = "off";
 
@@ -130,10 +132,12 @@
                 {
                     oldContainer.style.display = "block"
                     newContainer.style.display = "none"
+					title.innerText = "Add existing patient to queue"
                 }else
                 {
                     oldContainer.style.display = "none"
                     newContainer.style.display = "block"
+					title.innerText = "Create a new patient"
                 }
             }
         </script>

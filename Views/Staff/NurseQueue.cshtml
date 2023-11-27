@@ -16,7 +16,7 @@
     </div>
 
     <div class="right">
-        <h2>Nurse Queue</h2>
+        <h2 class="text-center">Nurse Queue</h2>
         <form method="get" action="@Url.Action("NurseQueue")">
             <div class="input-group mb-3">
                 <input class="form-control" name="search" value="@Model.QueueViewModel.Search" type="text" placeholder="Search by Patient Id Number">
@@ -96,7 +96,7 @@
 
                     @if (Model.QueueViewModel.CurrentPage < Model.QueueViewModel.TotalPatients / Model.QueueViewModel.PageSize + 1)
                     {
-                        <li class="page-item"><a class="page-link" href="@Url.Action("NurseQueue", new { page = Model.QueueViewModel.CurrentPage + 1, search = Model.QueueViewModel+.Search })">Next</a></li>
+                        <li class="page-item"><a class="page-link" href="@Url.Action("NurseQueue", new { page = Model.QueueViewModel.CurrentPage + 1, search = Model.QueueViewModel.Search })">Next</a></li>
                     }
                 </ul>
             </nav>
