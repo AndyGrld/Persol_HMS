@@ -420,10 +420,11 @@ public class StaffController : Controller
                 RemovePatientFromQueue("Lab", patient.PatientNo);
                 _context.Labs.Add(labEntry);
                 await _context.SaveChangesAsync();
-				var medical = await _context.Medicals.FirstOrDefaultAsync(m => m.Date == DateTime.Now.Date);
+				var medical = await _context.Medicals.FirstOrDefaultAsync(m => (m.LabID == null)
+                && (m.PatientNo.Equals(labEntry.PatientNo)) );
 				if(medical != null)
 				{
-					medical.LabID = labEntry.ID;
+					medical.LabID = labEntry.ID;    
 				}
                 await _context.SaveChangesAsync();
                 TempData["ConfirmationMessage"] = $"Patient's lab added successfully";
