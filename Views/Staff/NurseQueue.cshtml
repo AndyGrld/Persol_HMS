@@ -1,4 +1,5 @@
-@model QueueViewModel
+@using Auth.Models.ViewModels
+@model VitalsQueueModel
 
 <partial name="Navbar" />
 
@@ -19,11 +20,11 @@
         <h2>Nurse Queue</h2>
         <form method="get" action="@Url.Action("NurseQueue")">
             <div class="input-group mb-3">
-                <input class="form-control" name="search" value="@Model.Search" type="text" placeholder="Search by Patient Id Number">
+                <input class="form-control" name="search" value="@Model.QueueViewModel.Search" type="text" placeholder="Search by Patient Id Number">
                 <button class="btn btn-outline-primary" type="submit">Search</button>
             </div>
         </form>
-        @if (Model.PatientsInLine.Any())
+        @if (Model.QueueViewModel.PatientsInLine.Any())
         {
             <table class="table table-hover">
                 <thead>
@@ -34,7 +35,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var patient in Model.PatientsInLine)
+                    @foreach (var patient in Model.QueueViewModel.PatientsInLine)
                     {
                         <tr>
                             <td>@patient.PatientNo</td>
@@ -45,25 +46,58 @@
                                 </a>
                             </td>
                         </tr>
+
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">firstname</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form asp-controller="Staff" asp-action="Nurse" autocomplete="off">
+                                            <div class="mb-3">
+                                                <label asp-for="Vital.Temperature" class="form-label">@ViewBag.Name's Temperature</label>
+                                                <input asp-for="Vital.Temperature" type="number" class="form-control" id="temperature">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label asp-for="Vital.Height" class="form-label">@ViewBag.Name's Height</label>
+                                                <input asp-for="Vital.Height" type="number" class="form-control">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label asp-for="Vital.Weight" class="form-label">@ViewBag.Name's Weight</label>
+                                                <input asp-for="Vital.Weight" type="number" class="form-control">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label asp-for="Vital.BloodPressure" class="form-label">@ViewBag.Name's Blood Pressure</label>
+                                                <input asp-for="Vital.BloodPressure" type="text" class="form-control">
+                                            </div>
+                                            <input asp-for="Vital.PatientNo" type="hidden" />
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     }
                 </tbody>
             </table>
 
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center">
-                    @if (Model.CurrentPage > 1)
+                    @if (Model.QueueViewModel.CurrentPage > 1)
                     {
-                        <li class="page-item"><a class="page-link" href="@Url.Action("NurseQueue", new { page = Model.CurrentPage - 1, search = Model.Search })">Previous</a></li>
+                        <li class="page-item"><a class="page-link" href="@Url.Action("NurseQueue", new { page = Model.QueueViewModel.CurrentPage - 1, search = Model.QueueViewModel.Search })">Previous</a></li>
                     }
 
-                    @for (int i = 1; i <= Model.TotalPatients / Model.PageSize + 1; i++)
+                    @for (int i = 1; i <= Model.QueueViewModel.TotalPatients / Model.QueueViewModel.PageSize + 1; i++)
                     {
-                        <li class="page-item"><a href="@Url.Action("NurseQueue", new { page = i, search = Model.Search })" class="@(i == Model.CurrentPage ? "active page-link" : "page-link")">@i</a></li>
+                        <li class="page-item"><a href="@Url.Action("NurseQueue", new { page = i, search = Model.QueueViewModel.Search })" class="@(i == Model.QueueViewModel.CurrentPage ? "active page-link" : "page-link")">@i</a></li>
                     }
 
-                    @if (Model.CurrentPage < Model.TotalPatients / Model.PageSize + 1)
+                    @if (Model.QueueViewModel.CurrentPage < Model.QueueViewModel.TotalPatients / Model.QueueViewModel.PageSize + 1)
                     {
-                        <li class="page-item"><a class="page-link" href="@Url.Action("NurseQueue", new { page = Model.CurrentPage + 1, search = Model.Search })">Next</a></li>
+                        <li class="page-item"><a class="page-link" href="@Url.Action("NurseQueue", new { page = Model.QueueViewModel.CurrentPage + 1, search = Model.QueueViewModel.Search })">Next</a></li>
                     }
                 </ul>
             </nav>

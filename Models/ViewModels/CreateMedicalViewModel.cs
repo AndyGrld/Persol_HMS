@@ -18,7 +18,7 @@ namespace Persol_HMS.Models.ViewModels
         public string Diagnoses { get; set; }
 
         [Required(ErrorMessage = "Ward Number is required.")]
-        public int WardNo { get; set; }
+        public int? WardNo { get; set; }
 
         [Display(Name = "Admitted?")]
         public bool IsAdmitted { get; set; }

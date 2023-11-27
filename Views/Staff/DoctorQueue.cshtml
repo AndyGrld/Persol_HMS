@@ -1,4 +1,4 @@
-@model QueueViewModel
+@model DoctorQueueModel
 
 <partial name="Navbar" />
 
@@ -15,13 +15,13 @@
         <h2>Doctor Queue</h2>
 
         <form method="get" action="@Url.Action("DoctorQueue")">
-            <div  class="input-group mb-3">
-                <input  class="form-control" name="search" value="@Model.Search" type="text" placeholder="Search by Patient Id Number">
-                <button  class="btn btn-outline-primary" type="submit">Search</button>
+            <div class="input-group mb-3">
+                <input class="form-control" name="search" value="@Model.QueueViewModel.Search" type="text" placeholder="Search by Patient Id Number">
+                <button class="btn btn-outline-primary" type="submit">Search</button>
             </div>
         </form>
 
-        @if (Model.PatientsInLine.Any())
+        @if (Model.QueueViewModel.PatientsInLine.Any())
         {
             <table class="table table-hover">
                 <thead>
@@ -32,7 +32,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var patient in Model.PatientsInLine)
+                    @foreach (var patient in Model.QueueViewModel.PatientsInLine)
                     {
                         <tr>
                             <td>@patient.PatientNo</td>
@@ -43,25 +43,81 @@
                                 </a>
                             </td>
                         </tr>
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">firstname</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form asp-action="SaveMedicalRecords" method="post" autocomplete="off">
+                                            <input type="hidden" asp-for="Medical.PatientNo" value="@Model.Medical.PatientNo" />
+                                            <div class="mb-3">
+                                                <label asp-for="Medical.Symptom" class="form-label">Symptoms</label>
+                                                <textarea asp-for="Medical.Symptom" class="form-control" rows="4"></textarea>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label asp-for="Medical.Diagnoses" class="form-label">Diagnoses</label>
+                                                <textarea asp-for="Medical.Diagnoses" class="form-control" rows="4"></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label">Is the patient to be admitted?</label>
+                                                <div class="form-check">
+                                                    <input asp-for="Medical.IsAdmitted" type="radio" class="form-check-input" id="IsAdmittedTrue" value="true">
+                                                    <label class="form-check-label" for="IsAdmittedTrue">Yes</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input asp-for="Medical.IsAdmitted" type="radio" class="form-check-input" id="IsAdmittedFalse" value="false">
+                                                    <label class="form-check-label" for="IsAdmittedFalse">No</label>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group" id="WardNoDiv" style="display: none;">
+                                                <label asp-for="Medical.WardNo" class="control-label">Ward Number</label>
+                                                <input asp-for="Medical.WardNo" type="text" class="form-control" id="WardNo">
+                                            </div>
+
+                                            @section Scripts {
+                                        <script type="text/javascript">
+                                            document.getElementById("IsAdmittedTrue").onchange = function () {
+                                                document.getElementById("WardNoDiv").style.display = this.checked ? "block" : "none";
+                                            };
+                                            document.getElementById("IsAdmittedFalse").onchange = function () {
+                                                document.getElementById("WardNoDiv").style.display = this.checked ? "none" : "block";
+                                            };
+                                        </script>
+                                            }
+
+                                            <div class="mb-3">
+                                                <label asp-for="Medical.Drug" class="form-label">Drug Name</label>
+                                                <input asp-for="Medical.Drug" class="form-control" />
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Save Medical Records</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     }
                 </tbody>
             </table>
 
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center">
-                    @if (Model.CurrentPage > 1)
+                    @if (Model.QueueViewModel.CurrentPage > 1)
                     {
-                        <li class="page-item"><a class="page-link" href="@Url.Action("DoctorQueue", new { page = Model.CurrentPage - 1, search = Model.Search })">Previous</a></li>
+                        <li class="page-item"><a class="page-link" href="@Url.Action("DoctorQueue", new { page = Model.QueueViewModel.CurrentPage - 1, search = Model.QueueViewModel.Search })">Previous</a></li>
                     }
 
-                    @for (int i = 1; i <= Model.TotalPatients / Model.PageSize + 1; i++)
+                    @for (int i = 1; i <= Model.QueueViewModel.TotalPatients / Model.QueueViewModel.PageSize + 1; i++)
                     {
-                        <li class="page-item"><a href="@Url.Action("DoctorQueue", new { page = i, search = Model.Search })" class="@(i == Model.CurrentPage ? "active page-link" : "page-link")">@i</a></li>
+                        <li class="page-item"><a href="@Url.Action("DoctorQueue", new { page = i, search = Model.QueueViewModel.Search })" class="@(i == Model.QueueViewModel.CurrentPage ? "active page-link" : "page-link")">@i</a></li>
                     }
 
-                    @if (Model.CurrentPage < Model.TotalPatients / Model.PageSize + 1)
+                    @if (Model.QueueViewModel.CurrentPage < Model.QueueViewModel.TotalPatients / Model.QueueViewModel.PageSize + 1)
                     {
-                        <li class="page-item"><a class="page-link" href="@Url.Action("DoctorQueue", new { page = Model.CurrentPage + 1, search = Model.Search })">Next</a></li>
+                        <li class="page-item"><a class="page-link" href="@Url.Action("DoctorQueue", new { page = Model.QueueViewModel.CurrentPage + 1, search = Model.QueueViewModel.Search })">Next</a></li>
                     }
                 </ul>
             </nav>
