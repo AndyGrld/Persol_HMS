@@ -1,10 +1,6 @@
-using System.Runtime.CompilerServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Persol_HMS.Data.Interfaces;
-using Microsoft.AspNetCore.Authorization;
-using Persol_HMS.Models;
-using Persol_HMS.Views.Staff;
 
 [Authorize]
 public class StaffController : Controller
@@ -89,7 +85,7 @@ public class StaffController : Controller
                 PatientNo = model.PatientNo,
                 Date = DateTime.Now.Date,
                 Diagnoses = model.Diagnoses,
-                WardNo = GenerateWardNumber(),
+                WardNo = model.IsAdmitted == true ? GenerateWardNumber() : null,                
                 IsAdmitted = model.IsAdmitted,
                 DateAdmitted = DateTime.Now.Date
             };
@@ -303,7 +299,7 @@ public class StaffController : Controller
                 var nurseQueue = Queue.GetOrCreateQueue(_context, vitalModel.PatientNo, DepartmentType.Nurse);
             }
 
-            
+
             return View(vitalModel);
         }
 
@@ -349,7 +345,7 @@ public class StaffController : Controller
         TempData["N_WarningMessage"] = $"Error processing patient's vitals. Please try again";
         return RedirectToAction(nameof(Nurse));
     }
-	
+
     [HttpGet]
     public IActionResult Lab(string? patientNo)
     {
@@ -394,9 +390,10 @@ public class StaffController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Lab([Bind("PatientNo, LabName, Result, Notes, Date")] Persol_HMS.Models.Lab lab)
     {
-        if (!IsUserAuthorized(4))
+        var user = _context.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
+        if (user.DepartmentId != 4)
         {
-            return RedirectToHome();
+            return RedirectToAction("Index", "Home");
         }
         if (!string.IsNullOrEmpty(lab.PatientNo) &&
             lab.LabName != null &&
@@ -408,35 +405,30 @@ public class StaffController : Controller
             if (patient != null)
             {
 
+                _context.Add(lab);
                 var labEntry = new Persol_HMS.Models.Lab
                 {
-					ID = _context.Labs.ToList().Count == 0 ? 1 : _context.Labs.Max(s => s.ID) + 1,
                     PatientNo = lab.PatientNo,
                     LabName = lab.LabName,
                     Result = lab.Result,
                     Notes = lab.Notes,
-                    Date = DateTime.Now.Date,
+                    Date = lab.Date,
                 };
                 RemovePatientFromQueue("Lab", patient.PatientNo);
                 _context.Labs.Add(labEntry);
                 await _context.SaveChangesAsync();
-				var medical = await _context.Medicals.FirstOrDefaultAsync(m => (m.LabID == null)
-                && (m.PatientNo.Equals(labEntry.PatientNo)) );
-				if(medical != null)
-				{
-					medical.LabID = labEntry.ID;    
-				}
-                await _context.SaveChangesAsync();
                 TempData["ConfirmationMessage"] = $"Patient's lab added successfully";
                 return RedirectToAction(nameof(Lab));
             }
-            
+
+
+
         }
         TempData["WarningMessage"] = $"Error processing patient's. Please try again";
         return RedirectToAction(nameof(Lab));
     }
 
-	
+
     public IActionResult NurseQueue(int page = 1, string search = "")
     {
         if (!IsUserAuthorized(2))
@@ -470,8 +462,8 @@ public class StaffController : Controller
 
         return View(model);
     }
-	
-	
+
+
     public IActionResult LabQueue(int page = 1, string search = "")
     {
         if (!IsUserAuthorized(4))
@@ -506,7 +498,7 @@ public class StaffController : Controller
         return View(model);
     }
 
-	
+
     public IActionResult DoctorQueue(int page = 1, string search = "")
     {
         if (!IsUserAuthorized(3))
@@ -576,7 +568,7 @@ public class StaffController : Controller
         return maxQueueNumber + 1;
     }
 
-	
+
     public IActionResult PatientList(int page = 1, string search = "")
     {
         int pageSize = 10;
@@ -600,7 +592,7 @@ public class StaffController : Controller
         return View(patients.ToList());
     }
 
-	
+
     public IActionResult PatientMedicalRecords(string patientNo)
     {
         var patient = _context.Patients
