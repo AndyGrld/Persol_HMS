@@ -76,10 +76,10 @@ public class StaffController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> SaveMedicalRecords(CreateMedicalViewModel model)
     {
-        // if (!IsUserAuthorized(3))
-        // {
-        //     return RedirectToHome();
-        // }
+        if (!IsUserAuthorized(3))
+        {
+            return RedirectToHome();
+        }
 
         if (model.PatientNo != null && model.Diagnoses != null && model.Dosage != null &&
             model.DrugName != null && model.IsAdmitted != null && model.Symptoms != null)
@@ -89,9 +89,9 @@ public class StaffController : Controller
                 PatientNo = model.PatientNo,
                 Date = DateTime.Now.Date,
                 Diagnoses = model.Diagnoses,
-                WardNo = GenerateWardNumber(),
+                WardNo = model.IsAdmitted == true ? GenerateWardNumber() : null,                
                 IsAdmitted = model.IsAdmitted,
-                DateAdmitted = DateTime.Now.Date
+                DateAdmitted = model.IsAdmitted == true ? DateTime.Now.Date : (DateTime?)null
             };
 
             var drug = new Drug
