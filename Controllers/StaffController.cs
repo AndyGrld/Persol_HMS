@@ -427,7 +427,13 @@ public class StaffController : Controller
             Search = search
         };
 
-        return View(model);
+        var viewModel = new VitalsQueueModel
+        {
+            Vital = new Vital(),
+            QueueViewModel = model
+        };
+
+        return View(viewModel);
     }
 	
 	
@@ -542,7 +548,13 @@ public class StaffController : Controller
             Search = search
         };
 
-        return View(model);
+        var viewModel = new DoctorQueueModel
+        {
+            Medical = new Medical(),
+            QueueViewModel = model
+        };
+
+        return View(viewModel);
     }
 
     private Patient GetNextPatientInLine(string status)
