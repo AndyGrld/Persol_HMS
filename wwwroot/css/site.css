@@ -11,10 +11,7 @@ html {
 html {
   position: relative;
   min-height: 100%;
-}
-
-body {
-  margin-bottom: 60px;
+  overflow-x: hidden;
 }
 
 .footer{
@@ -23,5 +20,47 @@ body {
   width: 100%;
   text-align: center;
   padding: 15px;
-  margin-top: 40px;
+  background-color: white;
+}
+
+.center-card{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 800px;
+  transform: translate(-50%, -50%);
+  padding: 10px;
+}
+
+.title{
+	margin: 20px 0;
+}
+.nav{
+	position: absolute;
+	width: 100vw;
+	left: 0;
+}
+.space{
+	position: relative;
+	height: 60px;
+}
+
+.grid{
+  display: grid;
+  grid-template-columns: auto 1fr;
+}
+.left{
+  margin: 1px solid black;
+  background-color: #eee;
+  height: 100vh;
+  margin-right: 10px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+.left-content{
+  margin-bottom: 10px;
+}
+.right{
+  padding: 10px;
 }
