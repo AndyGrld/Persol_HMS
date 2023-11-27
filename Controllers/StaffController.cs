@@ -30,10 +30,10 @@ public class StaffController : Controller
     [HttpGet]
     public async Task<IActionResult> Doctor(string? patientNo)
     {
-        // if (!IsUserAuthorized(3))
-        // {
-        //     return RedirectToHome();
-        // }
+        //if (!IsUserAuthorized(3))
+        //{
+        //    return RedirectToHome();
+        //}
 
         var patientDetails = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(patientNo));
 

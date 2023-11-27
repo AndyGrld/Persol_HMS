@@ -8,11 +8,11 @@
 <div class="grid">
     <div class="left">
         <a class="left-content" href="@Url.Action("NurseQueue")">
-            <button type="button" class="btn btn-primary">Move onto next patient</button>
+            <button type="button" class="btn btn-primary">Home</button>
          </a>
-        <a href="@Url.Action("NurseQueue")">
+        @* <a href="@Url.Action("NurseQueue")">
             <button type="button" class="btn btn-primary">Move onto next patient</button>
-        </a>
+        </a> *@
     </div>
 
     <div class="right">
@@ -96,7 +96,7 @@
 
                     @if (Model.QueueViewModel.CurrentPage < Model.QueueViewModel.TotalPatients / Model.QueueViewModel.PageSize + 1)
                     {
-                        <li class="page-item"><a class="page-link" href="@Url.Action("NurseQueue", new { page = Model.QueueViewModel.CurrentPage + 1, search = Model.QueueViewModel+.Search })">Next</a></li>
+                        <li class="page-item"><a class="page-link" href="@Url.Action("NurseQueue", new { page = Model.QueueViewModel.CurrentPage + 1, search = Model.QueueViewModel.Search })">Next</a></li>
                     }
                 </ul>
             </nav>
