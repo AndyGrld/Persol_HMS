@@ -2,68 +2,76 @@
 
 <partial name="Navbar" />
 
-
-<h2>Doctor Queue</h2>
-
-<form method="get" action="@Url.Action("DoctorQueue")">
-    <div  class="input-group mb-3">
-        <input  class="form-control" name="search" value="@Model.Search" type="text" placeholder="Search by Patient Id Number">
-        <button  class="btn btn-outline-primary" type="submit">Search</button>
+<div class="grid">
+    <div class="left">
+        <a class="left-content" href="@Url.Action("DoctorQueue")">
+            <button type="button" class="btn btn-primary">Move onto next patient</button>
+        </a>
+        <a href="@Url.Action("DoctorQueue")">
+            <button type="button" class="btn btn-primary">Move onto next patient</button>
+        </a>
     </div>
-</form>
-<h2>
-doctor name @ViewBag.uName
-</h2>
-@if (Model.PatientsInLine.Any())
-{
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th>PatientNo</th>
-                <th>QueueNo</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var patient in Model.PatientsInLine)
-            {
-                <tr>
-                    <td>@patient.PatientNo</td>
-                    <td>@patient.QueueNo</td>
-                    <td>
-                        <a href="@Url.Action("Doctor", new { patientNo = patient.PatientNo })">
-                            <button type="button" class="btn btn-primary">Diagnose Patient</button>
-                        </a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="right">
+        <h2>Doctor Queue</h2>
 
-    <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center">
-            @if (Model.CurrentPage > 1)
-            {
-                <li class="page-item"><a class="page-link" href="@Url.Action("DoctorQueue", new { page = Model.CurrentPage - 1, search = Model.Search })">Previous</a></li>
-            }
+        <form method="get" action="@Url.Action("DoctorQueue")">
+            <div  class="input-group mb-3">
+                <input  class="form-control" name="search" value="@Model.Search" type="text" placeholder="Search by Patient Id Number">
+                <button  class="btn btn-outline-primary" type="submit">Search</button>
+            </div>
+        </form>
 
-            @for (int i = 1; i <= Model.TotalPatients / Model.PageSize + 1; i++)
-            {
-                <li class="page-item"><a href="@Url.Action("DoctorQueue", new { page = i, search = Model.Search })" class="@(i == Model.CurrentPage ? "active page-link" : "page-link")">@i</a></li>
-            }
+        @if (Model.PatientsInLine.Any())
+        {
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>PatientNo</th>
+                        <th>QueueNo</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var patient in Model.PatientsInLine)
+                    {
+                        <tr>
+                            <td>@patient.PatientNo</td>
+                            <td>@patient.QueueNo</td>
+                            <td>
+                                <a href="@Url.Action("Doctor", new { patientNo = patient.PatientNo })">
+                                    <button type="button" class="btn btn-primary">Diagnose Patient</button>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
 
-            @if (Model.CurrentPage < Model.TotalPatients / Model.PageSize + 1)
-            {
-                <li class="page-item"><a class="page-link" href="@Url.Action("DoctorQueue", new { page = Model.CurrentPage + 1, search = Model.Search })">Next</a></li>
-            }
-        </ul>
-    </nav>
-}
-else
-{
-    <p>No patients in line.</p>
-}
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    @if (Model.CurrentPage > 1)
+                    {
+                        <li class="page-item"><a class="page-link" href="@Url.Action("DoctorQueue", new { page = Model.CurrentPage - 1, search = Model.Search })">Previous</a></li>
+                    }
 
+                    @for (int i = 1; i <= Model.TotalPatients / Model.PageSize + 1; i++)
+                    {
+                        <li class="page-item"><a href="@Url.Action("DoctorQueue", new { page = i, search = Model.Search })" class="@(i == Model.CurrentPage ? "active page-link" : "page-link")">@i</a></li>
+                    }
+
+                    @if (Model.CurrentPage < Model.TotalPatients / Model.PageSize + 1)
+                    {
+                        <li class="page-item"><a class="page-link" href="@Url.Action("DoctorQueue", new { page = Model.CurrentPage + 1, search = Model.Search })">Next</a></li>
+                    }
+                </ul>
+            </nav>
+        }
+        else
+        {
+            <p>No patients in line.</p>
+        }
+    </div>
+</div>
 @section scripts {
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>

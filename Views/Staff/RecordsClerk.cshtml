@@ -27,43 +27,52 @@
         </ul>
     </div>
 }
+<div class="grid">
+    <div class="left">
+        <a class="left-content" href="@Url.Action("RecordsClerk")">
+            <button type="button" class="btn btn-primary">Move onto next patient</button>
+        </a>
+        <a href="@Url.Action("RecordsClerk")">
+            <button type="button" class="btn btn-primary">Move onto next patient</button>
+        </a>
+    </div>
+    <div class="right">
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="isNew" onclick="display()">
+            <label class="form-check-label" for="isNew">Has Patient been at the hospital before?</label>
+        </div><br/>
 
-  <div class="form-check form-switch">
-    <input class="form-check-input" type="checkbox" role="switch" id="isNew" onclick="display()">
-    <label class="form-check-label" for="isNew">Has Patient been at the hospital before?</label>
-  </div><br/>
+        <form asp-action="CreateOrGetPatient" method="post" autocomplete="off">
+            <div class="forOldPatient">
+                <div class="mb-3">
+                    <label asp-for="PatientNo" class="form-label">Patient's Id Number</label>
+                    <input asp-for="PatientNo" type="text" class="form-control" id="oldPatientId" aria-describedby="emailHelp">
+                    <span asp-validation-for="PatientNo" class="text-danger"></span>
+                </div>
+            </div>
 
-<form asp-action="CreateOrGetPatient" method="post" autocomplete="off">
-  <div class="forOldPatient">
-    <div class="mb-3">
-      <label asp-for="PatientNo" class="form-label">Patient's Id Number</label>
-      <input asp-for="PatientNo" type="text" class="form-control" id="oldPatientId" aria-describedby="emailHelp">
-      <span asp-validation-for="PatientNo" class="text-danger"></span>
-    </div>
-  </div>
-
-  <div class="forNewPatient">
-    <div class="mb-3">
-      <label asp-for="FirstName" class="form-label">Patient's Firstname</label>
-      <input asp-for="FirstName" type="text" class="form-control">
-      <span asp-validation-for="FirstName" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-      <label asp-for="LastName" class="form-label">Patient's Lastname</label>
-      <input asp-for="LastName" type="text" class="form-control">
-      <span asp-validation-for="LastName" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-      <label asp-for="DateOfBirth" class="form-label">Patient's Date of Birth</label>
-      <input asp-for="DateOfBirth" type="date" class="form-control">
-      <span asp-validation-for="DateOfBirth" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Patient's Gender</label>
-      <select  asp-for="Gender" class="form-select" id="floatingSelect" aria-label="Floating label select example">
-        <option value="M">Male</option>
-        <option value="F">Female</option>
-      </select>
+        <div class="forNewPatient">
+            <div class="mb-3">
+                <label asp-for="FirstName" class="form-label">Patient's Firstname</label>
+                <input asp-for="FirstName" type="text" class="form-control">
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="LastName" class="form-label">Patient's Lastname</label>
+                <input asp-for="LastName" type="text" class="form-control">
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="DateOfBirth" class="form-label">Patient's Date of Birth</label>
+                <input asp-for="DateOfBirth" type="date" class="form-control">
+                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Patient's Gender</label>
+                <select  asp-for="Gender" class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
+                </select>
       @* <br/>
       <div class="btn-group-horizontal" role="group" aria-label="Horizontal radio toggle button group">
         <input asp-for="Gender" value="Male" type="radio" class="btn-check" name="gender" id="vbtn-radio1" autocomplete="off" checked>
@@ -71,61 +80,65 @@
         <input asp-for="Gender" value="Female" type="radio" class="btn-check" name="gender" id="vbtn-radio2" autocomplete="off">
         <label class="btn btn-outline-primary" for="vbtn-radio2">Female</label>
       </div> *@
-      <span asp-validation-for="Gender" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Enter Insurance Provider</label>
-      <input asp-for="InsuranceType" type="text" class="form-control">
-    </div>
-        <div class="mb-3">
-        <label class="form-label">Enter Insurance Number</label>
-        <input asp-for="InsuranceNo" type="text" class="form-control">
-    </div>
-        <div class="form-group">
-            <label asp-for="ContactNo" class="control-label">Patient Contact Number</label>
-            <input asp-for="ContactNo" type="text" class="form-control" id="ContactNo">
-            <span asp-validation-for="ContactNo" class="text-danger"></span>
+                <span asp-validation-for="Gender" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Enter Insurance Provider</label>
+                <input asp-for="InsuranceType" type="text" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Enter Insurance Number</label>
+                <input asp-for="InsuranceNo" type="text" class="form-control">
+            </div>
+            <div class="form-group">
+                <label asp-for="ContactNo" class="control-label">Patient Contact Number</label>
+                <input asp-for="ContactNo" type="text" class="form-control" id="ContactNo">
+                <span asp-validation-for="ContactNo" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="EmergencyContactFirstName" class="form-label">Patient's Emergency Contact First Name</label>
+                <input asp-for="EmergencyContactFirstName" type="text" class="form-control">
+                <span asp-validation-for="EmergencyContactFirstName" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="EmergencyContactLastName" class="form-label">Patient's Emergency Contact Last Name</label>
+                <input asp-for="EmergencyContactLastName" type="text" class="form-control">
+                <span asp-validation-for="EmergencyContactLastName" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="EmergencyContactNo" class="form-label">Patient's Emergency Contact Number</label>
+                <input asp-for="EmergencyContactNo" type="number" class="form-control">
+                <span asp-validation-for="EmergencyContactNo" class="text-danger"></span>
+            </div>
         </div>
 
-    <div class="mb-3">
-      <label asp-for="EmergencyContactFirstName" class="form-label">Patient's Emergency Contact First Name</label>
-      <input asp-for="EmergencyContactFirstName" type="text" class="form-control">
-      <span asp-validation-for="EmergencyContactFirstName" class="text-danger"></span>
+        <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+
+        <script>
+            const toggle = document.getElementById("isNew")
+            const newContainer = document.querySelector(".forNewPatient")
+            const oldContainer = document.querySelector(".forOldPatient")
+            oldContainer.style.display = "none"
+            toggle.value = "off";
+
+            function display()
+            {
+                toggle.value = toggle.value == "on" ? "off" : "on"
+                if(toggle.value == "on")
+                {
+                    oldContainer.style.display = "block"
+                    newContainer.style.display = "none"
+                }else
+                {
+                    oldContainer.style.display = "none"
+                    newContainer.style.display = "block"
+                }
+            }
+        </script>
     </div>
-    <div class="mb-3">
-      <label asp-for="EmergencyContactLastName" class="form-label">Patient's Emergency Contact Last Name</label>
-      <input asp-for="EmergencyContactLastName" type="text" class="form-control">
-      <span asp-validation-for="EmergencyContactLastName" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-      <label asp-for="EmergencyContactNo" class="form-label">Patient's Emergency Contact Number</label>
-      <input asp-for="EmergencyContactNo" type="number" class="form-control">
-      <span asp-validation-for="EmergencyContactNo" class="text-danger"></span>
-    </div>
-  </div>
-
-  <button type="submit" class="btn btn-primary">Submit</button>
-</form>
-
-<script>
-  const toggle = document.getElementById("isNew")
-  const newContainer = document.querySelector(".forNewPatient")
-  const oldContainer = document.querySelector(".forOldPatient")
-  oldContainer.style.display = "none"
-  toggle.value = "off";
-
-  function display(){
-    toggle.value = toggle.value == "on" ? "off" : "on"
-    if(toggle.value == "on"){
-      oldContainer.style.display = "block"
-      newContainer.style.display = "none"
-    }else{
-      oldContainer.style.display = "none"
-      newContainer.style.display = "block"
-    }
-  }
-</script>
-
+</div>
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
