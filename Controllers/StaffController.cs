@@ -69,39 +69,39 @@ public class StaffController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> SaveMedicalRecords(CreateMedicalViewModel model)
+    public async Task<IActionResult> SaveMedicalRecords(DoctorQueueModel model)
     {
         // if (!IsUserAuthorized(3))
         // {
         //     return RedirectToHome();
         // }
 
-        Console.WriteLine(model.PatientNo);
-        Console.WriteLine(model.Diagnoses);
-        Console.WriteLine(model.DrugName);
-        Console.WriteLine(model.Symptoms);
-        Console.WriteLine(model.IsAdmitted);
-        Console.WriteLine(model.Dosage);
+        Console.WriteLine(model.CreateMedicalViewModel.PatientNo);
+        Console.WriteLine(model.CreateMedicalViewModel.Diagnoses);
+        Console.WriteLine(model.CreateMedicalViewModel.DrugName);
+        Console.WriteLine(model.CreateMedicalViewModel.Symptoms);
+        Console.WriteLine(model.CreateMedicalViewModel.IsAdmitted);
+        Console.WriteLine(model.CreateMedicalViewModel.Dosage);
         Console.ReadLine();
-        if (!string.IsNullOrEmpty(model.PatientNo) && model.Diagnoses != null && model.Dosage != null &&
-            model.DrugName != null && model.Symptoms != null)
+        if (!string.IsNullOrEmpty(model.CreateMedicalViewModel.PatientNo) && model.CreateMedicalViewModel.Diagnoses != null && model.CreateMedicalViewModel.Dosage != null &&
+            model.CreateMedicalViewModel.DrugName != null && model.CreateMedicalViewModel.Symptoms != null)
         {
             var medicalRecord = new Medical
             {
-                PatientNo = model.PatientNo,
+                PatientNo = model.CreateMedicalViewModel.PatientNo,
                 Date = DateTime.Now.Date,
-                Diagnoses = model.Diagnoses,
-                WardNo = model.IsAdmitted == true ? GenerateWardNumber() : null,                
-                IsAdmitted = model.IsAdmitted,
-                DateAdmitted = model.IsAdmitted == true ? DateTime.Now.Date : (DateTime?)null
+                Diagnoses = model.CreateMedicalViewModel.Diagnoses,
+                WardNo = model.CreateMedicalViewModel.IsAdmitted == true ? GenerateWardNumber() : null,                
+                IsAdmitted = model.CreateMedicalViewModel.IsAdmitted,
+                DateAdmitted = model.CreateMedicalViewModel.IsAdmitted == true ? DateTime.Now.Date : (DateTime?)null
             };
 
             var drug = new Drug
             {
                 ID = _context.Drugs.Count() == 0 ? 1 : _context.Drugs.Max(d => d.ID) + 1,
-                PatientNo = model.PatientNo,
-                DrugName = model.DrugName,
-                Dosage = model.Dosage,
+                PatientNo = model.CreateMedicalViewModel.PatientNo,
+                DrugName = model.CreateMedicalViewModel.DrugName,
+                Dosage = model.CreateMedicalViewModel.Dosage,
                 Date = DateTime.Now.Date
             };
             _context.Drugs.Add(drug);
@@ -109,14 +109,14 @@ public class StaffController : Controller
             var symptom = new Symptom
             {
                 ID = _context.Symptoms.Count() == 0 ? 1 : _context.Symptoms.Max(s => s.ID) + 1,
-                PatientNo = model.PatientNo,
-                Symptoms = model.Symptoms,
+                PatientNo = model.CreateMedicalViewModel.PatientNo,
+                Symptoms = model.CreateMedicalViewModel.Symptoms,
                 Date = DateTime.Now.Date
             };
             _context.Symptoms.Add(symptom);
 
-            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(model.PatientNo));
-            var vital = await _context.Vitals.FirstOrDefaultAsync(v => v.PatientNo.Equals(model.PatientNo));
+            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(model.CreateMedicalViewModel.PatientNo));
+            var vital = await _context.Vitals.FirstOrDefaultAsync(v => v.PatientNo.Equals(model.CreateMedicalViewModel.PatientNo));
 
             if (drug != null)
             {
@@ -147,12 +147,12 @@ public class StaffController : Controller
             var labQueueNo = GetNextQueueNumber("Lab");
             var labQueue = new Queue
             {
-                PatientNo = model.PatientNo,
+                PatientNo = model.CreateMedicalViewModel.PatientNo,
                 QueueNo = labQueueNo,
                 Status = "Lab",
                 DateCreated = DateTime.Now
             };
-            RemovePatientFromQueue("Doctor", model.PatientNo);
+            RemovePatientFromQueue("Doctor", model.CreateMedicalViewModel.PatientNo);
             _context.Queues.Add(labQueue);
             await _context.SaveChangesAsync();
 
