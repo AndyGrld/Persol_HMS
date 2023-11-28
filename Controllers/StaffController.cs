@@ -5,6 +5,8 @@ using Persol_HMS.Data.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Persol_HMS.Models;
 using Persol_HMS.Views.Staff;
+using System.Linq.Expressions;
+using Lab = Persol_HMS.Models.Lab;
 
 // [Authorize]
 public class StaffController : Controller
@@ -88,7 +90,7 @@ public class StaffController : Controller
                 DateAdmitted = model.CreateMedicalViewModel.IsAdmitted == true ? DateTime.Now.Date : (DateTime?)null
             };
 
-            var drug = new Drug
+            var drugs = new Drug
             {
                 ID = _context.Drugs.Count() == 0 ? 1 : _context.Drugs.Max(d => d.ID) + 1,
                 PatientNo = model.CreateMedicalViewModel.PatientNo,
@@ -99,7 +101,7 @@ public class StaffController : Controller
             _context.Drugs.Add(drug);
             await _context.SaveChangesAsync();
 
-            var symptom = new Symptom
+            var symptoms = new Symptom
             {
                 ID = _context.Symptoms.Count() == 0 ? 1 : _context.Symptoms.Max(s => s.ID) + 1,
                 PatientNo = model.CreateMedicalViewModel.PatientNo,
@@ -110,15 +112,19 @@ public class StaffController : Controller
             await _context.SaveChangesAsync();
 
             var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(model.CreateMedicalViewModel.PatientNo));
-            var vital = await _context.Vitals.FirstOrDefaultAsync(v => v.PatientNo.Equals(model.CreateMedicalViewModel.PatientNo));
+            var vital = await _context.Vitals.LastOrDefaultAsync(v => v.PatientNo.Equals(model.CreateMedicalViewModel.PatientNo));
 
-            if (drug != null)
+            int? drugId = await GetDrugIdAsync(d => d.PatientNo == model.CreateMedicalViewModel.PatientNo && d.Date == DateTime.Now);
+            Drug drug = null;
+            if (drugId.HasValue)
             {
-                medicalRecord.DrugsID = drug.ID;
-                medicalRecord.Drug = drug;
+                drug = await _context.Drugs.FindAsync(drugId.Value);
             }
+            // Handle the case where drugId is null
 
-            if (symptom != null)
+            int? symptomId = await GetSymptomIdAsync(s => s.PatientNo == model.CreateMedicalViewModel.PatientNo && s.Date == DateTime.Now);
+            Symptom symptom = null;
+            if (symptomId.HasValue)
             {
                 medicalRecord.SymptomsID = symptom.ID;
                 medicalRecord.Symptom = symptom;
@@ -158,6 +164,8 @@ public class StaffController : Controller
         TempData["D_WarningMessage"] = $"Error processing patient's medical details. Please try again";
         return RedirectToAction(nameof(DoctorQueue));
     }
+
+
 
     private int GenerateWardNumber()
     {
@@ -325,6 +333,13 @@ public class StaffController : Controller
             var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo == vital.PatientNo);
             if (patient != null)
             {
+                int? vitalId = await GetVitalIdAsync(v => v.PatientNo == vital.PatientNo && v.Date == DateTime.Now);
+                if (vitalId.HasValue)
+                {
+                    vital.Id = vitalId.Value;
+                }
+                // Handle the case where vitalId is null
+
                 _context.Vitals.Update(vital);
 
                 var doctorQueueNo = GetNextQueueNumber("Doctor");
@@ -346,7 +361,8 @@ public class StaffController : Controller
         TempData["N_WarningMessage"] = $"Error processing patient's vitals. Please try again";
         return RedirectToAction(nameof(NurseQueue));
     }
-	
+
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Lab([Bind("PatientNo, LabName, Result, Notes")] Persol_HMS.Models.Lab lab)
@@ -371,21 +387,24 @@ public class StaffController : Controller
                     Date = DateTime.Today
                 };
                 RemovePatientFromQueue("Lab", patient.PatientNo);
-                _context.Labs.Add(labEntry);
+
+                
                 await _context.SaveChangesAsync();
-                TempData["ConfirmationMessage"] = $"Patient's lab added successfully";
+                TempData["L_ConfirmationMessage"] = $"Patient's lab added successfully, patient can leave";
                 return RedirectToAction(nameof(Lab));
 
             }
 
         }
 
-        TempData["WarningMessage"] = "Error processing patient's lab. Please try again";
+        TempData["L_WarningMessage"] = "Error processing patient's lab. Please try again";
         return RedirectToAction(nameof(LabQueue));
     }
 
 
-	
+
+
+
     public IActionResult NurseQueue(int page = 1, string search = "")
     {
         // if (!IsUserAuthorized(2))
@@ -644,5 +663,35 @@ public class StaffController : Controller
 
         return View(viewModel);
     }
+
+    public async Task<int?> GetIdAsync<T>(Expression<Func<T, bool>> predicate) where T : class
+    {
+        var entity = await _context.Set<T>().FirstOrDefaultAsync(predicate);
+        return (int?)entity?.GetType().GetProperty("ID")?.GetValue(entity);
+    }
+
+    public async Task<int?> GetVitalIdAsync(Expression<Func<Vital, bool>> predicate)
+    {
+        var vital = await _context.Vitals.FirstOrDefaultAsync(predicate);
+        return vital?.Id;
+    }
+
+    public async Task<int?> GetDrugIdAsync(Expression<Func<Drug, bool>> predicate)
+    {
+        var drug = await _context.Drugs.FirstOrDefaultAsync(predicate);
+        return drug?.ID;
+    }
+    public async Task<int?> GetSymptomIdAsync(Expression<Func<Symptom, bool>> predicate)
+    {
+        var symptom = await _context.Symptoms.FirstOrDefaultAsync(predicate);
+        return symptom?.ID;
+    }
+
+    public async Task<int?> GetLabIdAsync(Expression<Func<Lab, bool>> predicate)
+    {
+        var lab = await _context.Labs.FirstOrDefaultAsync(predicate);
+        return lab?.ID;
+    }
+
 
 }
