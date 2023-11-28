@@ -117,10 +117,10 @@
                                                         <label asp-for="CreateMedicalViewModel.WardNo" class="control-label">Ward Number</label>
                                                         <input asp-for="CreateMedicalViewModel.WardNo" type="text" class="form-control" id="WardNo">
                                                     </div>
-                                                    <div class="modal-footer">
-                                                        <input type="hidden" asp-for="CreateMedicalViewModel.PatientNo" id="PatientNoField" value="@patient.PatientNo" />
-                                                        <button type="submit" class="btn btn-primary">Save Medical Records</button>
-                                                    </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">Save</button>
+                                                </div>
                                             </form>
 
 
@@ -204,11 +204,12 @@
     </script>
     <script>
         $(document).ready(function () {
-            // Handle button click to set PatientNo in the hidden field
             $('.btn-primary').click(function () {
                 var patientNo = $(this).data('patient-no');
-                $('#PatientNoField').val(patientNo);
+                $/* ('#PatientNoField').val(patientNo); */
             });
+        });
+
 
             // Handle radio button change to toggle WardNoDiv visibility
             $('input[name="Medical.IsAdmitted"]').change(function () {
