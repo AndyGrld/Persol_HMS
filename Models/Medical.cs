@@ -10,11 +10,11 @@ namespace Persol_HMS.Models
         public int ID { get; set; }//
         public DateTime Date { get; set; }//
         [ForeignKey(nameof(Vital))]
-        public int VitalsID { get; set; }//
+        public int? VitalsID { get; set; }//
         [ForeignKey(nameof(Drug))]
-        public int DrugsID { get; set; }//
+        public int? DrugsID { get; set; }//
         [ForeignKey(nameof(Symptom))]
-        public int SymptomsID { get; set; }//
+        public int? SymptomsID { get; set; }//
         [ForeignKey(nameof(Lab))]
         public int? LabID { get; set; }
         public string Diagnoses { get; set; }//
