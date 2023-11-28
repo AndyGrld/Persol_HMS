@@ -81,7 +81,7 @@ public class StaffController : Controller
             var medicalRecord = new Medical
             {
                 PatientNo = model.CreateMedicalViewModel.PatientNo,
-                Date = DateTime.Now.Date,
+                Date = DateTime.Today,
                 Diagnoses = model.CreateMedicalViewModel.Diagnoses,
                 WardNo = model.CreateMedicalViewModel.IsAdmitted == true ? GenerateWardNumber() : null,                
                 IsAdmitted = model.CreateMedicalViewModel.IsAdmitted,
@@ -94,9 +94,10 @@ public class StaffController : Controller
                 PatientNo = model.CreateMedicalViewModel.PatientNo,
                 DrugName = model.CreateMedicalViewModel.DrugName,
                 Dosage = model.CreateMedicalViewModel.Dosage,
-                Date = DateTime.Now.Date
+                Date = DateTime.Today
             };
             _context.Drugs.Add(drug);
+            await _context.SaveChangesAsync();
 
             var symptom = new Symptom
             {
@@ -106,6 +107,7 @@ public class StaffController : Controller
                 Date = DateTime.Now.Date
             };
             _context.Symptoms.Add(symptom);
+            await _context.SaveChangesAsync();
 
             var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(model.CreateMedicalViewModel.PatientNo));
             var vital = await _context.Vitals.FirstOrDefaultAsync(v => v.PatientNo.Equals(model.CreateMedicalViewModel.PatientNo));
@@ -125,6 +127,7 @@ public class StaffController : Controller
             if (patient != null)
             {
                 medicalRecord.Patient = patient;
+				medicalRecord.PatientNo = patient.PatientNo;
             }
 
             if (vital != null)
@@ -357,6 +360,7 @@ public class StaffController : Controller
             
             if (patient != null)
             {
+				var medical = await _context.Medicals.OrderBy(m => m.ID).LastOrDefaultAsync(m => m.PatientNo == lab.PatientNo);
                 var labEntry = new Persol_HMS.Models.Lab
                 {
                     ID = _context.Labs.Count() == 0 ? 1 : _context.Labs.Max(s => s.ID) + 1,
@@ -366,17 +370,17 @@ public class StaffController : Controller
                     Notes = lab.Notes,
                     Date = DateTime.Today
                 };
-                Console.WriteLine(_context.Medicals.ToList().Count);
-                Console.ReadLine();
                 RemovePatientFromQueue("Lab", patient.PatientNo);
                 _context.Labs.Add(labEntry);
                 await _context.SaveChangesAsync();
-                TempData["L_ConfirmationMessage"] = $"Patient's lab added successfully";
+                TempData["ConfirmationMessage"] = $"Patient's lab added successfully";
                 return RedirectToAction(nameof(Lab));
+
             }
+
         }
 
-        TempData["L_WarningMessage"] = "Error processing patient's lab. Please try again";
+        TempData["WarningMessage"] = "Error processing patient's lab. Please try again";
         return RedirectToAction(nameof(LabQueue));
     }
 

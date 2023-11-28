@@ -102,7 +102,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label class="control-label">Is @patient.PatientNo to be admitted?</label>
+                                                        <label class="control-label">Is the patient to be admitted?</label>
                                                             <div class="form-check">
                                                                 <input asp-for="CreateMedicalViewModel.IsAdmitted" type="radio" class="form-check-input" id="IsAdmittedTrue" value="true">
                                                                 <label class="form-check-label" for="IsAdmittedTrue">Yes</label>
@@ -169,12 +169,11 @@
     </script>
     <script>
         $(document).ready(function () {
+            // Handle button click to set PatientNo in the hidden field
             $('.btn-primary').click(function () {
                 var patientNo = $(this).data('patient-no');
-                $/* ('#PatientNoField').val(patientNo); */
+                $('#PatientNoField').val(patientNo);
             });
-        });
-
 
             // Handle radio button change to toggle WardNoDiv visibility
             $('input[name="Medical.IsAdmitted"]').change(function () {

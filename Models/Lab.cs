@@ -14,6 +14,8 @@ namespace Persol_HMS.Models
         public string Result { get; set; }
         public string Notes { get; set; }
         public DateTime Date { get; set; }
+        [ForeignKey(nameof(Medical))]
+        public int? MedicalID { get; set; }
     }
 
 }

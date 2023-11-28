@@ -11,8 +11,8 @@ using Persol_HMS.Data;
 namespace Auth.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231124145318_migration1")]
-    partial class migration1
+    [Migration("20231128140102_migration01")]
+    partial class migration01
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -242,6 +242,9 @@ namespace Auth.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("MedicalID")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Notes")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -250,11 +253,14 @@ namespace Auth.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<bool?>("Result")
+                    b.Property<string>("Result")
                         .IsRequired()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("MedicalID")
+                        .IsUnique();
 
                     b.ToTable("Labs");
                 });
@@ -268,7 +274,7 @@ namespace Auth.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("DateAdmitted")
+                    b.Property<DateTime?>("DateAdmitted")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Diagnoses")
@@ -281,10 +287,6 @@ namespace Auth.Migrations
                     b.Property<bool>("IsAdmitted")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("LabID")
-                        .IsRequired()
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("PatientNo")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -295,14 +297,12 @@ namespace Auth.Migrations
                     b.Property<int>("VitalsID")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("WardNo")
+                    b.Property<int?>("WardNo")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("ID");
 
                     b.HasIndex("DrugsID");
-
-                    b.HasIndex("LabID");
 
                     b.HasIndex("PatientNo");
 
@@ -384,6 +384,8 @@ namespace Auth.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PatientNo");
 
                     b.ToTable("Queues");
                 });
@@ -604,17 +606,18 @@ namespace Auth.Migrations
                     b.Navigation("Patient");
                 });
 
+            modelBuilder.Entity("Persol_HMS.Models.Lab", b =>
+                {
+                    b.HasOne("Persol_HMS.Models.Medical", null)
+                        .WithOne("Lab")
+                        .HasForeignKey("Persol_HMS.Models.Lab", "MedicalID");
+                });
+
             modelBuilder.Entity("Persol_HMS.Models.Medical", b =>
                 {
                     b.HasOne("Persol_HMS.Models.Drug", "Drug")
                         .WithMany()
                         .HasForeignKey("DrugsID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Persol_HMS.Models.Lab", "Lab")
-                        .WithMany()
-                        .HasForeignKey("LabID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -638,13 +641,22 @@ namespace Auth.Migrations
 
                     b.Navigation("Drug");
 
-                    b.Navigation("Lab");
-
                     b.Navigation("Patient");
 
                     b.Navigation("Symptom");
 
                     b.Navigation("Vital");
+                });
+
+            modelBuilder.Entity("Persol_HMS.Models.Queue", b =>
+                {
+                    b.HasOne("Persol_HMS.Models.Patient", "Patient")
+                        .WithMany()
+                        .HasForeignKey("PatientNo")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Patient");
                 });
 
             modelBuilder.Entity("Persol_HMS.Models.Symptom", b =>
@@ -667,6 +679,12 @@ namespace Auth.Migrations
                         .IsRequired();
 
                     b.Navigation("Department");
+                });
+
+            modelBuilder.Entity("Persol_HMS.Models.Medical", b =>
+                {
+                    b.Navigation("Lab")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Persol_HMS.Models.Patient", b =>

@@ -199,7 +199,6 @@
                             VitalsID = 1,
                             Diagnoses = "Has Malaria",
                             DrugsID = 1,
-                            LabID = 1,
                             IsAdmitted = true,
                             SymptomsID = 1,
                             WardNo = 1,
