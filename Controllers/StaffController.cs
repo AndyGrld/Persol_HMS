@@ -76,13 +76,6 @@ public class StaffController : Controller
         //     return RedirectToHome();
         // }
 
-        Console.WriteLine(model.PatientNo);
-        Console.WriteLine(model.Diagnoses);
-        Console.WriteLine(model.DrugName);
-        Console.WriteLine(model.Symptoms);
-        Console.WriteLine(model.IsAdmitted);
-        Console.WriteLine(model.Dosage);
-        Console.ReadLine();
         if (!string.IsNullOrEmpty(model.PatientNo) && model.Diagnoses != null && model.Dosage != null &&
             model.DrugName != null && model.Symptoms != null)
         {
@@ -361,7 +354,7 @@ public class StaffController : Controller
             lab.Result != null &&
             lab.Notes != null)
         {
-            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo == lab.PatientNo);
+            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(lab.PatientNo));
             
             if (patient != null)
             {
@@ -375,23 +368,9 @@ public class StaffController : Controller
                     Notes = lab.Notes,
                     Date = DateTime.Now.Date,
                 };
-
-                // Find the corresponding Medical record for the current date and patient
-                var medical = await _context.Medicals
-                    .FirstOrDefaultAsync(m => m.PatientNo.Equals("HMS-1128-2023-A001"));
-                if (medical != null)
-                {
-                    // Associate the Lab entry with the Medical record
-                    medical.LabID = labEntry.ID;
-
-                    // Remove patient from Lab queue
-                    // RemovePatientFromQueue("Lab", patient.PatientNo);
-
-                    // Save changes to Lab and Medical records
-                    _context.Labs.Add(labEntry);
-                    await _context.SaveChangesAsync();
-                }
-
+                RemovePatientFromQueue("Lab", patient.PatientNo);
+                _context.Labs.Add(labEntry);
+                await _context.SaveChangesAsync();
                 TempData["ConfirmationMessage"] = "Patient's lab added successfully";
                 return RedirectToAction(nameof(LabQueue));
             }
