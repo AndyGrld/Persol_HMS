@@ -368,28 +368,23 @@ public class StaffController : Controller
             if (patient != null)
             {
 
+                _context.Add(lab);
                 var labEntry = new Persol_HMS.Models.Lab
                 {
-					ID = _context.Labs.ToList().Count == 0 ? 1 : _context.Labs.Max(s => s.ID) + 1,
                     PatientNo = lab.PatientNo,
                     LabName = lab.LabName,
                     Result = lab.Result,
                     Notes = lab.Notes,
-                    Date = DateTime.Now.Date,
+                    Date = lab.Date,
                 };
                 RemovePatientFromQueue("Lab", patient.PatientNo);
                 _context.Labs.Add(labEntry);
                 await _context.SaveChangesAsync();
-				var medical = await _context.Medicals.FirstOrDefaultAsync(m => m.Date == DateTime.Now.Date);
-				if(medical != null)
-				{
-					medical.LabID = labEntry.ID;
-				}
-                await _context.SaveChangesAsync();
                 TempData["ConfirmationMessage"] = $"Patient's lab added successfully";
                 return RedirectToAction(nameof(Lab));
+
             }
-            
+
         }
         TempData["WarningMessage"] = $"Error processing patient's. Please try again";
         return RedirectToAction(nameof(Lab));
