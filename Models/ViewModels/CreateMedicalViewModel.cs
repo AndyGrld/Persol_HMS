@@ -31,5 +31,8 @@ namespace Persol_HMS.Models.ViewModels
 
         [Required(ErrorMessage = "Dosage is required.")]
         public string Dosage { get; set; }
+
+        public List<string> DrugNames { get; set; }
+        public List<string> Dosages { get; set; }
     }
 }

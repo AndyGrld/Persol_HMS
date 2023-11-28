@@ -198,7 +198,6 @@
                             DateAdmitted = DateTime.Now,
                             VitalsID = 1,
                             Diagnoses = "Has Malaria",
-                            DrugsID = 1,
                             IsAdmitted = true,
                             SymptomsID = 1,
                             WardNo = 1,

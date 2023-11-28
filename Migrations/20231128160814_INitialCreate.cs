@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Auth.Migrations
+namespace Persol_HMS.Migrations
 {
-    public partial class migration01 : Migration
+    public partial class INitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -136,28 +136,6 @@ namespace Auth.Migrations
                         column: x => x.DepartmentId,
                         principalTable: "Departments",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Drugs",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    PatientNo = table.Column<string>(type: "TEXT", nullable: false),
-                    DrugName = table.Column<string>(type: "TEXT", nullable: false),
-                    Dosage = table.Column<string>(type: "TEXT", nullable: false),
-                    Date = table.Column<DateTime>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Drugs", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_Drugs_Patients_PatientNo",
-                        column: x => x.PatientNo,
-                        principalTable: "Patients",
-                        principalColumn: "PatientNo",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -296,8 +274,7 @@ namespace Auth.Migrations
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Date = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    VitalsID = table.Column<int>(type: "INTEGER", nullable: false),
-                    DrugsID = table.Column<int>(type: "INTEGER", nullable: false),
+                    VitalsID = table.Column<int>(type: "INTEGER", nullable: true),
                     SymptomsID = table.Column<int>(type: "INTEGER", nullable: false),
                     Diagnoses = table.Column<string>(type: "TEXT", nullable: false),
                     WardNo = table.Column<int>(type: "INTEGER", nullable: true),
@@ -308,12 +285,6 @@ namespace Auth.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Medicals", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_Medicals_Drugs_DrugsID",
-                        column: x => x.DrugsID,
-                        principalTable: "Drugs",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Medicals_Patients_PatientNo",
                         column: x => x.PatientNo,
@@ -330,7 +301,35 @@ namespace Auth.Migrations
                         name: "FK_Medicals_Vitals_VitalsID",
                         column: x => x.VitalsID,
                         principalTable: "Vitals",
-                        principalColumn: "Id",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Drugs",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    PatientNo = table.Column<string>(type: "TEXT", nullable: false),
+                    MedicalID = table.Column<int>(type: "INTEGER", nullable: false),
+                    DrugName = table.Column<string>(type: "TEXT", nullable: false),
+                    Dosage = table.Column<string>(type: "TEXT", nullable: false),
+                    Date = table.Column<DateTime>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Drugs", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Drugs_Medicals_MedicalID",
+                        column: x => x.MedicalID,
+                        principalTable: "Medicals",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Drugs_Patients_PatientNo",
+                        column: x => x.PatientNo,
+                        principalTable: "Patients",
+                        principalColumn: "PatientNo",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -425,6 +424,11 @@ namespace Auth.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Drugs_MedicalID",
+                table: "Drugs",
+                column: "MedicalID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Drugs_PatientNo",
                 table: "Drugs",
                 column: "PatientNo");
@@ -434,11 +438,6 @@ namespace Auth.Migrations
                 table: "Labs",
                 column: "MedicalID",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Medicals_DrugsID",
-                table: "Medicals",
-                column: "DrugsID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Medicals_PatientNo",
@@ -484,6 +483,9 @@ namespace Auth.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Drugs");
+
+            migrationBuilder.DropTable(
                 name: "Labs");
 
             migrationBuilder.DropTable(
@@ -500,9 +502,6 @@ namespace Auth.Migrations
 
             migrationBuilder.DropTable(
                 name: "Departments");
-
-            migrationBuilder.DropTable(
-                name: "Drugs");
 
             migrationBuilder.DropTable(
                 name: "Symptoms");

@@ -86,21 +86,24 @@
                                                             </div>
                                                         </div>
                                                     </div>
+                                                <div id="drugFields">
                                                     <div class="row">
                                                         <div class="col">
                                                                          
                                                             <div class="mb-3">
-                                                                <label asp-for="CreateMedicalViewModel.DrugName" class="form-label">Drug Name</label>
-                                                                <input asp-for="CreateMedicalViewModel.DrugName" class="form-control" />
+                                                                <label asp-for="CreateMedicalViewModel.DrugNames[0]" class="form-label">Drug Name</label>
+                                                                <input asp-for="CreateMedicalViewModel.DrugNames[0]" class="form-control" />
                                                             </div>
                                                         </div>
                                                         <div class="col">
                                                             <div class="mb-3">
-                                                                <label asp-for="CreateMedicalViewModel.Dosage" class="form-label">Dosage</label>
-                                                                <input asp-for="CreateMedicalViewModel.Dosage" class="form-control" />
+                                                                <label asp-for="CreateMedicalViewModel.Dosages[0]" class="form-label">Dosage</label>
+                                                                <input asp-for="CreateMedicalViewModel.Dosages[0]" class="form-control" />
                                                             </div>
                                                         </div>
                                                     </div>
+                                                </div>
+                                                <button id="addMoreDrugs" type="button">Add More Drugs</button>
                                                     <div class="form-group">
                                                         <label class="control-label">Is the patient to be admitted?</label>
                                                             <div class="form-check">
@@ -181,4 +184,28 @@
             });
         });
     </script>
+    <script>
+        $(document).ready(function () {
+            var index = 1;
+            $('#addMoreDrugs').click(function () {
+                $('#drugFields').append(`
+                            <div class="row">
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label class="form-label">Drug Name</label>
+                                        <input name="CreateMedicalViewModel.DrugNames[${index}]" id="drugName${index}" class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label class="form-label">Dosage</label>
+                                        <input name="CreateMedicalViewModel.Dosages[${index}]" id="dosage${index}" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        `);
+                index++;
+            });
+        });
+    </script>x
 }

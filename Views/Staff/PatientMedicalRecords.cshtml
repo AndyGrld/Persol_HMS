@@ -50,7 +50,11 @@
 					</div>
 					<p class="card-text"><b>Diagnoses: </b>@medical.Diagnoses</p>
 					<p class="card-text"><b>Symptoms: </b>@medical.Symptom?.Symptoms</p>
-					<p class="card-text"><b>Drugs: </b>@medical.Drug?.DrugName</p>
+					<p class="card-text"><b>Drugs: </b>@foreach(var drug in medical.Drugs)
+						{
+							@drug.DrugName
+						}
+					</p>
 					<p class="card-text"><b>Lab Results: </b>@medical.Lab?.Notes</p>
 				</div>
 			</div>

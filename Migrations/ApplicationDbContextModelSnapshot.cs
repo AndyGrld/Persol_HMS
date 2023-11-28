@@ -7,7 +7,7 @@ using Persol_HMS.Data;
 
 #nullable disable
 
-namespace Auth.Migrations
+namespace Persol_HMS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -15,7 +15,7 @@ namespace Auth.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.23");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.25");
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -216,11 +216,16 @@ namespace Auth.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("MedicalID")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("PatientNo")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("MedicalID");
 
                     b.HasIndex("PatientNo");
 
@@ -279,9 +284,6 @@ namespace Auth.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("DrugsID")
-                        .HasColumnType("INTEGER");
-
                     b.Property<bool>("IsAdmitted")
                         .HasColumnType("INTEGER");
 
@@ -292,15 +294,13 @@ namespace Auth.Migrations
                     b.Property<int>("SymptomsID")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("VitalsID")
+                    b.Property<int?>("VitalsID")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("WardNo")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("DrugsID");
 
                     b.HasIndex("PatientNo");
 
@@ -595,6 +595,12 @@ namespace Auth.Migrations
 
             modelBuilder.Entity("Persol_HMS.Models.Drug", b =>
                 {
+                    b.HasOne("Persol_HMS.Models.Medical", null)
+                        .WithMany("Drugs")
+                        .HasForeignKey("MedicalID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Persol_HMS.Models.Patient", "Patient")
                         .WithMany()
                         .HasForeignKey("PatientNo")
@@ -613,12 +619,6 @@ namespace Auth.Migrations
 
             modelBuilder.Entity("Persol_HMS.Models.Medical", b =>
                 {
-                    b.HasOne("Persol_HMS.Models.Drug", "Drug")
-                        .WithMany()
-                        .HasForeignKey("DrugsID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Persol_HMS.Models.Patient", "Patient")
                         .WithMany("Medicals")
                         .HasForeignKey("PatientNo")
@@ -633,11 +633,7 @@ namespace Auth.Migrations
 
                     b.HasOne("Persol_HMS.Models.Vital", "Vital")
                         .WithMany()
-                        .HasForeignKey("VitalsID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Drug");
+                        .HasForeignKey("VitalsID");
 
                     b.Navigation("Patient");
 
@@ -681,6 +677,8 @@ namespace Auth.Migrations
 
             modelBuilder.Entity("Persol_HMS.Models.Medical", b =>
                 {
+                    b.Navigation("Drugs");
+
                     b.Navigation("Lab")
                         .IsRequired();
                 });

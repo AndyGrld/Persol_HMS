@@ -7,6 +7,7 @@ using Persol_HMS.Models;
 using Persol_HMS.Views.Staff;
 using System.Linq.Expressions;
 using Lab = Persol_HMS.Models.Lab;
+using MessagePack;
 
 // [Authorize]
 public class StaffController : Controller
@@ -77,57 +78,45 @@ public class StaffController : Controller
         // {
         //     return RedirectToHome();
         // }
-        if (!string.IsNullOrEmpty(model.CreateMedicalViewModel.PatientNo) && model.CreateMedicalViewModel.Diagnoses != null && model.CreateMedicalViewModel.Dosage != null &&
-            model.CreateMedicalViewModel.DrugName != null && model.CreateMedicalViewModel.Symptoms != null)
+        if (!string.IsNullOrEmpty(model.CreateMedicalViewModel.PatientNo) && model.CreateMedicalViewModel.Diagnoses != null && model.CreateMedicalViewModel.Dosages != null &&
+            model.CreateMedicalViewModel.DrugNames != null && model.CreateMedicalViewModel.Symptoms != null)
         {
-            var medicalRecord = new Medical
-            {
-                PatientNo = model.CreateMedicalViewModel.PatientNo,
-                Date = DateTime.Today,
-                Diagnoses = model.CreateMedicalViewModel.Diagnoses,
-                WardNo = model.CreateMedicalViewModel.IsAdmitted == true ? GenerateWardNumber() : null,                
-                IsAdmitted = model.CreateMedicalViewModel.IsAdmitted,
-                DateAdmitted = model.CreateMedicalViewModel.IsAdmitted == true ? DateTime.Now.Date : (DateTime?)null
-            };
-
-            var drugs = new Drug
-            {
-                ID = _context.Drugs.Count() == 0 ? 1 : _context.Drugs.Max(d => d.ID) + 1,
-                PatientNo = model.CreateMedicalViewModel.PatientNo,
-                DrugName = model.CreateMedicalViewModel.DrugName,
-                Dosage = model.CreateMedicalViewModel.Dosage,
-                Date = DateTime.Today
-            };
-            _context.Drugs.Add(drugs);
-            await _context.SaveChangesAsync();
-
+			
             var symptoms = new Symptom
             {
                 ID = _context.Symptoms.Count() == 0 ? 1 : _context.Symptoms.Max(s => s.ID) + 1,
                 PatientNo = model.CreateMedicalViewModel.PatientNo,
                 Symptoms = model.CreateMedicalViewModel.Symptoms,
-                Date = DateTime.Now.Date
-            };
-            _context.Symptoms.Add(symptoms);
-            await _context.SaveChangesAsync();
+                Date = DateTime.Now.Date,
 
-            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(model.CreateMedicalViewModel.PatientNo));
-            var vital = await _context.Vitals.LastOrDefaultAsync(v => v.PatientNo.Equals(model.CreateMedicalViewModel.PatientNo));
+            };
+			_context.Symptoms.Add(symptoms);
+			await _context.SaveChangesAsync();
+
+			var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(model.CreateMedicalViewModel.PatientNo));
+            var vital = await _context.Vitals.OrderBy(l => l.Id).LastOrDefaultAsync(v => v.PatientNo.Equals(model.CreateMedicalViewModel.PatientNo));
 
             int? drugId = await GetDrugIdAsync(d => d.PatientNo == model.CreateMedicalViewModel.PatientNo && d.Date == DateTime.Now);
-            Drug drug = null;
-            if (drugId.HasValue)
-            {
-                drug = await _context.Drugs.FindAsync(drugId.Value);
-            }
+           
             // Handle the case where drugId is null
 
             int? symptomId = await GetSymptomIdAsync(s => s.PatientNo == model.CreateMedicalViewModel.PatientNo && s.Date == DateTime.Now);
-            Symptom symptom = null;
-            if (symptomId.HasValue)
+
+			var medicalRecord = new Medical
+			{
+				ID = _context.Medicals.Count() == 0 ? 1 : _context.Medicals.Max(s => s.ID) + 1,
+				PatientNo = model.CreateMedicalViewModel.PatientNo,
+				Date = DateTime.Today,
+				Diagnoses = model.CreateMedicalViewModel.Diagnoses,
+				WardNo = model.CreateMedicalViewModel.IsAdmitted == true ? GenerateWardNumber() : null,
+				IsAdmitted = model.CreateMedicalViewModel.IsAdmitted,
+				DateAdmitted = model.CreateMedicalViewModel.IsAdmitted == true ? DateTime.Now.Date : (DateTime?)null
+			};
+
+			if (symptoms != null)
             {
-                medicalRecord.SymptomsID = symptom.ID;
-                medicalRecord.Symptom = symptom;
+                medicalRecord.SymptomsID = symptoms.ID;
+                medicalRecord.Symptom = symptoms;
             }
 
             if (patient != null)
@@ -141,9 +130,25 @@ public class StaffController : Controller
                 medicalRecord.Vital = vital;
                 medicalRecord.VitalsID = vital.Id;
             }
+			_context.Medicals.Add(medicalRecord);
+			await _context.SaveChangesAsync();
 
-            _context.Medicals.Add(medicalRecord);
-            await _context.SaveChangesAsync();
+
+			for (int i = 0; i < model.CreateMedicalViewModel.DrugNames.Count; i++)
+			{
+				var drug = new Drug
+				{
+					MedicalID = medicalRecord.ID,
+					ID = _context.Drugs.Count() == 0 ? 1 : _context.Drugs.Max(d => d.ID) + 1,
+					PatientNo = model.CreateMedicalViewModel.PatientNo,
+					DrugName = model.CreateMedicalViewModel.DrugNames[i],
+					Dosage = model.CreateMedicalViewModel.Dosages[i],
+					Date = DateTime.Today
+				};
+				_context.Drugs.Add(drug);
+				await _context.SaveChangesAsync();
+			}
+			await _context.SaveChangesAsync();
 
             var labQueueNo = GetNextQueueNumber("Lab");
             var labQueue = new Queue
@@ -634,7 +639,7 @@ public class StaffController : Controller
             .Include(p => p.Medicals)
                 .ThenInclude(m => m.Symptom)
             .Include(p => p.Medicals)
-                .ThenInclude(m => m.Drug)
+                .ThenInclude(m => m.Drugs)
             .Include(p => p.Medicals)
                 .ThenInclude(m => m.Lab)
             .FirstOrDefault(p => p.PatientNo == patientNo);
@@ -651,7 +656,7 @@ public class StaffController : Controller
             Vital = m.Vital,
             Diagnoses = m.Diagnoses,
             Symptom = m.Symptom,
-            Drug = m.Drug,
+            Drugs = m.Drugs,
             Lab = m.Lab
         }).ToList();
 
