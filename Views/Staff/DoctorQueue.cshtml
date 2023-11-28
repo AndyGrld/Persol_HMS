@@ -18,9 +18,9 @@
 <div class="grid">
     <div class="left">
         <a class="left-content" href="@Url.Action("DoctorQueue")">
-            <button type="button" class="btn btn-primary">Home</button>
+            <button type="button" class="btn btn-primary">Move onto next patient</button>
         </a>
-        <a href="@Url.Action("GetNextPatientinLine")">
+        <a href="@Url.Action("DoctorQueue")">
             <button type="button" class="btn btn-primary">Move onto next patient</button>
         </a>
     </div>
@@ -51,72 +51,60 @@
                             <td>@patient.PatientNo</td>
                             <td>@patient.QueueNo</td>
                             <td>
-								<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal-@patient.PatientNo">
+                                <a href="@Url.Action("Doctor", new { patientNo = "@patient.PatientNo" })">
+                                <buttonclass="btn btn-primary">
 									Diagnose Patient
 								</button>
+                                </a>
+								@* <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal-@patient.PatientNo">
+									Diagnose Patient
+								</button> *@
                             </td>
                         </tr>
-                        <div class="modal fade" id="exampleModal-@patient.PatientNo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        @* <div class="modal fade" id="exampleModal-@patient.PatientNo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h1 class="modal-title fs-5" id="exampleModalLabel">Diagnose Patient</h1>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                        <div class="modal-body">
-                                            <form asp-action="SaveMedicalRecords" method="post" autocomplete="off">
-                                                <div class="container text-center">
-                                                    <div class="row">
-                                                        <div class="col">
-                                                            <div class="mb-3">
-                                                                <label asp-for="CreateMedicalViewModel.Symptoms" class="form-label">Symptoms</label>
-                                                                <textarea asp-for="CreateMedicalViewModel.Symptoms" class="form-control" rows="4"></textarea>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col">
-                                                            <div class="mb-3">
-                                                                <label asp-for="CreateMedicalViewModel.Diagnoses" class="form-label">Diagnoses</label>
-                                                                <textarea asp-for="CreateMedicalViewModel.Diagnoses" class="form-control" rows="4"></textarea>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col">
-                                                                         
-                                                            <div class="mb-3">
-                                                                <label asp-for="CreateMedicalViewModel.DrugName" class="form-label">Drug Name</label>
-                                                                <input asp-for="CreateMedicalViewModel.DrugName" class="form-control" />
-                                                            </div>
-                                                        </div>
-                                                        <div class="col">
-                                                            <div class="mb-3">
-                                                                <label asp-for="CreateMedicalViewModel.Dosage" class="form-label">Dosage</label>
-                                                                <input asp-for="CreateMedicalViewModel.Dosage" class="form-control" />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label class="control-label">Is the patient to be admitted?</label>
-                                                            <div class="form-check">
-                                                                <input asp-for="CreateMedicalViewModel.IsAdmitted" type="radio" class="form-check-input" id="IsAdmittedTrue" value="true">
-                                                                <label class="form-check-label" for="IsAdmittedTrue">Yes</label>
-                                                            </div>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input asp-for="CreateMedicalViewModel.IsAdmitted" type="radio" class="form-check-input" id="IsAdmittedFalse" value="false">
-                                                        <label class="form-check-label" for="IsAdmittedFalse">No</label>
-                                                    </div>
+                                    <div class="modal-body">
+                                        <form asp-action="SaveMedicalRecords" method="post" autocomplete="off">
+                                            <input type="hidden" asp-for="CreateMedicalViewModel.PatientNo" value="@patient.PatientNo"/>
+                                            <div class="mb-3">
+                                                <label asp-for="CreateMedicalViewModel.Symptoms" class="form-label">Symptoms</label>
+                                                <textarea asp-for="CreateMedicalViewModel.Symptoms" class="form-control" rows="4"></textarea>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label asp-for="CreateMedicalViewModel.Diagnoses" class="form-label">Diagnoses</label>
+                                                <textarea asp-for="CreateMedicalViewModel.Diagnoses" class="form-control" rows="4"></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label">Is the patient to be admitted?</label>
+                                                <div class="form-check">
+                                                    <input asp-for="CreateMedicalViewModel.IsAdmitted" type="radio" class="form-check-input" id="IsAdmittedTrue" value="true">
+                                                    <label class="form-check-label" for="IsAdmittedTrue">Yes</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input asp-for="CreateMedicalViewModel.IsAdmitted" type="radio" class="form-check-input" id="IsAdmittedFalse" value="false">
+                                                    <label class="form-check-label" for="IsAdmittedFalse">No</label>
+                                                </div>
+                                            </div>
 
-                                               
-                                                    <div class="form-group" id="WardNoDiv" style="display: none;">
-                                                        <label asp-for="CreateMedicalViewModel.WardNo" class="control-label">Ward Number</label>
-                                                        <input asp-for="CreateMedicalViewModel.WardNo" type="text" class="form-control" id="WardNo">
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <input type="hidden" asp-for="CreateMedicalViewModel.PatientNo" id="PatientNoField" value="@patient.PatientNo" />
-                                                        <button type="submit" class="btn btn-primary">Save Medical Records</button>
-                                                    </div>
-                                            </form>
+                                            <div class="form-group" style="display: none;">
+                                                <label asp-for="CreateMedicalViewModel.WardNo" class="control-label">Ward Number</label>
+                                                <input asp-for="CreateMedicalViewModel.WardNo" type="text" class="form-control" id="WardNo">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label asp-for="CreateMedicalViewModel.DrugName" class="form-label">Drug Name</label>
+                                                <input asp-for="CreateMedicalViewModel.DrugName" class="form-control" />
+                                            </div>
+                                            <div class="mb-3">
+                                                <label asp-for="CreateMedicalViewModel.Dosage" class="form-label">Dosage</label>
+                                                <input asp-for="CreateMedicalViewModel.Dosage" class="form-control" />
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Save Medical Records</button>
+                                        </form>
 
                                         @* <form asp-controller="Staff" asp-action="SaveMedicalRecords" method="post" autocomplete="off">
                                             <div class="mb-3">
@@ -156,7 +144,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> *@
                     }
                 </tbody>
             </table>

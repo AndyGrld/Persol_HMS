@@ -141,7 +141,7 @@ namespace Persol_HMS.Areas.Identity.Pages.Account
                                 returnUrl = Url.Action("NurseQueue", "Staff");
                                 break;
                             case 3:
-                                returnUrl = Url.Action("DoctorQueue", "Staff");
+                                returnUrl = Url.Action("Doctor", "Staff");
                                 break;
                             case 4:
                                 returnUrl = Url.Action("LabQueue", "Staff");
