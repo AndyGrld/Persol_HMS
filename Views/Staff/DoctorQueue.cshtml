@@ -51,10 +51,10 @@
                             <td>@patient.PatientNo</td>
                             <td>@patient.QueueNo</td>
                             <td>
-                                <a href="@Url.Action("Doctor", new { patientNo = "@patient.PatientNo" })">
-                                <buttonclass="btn btn-primary">
-									Diagnose Patient
-								</button>
+                                <a href="@Url.Action("Doctor", new { patientNo= patient.PatientNo })">
+                                    <button class="btn btn-primary">
+                                        Diagnose Patient
+                                    </button>
                                 </a>
 								@* <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal-@patient.PatientNo">
 									Diagnose Patient
@@ -106,7 +106,7 @@
                                             <button type="submit" class="btn btn-primary">Save Medical Records</button>
                                         </form>
 
-                                        @* <form asp-controller="Staff" asp-action="SaveMedicalRecords" method="post" autocomplete="off">
+                                        <form asp-controller="Staff" asp-action="SaveMedicalRecords" method="post" autocomplete="off">
                                             <div class="mb-3">
                                                 <label asp-for="CreateMedicalViewModel.Symptoms" class="form-label">Symptoms</label>
                                                 <textarea asp-for="CreateMedicalViewModel.Symptoms" class="form-control" rows="4"></textarea>
@@ -140,7 +140,7 @@
                                             </div>
                                             <input type="hidden" asp-for="CreateMedicalViewModel.PatientNo" id="PatientNoField" value="@patient.PatientNo"/>
                                             <button type="submit" class="btn btn-primary">Save Medical Records</button>
-                                        </form> *@
+                                        </form>
                                     </div>
                                 </div>
                             </div>
