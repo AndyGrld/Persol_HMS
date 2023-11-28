@@ -30,10 +30,10 @@ public class StaffController : Controller
     [HttpGet]
     public async Task<IActionResult> Doctor(string? patientNo)
     {
-        // if (!IsUserAuthorized(3))
-        // {
-        //     return RedirectToHome();
-        // }
+        //if (!IsUserAuthorized(3))
+        //{
+        //    return RedirectToHome();
+        //}
 
         var patientDetails = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(patientNo));
 
@@ -365,7 +365,7 @@ public class StaffController : Controller
             
             if (patient != null)
             {
-                // Create a new Lab entry
+
                 var labEntry = new Persol_HMS.Models.Lab
                 {
                     ID = _context.Labs.Count() == 0 ? 1 : _context.Labs.Max(s => s.ID) + 1,
@@ -373,28 +373,16 @@ public class StaffController : Controller
                     LabName = lab.LabName,
                     Result = lab.Result,
                     Notes = lab.Notes,
-                    Date = DateTime.Now.Date,
+                    Date = lab.Date,
                 };
+                RemovePatientFromQueue("Lab", patient.PatientNo);
+                _context.Labs.Add(labEntry);
+                await _context.SaveChangesAsync();
+                TempData["ConfirmationMessage"] = $"Patient's lab added successfully";
+                return RedirectToAction(nameof(Lab));
 
-                // Find the corresponding Medical record for the current date and patient
-                var medical = await _context.Medicals
-                    .FirstOrDefaultAsync(m => m.PatientNo.Equals("HMS-1128-2023-A001"));
-                if (medical != null)
-                {
-                    // Associate the Lab entry with the Medical record
-                    medical.LabID = labEntry.ID;
-
-                    // Remove patient from Lab queue
-                    // RemovePatientFromQueue("Lab", patient.PatientNo);
-
-                    // Save changes to Lab and Medical records
-                    _context.Labs.Add(labEntry);
-                    await _context.SaveChangesAsync();
-                }
-
-                TempData["ConfirmationMessage"] = "Patient's lab added successfully";
-                return RedirectToAction(nameof(LabQueue));
             }
+
         }
 
         TempData["WarningMessage"] = "Error processing patient's lab. Please try again";
