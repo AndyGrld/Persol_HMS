@@ -74,15 +74,13 @@
                                                 <div class="container text-center">
                                                     <div class="row">
                                                         <div class="col">
-                                                            <div class="mb-3">
-                                                                <label asp-for="CreateMedicalViewModel.Symptoms" class="form-label">Symptoms</label>
-                                                                <textarea asp-for="CreateMedicalViewModel.Symptoms" class="form-control" rows="4"></textarea>
+                                                            <div class="mb-2">
+                                                                <textarea asp-for="CreateMedicalViewModel.Symptoms" class="form-control" rows="4" placeholder="Symptoms"></textarea>
                                                             </div>
                                                         </div>
                                                         <div class="col">
-                                                            <div class="mb-3">
-                                                                <label asp-for="CreateMedicalViewModel.Diagnoses" class="form-label">Diagnoses</label>
-                                                                <textarea asp-for="CreateMedicalViewModel.Diagnoses" class="form-control" rows="4"></textarea>
+                                                            <div class="mb-2">
+                                                                <textarea asp-for="CreateMedicalViewModel.Diagnoses" class="form-control" rows="4" placeholder="Diagnoses"></textarea>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -90,20 +88,18 @@
                                                     <div class="row">
                                                         <div class="col">
                                                                          
-                                                            <div class="mb-3">
-                                                                <label asp-for="CreateMedicalViewModel.DrugNames[0]" class="form-label">Drug Name</label>
-                                                                <input asp-for="CreateMedicalViewModel.DrugNames[0]" class="form-control" />
+                                                            <div class="mb-2">
+                                                                <input asp-for="CreateMedicalViewModel.DrugNames[0]" class="form-control" placeholder="Drug Name"/>
                                                             </div>
                                                         </div>
                                                         <div class="col">
-                                                            <div class="mb-3">
-                                                                <label asp-for="CreateMedicalViewModel.Dosages[0]" class="form-label">Dosage</label>
-                                                                <input asp-for="CreateMedicalViewModel.Dosages[0]" class="form-control" />
+                                                            <div class="mb-2">
+                                                                <input asp-for="CreateMedicalViewModel.Dosages[0]" class="form-control" placeholder="Dosage"/>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <button id="addMoreDrugs" type="button">Add More Drugs</button>
+                                                
                                                     <div class="form-group">
                                                         <label class="control-label">Is the patient to be admitted?</label>
                                                             <div class="form-check">
@@ -123,6 +119,7 @@
                                                     </div>
 													<input asp-for="CreateMedicalViewModel.PatientNo" value="@patient.PatientNo" style="display:none" />
                                                     <div class="modal-footer">
+														<button id="addMoreDrugs" type="button" class="btn btn-primary w-100">Add More Drugs</button>
                                                         <button type="submit" class="btn btn-primary w-100">Save Medical Records</button>
                                                     </div>
 												</div>
@@ -191,15 +188,13 @@
                 $('#drugFields').append(`
                             <div class="row">
                                 <div class="col">
-                                    <div class="mb-3">
-                                        <label class="form-label">Drug Name</label>
-                                        <input name="CreateMedicalViewModel.DrugNames[${index}]" id="drugName${index}" class="form-control" />
+                                    <div class="mb-2">
+                                        <input placeholder="Drug Name" name="CreateMedicalViewModel.DrugNames[${index}]" id="drugName${index}" class="form-control" />
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <div class="mb-3">
-                                        <label class="form-label">Dosage</label>
-                                        <input name="CreateMedicalViewModel.Dosages[${index}]" id="dosage${index}" class="form-control" />
+                                    <div class="mb-2">
+                                        <input placeholder="Dosage" name="CreateMedicalViewModel.Dosages[${index}]" id="dosage${index}" class="form-control" />
                                     </div>
                                 </div>
                             </div>
