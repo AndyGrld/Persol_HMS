@@ -141,8 +141,8 @@ public class StaffController : Controller
 					MedicalID = medicalRecord.ID,
 					ID = _context.Drugs.Count() == 0 ? 1 : _context.Drugs.Max(d => d.ID) + 1,
 					PatientNo = model.CreateMedicalViewModel.PatientNo,
-					DrugName = model.CreateMedicalViewModel.DrugNames[i],
-					Dosage = model.CreateMedicalViewModel.Dosages[i],
+					DrugName = model.CreateMedicalViewModel.DrugNames[i].DrugName,
+					Dosage = model.CreateMedicalViewModel.DrugNames[i].Dosage,
 					Date = DateTime.Today
 				};
 				_context.Drugs.Add(drug);
@@ -471,6 +471,7 @@ public class StaffController : Controller
 
         var patientsInLine = query.ToList();
         var totalPatients = query.Count();
+
 
         var model = new QueueViewModel
         {

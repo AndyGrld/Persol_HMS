@@ -89,12 +89,12 @@
                                                         <div class="col">
                                                                          
                                                             <div class="mb-2">
-                                                                <input asp-for="CreateMedicalViewModel.DrugNames[0]" class="form-control" placeholder="Drug Name"/>
+                                                                <input asp-for="CreateMedicalViewModel.DrugNames[0].DrugName" class="form-control" placeholder="Drug Name"/>
                                                             </div>
                                                         </div>
                                                         <div class="col">
                                                             <div class="mb-2">
-                                                                <input asp-for="CreateMedicalViewModel.Dosages[0]" class="form-control" placeholder="Dosage"/>
+                                                                <input asp-for="CreateMedicalViewModel.DrugNames[0].Dosage" class="form-control" placeholder="Dosage"/>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -189,12 +189,12 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="mb-2">
-                                        <input placeholder="Drug Name" name="CreateMedicalViewModel.DrugNames[${index}]" id="drugName${index}" class="form-control" />
+                                        <input placeholder="Drug Name" name="CreateMedicalViewModel.DrugNames[${index}].DrugName" id="drugName${index}" class="form-control" />
                                     </div>
                                 </div>
                                 <div class="col">
                                     <div class="mb-2">
-                                        <input placeholder="Dosage" name="CreateMedicalViewModel.Dosages[${index}]" id="dosage${index}" class="form-control" />
+                                        <input placeholder="Dosage" name="CreateMedicalViewModel.DrugNames[${index}].Dosage" id="dosage${index}" class="form-control" />
                                     </div>
                                 </div>
                             </div>

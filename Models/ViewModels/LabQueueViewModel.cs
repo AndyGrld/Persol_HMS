@@ -9,5 +9,9 @@ namespace Persol_HMS.Models.ViewModels
     {
         public Lab Lab { get; set; }
         public QueueViewModel QueueViewModel { get; set; }
+
+        public List<Lab> LabNames { get; set; }
+        public List<string> LabResult { get; set; }
+        public List<string> LabNotes { get; set; }
     }
 }
