@@ -146,7 +146,6 @@ public class StaffController : Controller
 					Date = DateTime.Today
 				};
 				_context.Drugs.Add(drug);
-				await _context.SaveChangesAsync();
 			}
 			await _context.SaveChangesAsync();
 
