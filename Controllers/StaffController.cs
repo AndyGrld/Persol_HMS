@@ -27,54 +27,49 @@ public class StaffController : Controller
         return RedirectToAction("Index", "Home");
     }
 
-    // [HttpGet]
-    // public async Task<IActionResult> Doctor(string? patientNo)
-    // {
-    //     // if (!IsUserAuthorized(3))
-    //     // {
-    //     //     return RedirectToHome();
-    //     // }
+    [HttpGet]
+    public async Task<IActionResult> Doctor(string? patientNo)
+    {
+        // if (!IsUserAuthorized(3))
+        // {
+        //     return RedirectToHome();
+        // }
 
-    //     var patientDetails = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(patientNo));
+        var patientDetails = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(patientNo));
 
-    //     if (patientDetails != null)
-    //     {
-    //         var medicalViewModel = new CreateMedicalViewModel
-    //         {
-    //             PatientNo = patientNo,
-    //             FirstName = patientDetails.FirstName,
-    //             LastName = patientDetails.LastName
-    //         };
-    //         ViewBag.Name = patientDetails?.FirstName;
-    //         return View(medicalViewModel);
-    //     }
+        if (patientDetails != null)
+        {
+            var medicalViewModel = new CreateMedicalViewModel
+            {
+                PatientNo = patientNo,
+            };
+            ViewBag.Name = patientDetails?.FirstName;
+            return View(medicalViewModel);
+        }
 
-    //     var nextPatientInLine = GetNextPatientInLine("Doctor");
-    //     if (nextPatientInLine != null)
-    //     {
-    //         // Remove the 'var' keyword here
-    //         patientDetails = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo == nextPatientInLine.PatientNo);
+        var nextPatientInLine = GetNextPatientInLine("Doctor");
+        if (nextPatientInLine != null)
+        {
+            // Remove the 'var' keyword here
+            patientDetails = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo == nextPatientInLine.PatientNo);
 
-    //         if (patientDetails != null)
-    //         {
-    //             var medicalViewModel = new CreateMedicalViewModel
-    //             {
-    //                 PatientNo = patientDetails.PatientNo,
-    //                 FirstName = patientDetails.FirstName,
-    //                 LastName = patientDetails.LastName
-    //             };
-    //             ViewBag.Name = nextPatientInLine?.FirstName;
-    //             var doctorQueue = Queue.GetOrCreateQueue(_context, patientDetails.PatientNo, DepartmentType.Doctor);
-    //             return View(medicalViewModel);
-    //         }
-    //     }
+            if (patientDetails != null)
+            {
+                var medicalViewModel = new CreateMedicalViewModel
+                {
+                    PatientNo = patientDetails.PatientNo,
+                };
+                ViewBag.Name = nextPatientInLine?.FirstName;
+                var doctorQueue = Queue.GetOrCreateQueue(_context, patientDetails.PatientNo, DepartmentType.Doctor);
+                return View(medicalViewModel);
+            }
+        }
 
-    //     return RedirectToAction(nameof(DoctorQueue));
-    // }
+        return RedirectToAction(nameof(DoctorQueue));
+    }
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> SaveMedicalRecords([FromBody] CreateMedicalViewModel model)
+    public async Task<IActionResult> SaveMedicalRecords(CreateMedicalViewModel model)
     {
         // if (!IsUserAuthorized(3))
         // {
@@ -359,48 +354,53 @@ public class StaffController : Controller
 	
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Lab([Bind("PatientNo, LabName, Result, Notes, Date")] Persol_HMS.Models.Lab lab)
+    public async Task<IActionResult> Lab([Bind("PatientNo, LabName, Result, Notes")] Persol_HMS.Models.Lab lab)
     {
-        // if (!IsUserAuthorized(4))
-        // {
-        //     return RedirectToHome();
-        // }
         if (!string.IsNullOrEmpty(lab.PatientNo) &&
             lab.LabName != null &&
             lab.Result != null &&
-            lab.Date != null &&
             lab.Notes != null)
         {
             var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo == lab.PatientNo);
+            
             if (patient != null)
             {
-
+                // Create a new Lab entry
                 var labEntry = new Persol_HMS.Models.Lab
                 {
-					ID = _context.Labs.ToList().Count == 0 ? 1 : _context.Labs.Max(s => s.ID) + 1,
+                    ID = _context.Labs.Count() == 0 ? 1 : _context.Labs.Max(s => s.ID) + 1,
                     PatientNo = lab.PatientNo,
                     LabName = lab.LabName,
                     Result = lab.Result,
                     Notes = lab.Notes,
                     Date = DateTime.Now.Date,
                 };
-                RemovePatientFromQueue("Lab", patient.PatientNo);
-                _context.Labs.Add(labEntry);
-                await _context.SaveChangesAsync();
-				var medical = await _context.Medicals.FirstOrDefaultAsync(m => m.Date == DateTime.Now.Date);
-				if(medical != null)
-				{
-					medical.LabID = labEntry.ID;
-				}
-                await _context.SaveChangesAsync();
-                TempData["ConfirmationMessage"] = $"Patient's lab added successfully";
+
+                // Find the corresponding Medical record for the current date and patient
+                var medical = await _context.Medicals
+                    .FirstOrDefaultAsync(m => m.PatientNo.Equals("HMS-1128-2023-A001"));
+                if (medical != null)
+                {
+                    // Associate the Lab entry with the Medical record
+                    medical.LabID = labEntry.ID;
+
+                    // Remove patient from Lab queue
+                    // RemovePatientFromQueue("Lab", patient.PatientNo);
+
+                    // Save changes to Lab and Medical records
+                    _context.Labs.Add(labEntry);
+                    await _context.SaveChangesAsync();
+                }
+
+                TempData["ConfirmationMessage"] = "Patient's lab added successfully";
                 return RedirectToAction(nameof(LabQueue));
             }
-            
         }
-        TempData["WarningMessage"] = $"Error processing patient's. Please try again";
+
+        TempData["WarningMessage"] = "Error processing patient's lab. Please try again";
         return RedirectToAction(nameof(LabQueue));
     }
+
 
 	
     public IActionResult NurseQueue(int page = 1, string search = "")
