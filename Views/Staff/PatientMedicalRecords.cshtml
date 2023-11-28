@@ -55,7 +55,11 @@
 							@drug.DrugName
 						}
 					</p>
-					<p class="card-text"><b>Lab Results: </b>@medical.Lab?.Notes</p>
+					<p class="card-text"><b>Drugs: </b>@foreach(var lab in medical.Labs)
+						{
+							<p class="card-text">@Lab?.Notes</p>
+						}
+					</p>
 				</div>
 			</div>
 		}

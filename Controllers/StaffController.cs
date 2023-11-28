@@ -641,7 +641,7 @@ public class StaffController : Controller
             .Include(p => p.Medicals)
                 .ThenInclude(m => m.Drugs)
             .Include(p => p.Medicals)
-                .ThenInclude(m => m.Lab)
+                .ThenInclude(m => m.Labs)
             .FirstOrDefault(p => p.PatientNo == patientNo);
 
         if (patient == null)
