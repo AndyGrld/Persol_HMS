@@ -98,7 +98,7 @@ public class StaffController : Controller
                 Dosage = model.CreateMedicalViewModel.Dosage,
                 Date = DateTime.Today
             };
-            _context.Drugs.Add(drug);
+            _context.Drugs.Add(drugs);
             await _context.SaveChangesAsync();
 
             var symptoms = new Symptom
@@ -108,7 +108,7 @@ public class StaffController : Controller
                 Symptoms = model.CreateMedicalViewModel.Symptoms,
                 Date = DateTime.Now.Date
             };
-            _context.Symptoms.Add(symptom);
+            _context.Symptoms.Add(symptoms);
             await _context.SaveChangesAsync();
 
             var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(model.CreateMedicalViewModel.PatientNo));
