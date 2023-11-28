@@ -138,13 +138,13 @@ namespace Persol_HMS.Areas.Identity.Pages.Account
                                 returnUrl = Url.Action("RecordsClerk", "Staff");
                                 break;
                             case 2:
-                                returnUrl = Url.Action("Nurse", "Staff");
+                                returnUrl = Url.Action("NurseQueue", "Staff");
                                 break;
                             case 3:
-                                returnUrl = Url.Action("Doctor", "Staff");
+                                returnUrl = Url.Action("DoctorQueue", "Staff");
                                 break;
                             case 4:
-                                returnUrl = Url.Action("Lab", "Staff");
+                                returnUrl = Url.Action("LabQueue", "Staff");
                                 break;
                             case 5:
                                 returnUrl = Url.Action("Index", "Admin");

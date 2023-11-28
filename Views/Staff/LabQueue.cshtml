@@ -2,6 +2,19 @@
 
 <partial name="Navbar" />
 
+@if (TempData.ContainsKey("L_ConfirmationMessage"))
+{
+    <div class="alert alert-success">
+        @TempData["L_ConfirmationMessage"]
+    </div>
+}
+@if (TempData.ContainsKey("L_WarningMessage"))
+{
+    <div class="alert alert-danger">
+        @TempData["L_WarningMessage"]
+    </div>
+}
+
 <div class="grid">
     <div class="left">
         <a class="left-content" href="@Url.Action("Lab")">
@@ -37,13 +50,13 @@
                             <td>@patient.PatientNo</td>
                             <td>@patient.QueueNo</td>
                             <td>
-								<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+								<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal-@patient.PatientNo">
 									Check Labs
 								</button>
                             </td>
                         </tr>
 
-                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="exampleModal-@patient.PatientNo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -63,13 +76,13 @@
 												</div>
 												<div class="col">
 													<div class="mb-3">
-														<label asp-for="Lab.Result" for="floatingTextarea"  id="LabName">Result</label>
+														<label asp-for="Lab.Result" for="floatingTextarea"  id="LabResult">Result</label>
 														<textarea asp-for="Lab.Result"  style="height: 200px" class="form-control" placeholder="Lab Name" id="floatingTextarea"></textarea>
 													</div>
 												</div>
 												<div class="col">
 													<div class="mb-3">
-														<label asp-for="Lab.Notes" for="floatingTextarea"  id="LabName">Notes</label>
+														<label asp-for="Lab.Notes" for="floatingTextarea"  id="LabNotes">Notes</label>
 														<textarea asp-for="Lab.Notes"  style="height: 200px" class="form-control" placeholder="Lab Name" id="floatingTextarea"></textarea>
 													</div>
 												</div>
