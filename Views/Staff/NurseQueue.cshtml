@@ -2,7 +2,18 @@
 
 <partial name="Navbar" />
 
-
+@if (TempData.ContainsKey("N_ConfirmationMessage"))
+{
+    <div class="alert alert-success">
+        @TempData["N_ConfirmationMessage"]
+    </div>
+}
+@if (TempData.ContainsKey("N_WarningMessage"))
+{
+    <div class="alert alert-danger">
+        @TempData["N_WarningMessage"]
+    </div>
+}
 
 
 <div class="grid">
@@ -40,38 +51,38 @@
                             <td>@patient.PatientNo</td>
                             <td>@patient.QueueNo</td>
                             <td>
-                                <a href="@Url.Action("Nurse", new {patientNo = patient.PatientNo})">
-                                    <button type="button" class="btn btn-primary">Check Vitals</button>
-                                </a>
+								<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal-@patient.PatientNo">
+									Check Vitals
+								</button>
                             </td>
                         </tr>
 
-                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="exampleModal-@patient.PatientNo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h1 class="modal-title fs-5" id="exampleModalLabel">firstname</h1>
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Check Vitals</h1>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
                                         <form asp-controller="Staff" asp-action="Nurse" autocomplete="off">
                                             <div class="mb-3">
-                                                <label asp-for="Vital.Temperature" class="form-label">@ViewBag.Name's Temperature</label>
+                                                <label asp-for="Vital.Temperature" class="form-label">@patient.Patient.FirstName's Temperature</label>
                                                 <input asp-for="Vital.Temperature" type="number" class="form-control" id="temperature">
                                             </div>
                                             <div class="mb-3">
-                                                <label asp-for="Vital.Height" class="form-label">@ViewBag.Name's Height</label>
+                                                <label asp-for="Vital.Height" class="form-label">@patient.Patient.FirstName's Height</label>
                                                 <input asp-for="Vital.Height" type="number" class="form-control">
                                             </div>
                                             <div class="mb-3">
-                                                <label asp-for="Vital.Weight" class="form-label">@ViewBag.Name's Weight</label>
+                                                <label asp-for="Vital.Weight" class="form-label">@patient.Patient.FirstName's Weight</label>
                                                 <input asp-for="Vital.Weight" type="number" class="form-control">
                                             </div>
                                             <div class="mb-3">
-                                                <label asp-for="Vital.BloodPressure" class="form-label">@ViewBag.Name's Blood Pressure</label>
+                                                <label asp-for="Vital.BloodPressure" class="form-label">@patient.Patient.FirstName's Blood Pressure</label>
                                                 <input asp-for="Vital.BloodPressure" type="text" class="form-control">
                                             </div>
-                                            <input asp-for="Vital.PatientNo" type="hidden" />
+                                            <input asp-for="Vital.PatientNo" value="@patient.PatientNo" type="hidden" />
                                             <button type="submit" class="btn btn-primary">Submit</button>
                                         </form>
                                     </div>

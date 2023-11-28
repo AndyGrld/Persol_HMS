@@ -2,6 +2,19 @@
 
 <partial name="Navbar" />
 
+@if (TempData.ContainsKey("D_ConfirmationMessage"))
+{
+    <div class="alert alert-success">
+        @TempData["D_ConfirmationMessage"]
+    </div>
+}
+@if (TempData.ContainsKey("D_WarningMessage"))
+{
+    <div class="alert alert-danger">
+        @TempData["D_WarningMessage"]
+    </div>
+}
+
 <div class="grid">
     <div class="left">
         <a class="left-content" href="@Url.Action("DoctorQueue")">
@@ -38,61 +51,52 @@
                             <td>@patient.PatientNo</td>
                             <td>@patient.QueueNo</td>
                             <td>
-                                <a href="@Url.Action("Doctor", new { patientNo = patient.PatientNo })">
-                                    <button type="button" class="btn btn-primary">Diagnose Patient</button>
-                                </a>
+								<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal-@patient.PatientNo">
+									Diagnose Patient
+								</button>
                             </td>
                         </tr>
-                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="exampleModal-@patient.PatientNo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h1 class="modal-title fs-5" id="exampleModalLabel">firstname</h1>
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Diagnose Patient</h1>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <form asp-action="SaveMedicalRecords" method="post" autocomplete="off">
-                                            <input type="hidden" asp-for="Medical.PatientNo" value="@Model.Medical.PatientNo" />
+                                        <form asp-controller="Staff" asp-action="SaveMedicalRecords" autocomplete="off">
                                             <div class="mb-3">
-                                                <label asp-for="Medical.Symptom" class="form-label">Symptoms</label>
-                                                <textarea asp-for="Medical.Symptom" class="form-control" rows="4"></textarea>
+                                                <label asp-for="CreateMedicalViewModel.Symptoms" class="form-label">Symptoms</label>
+                                                <textarea asp-for="CreateMedicalViewModel.Symptoms" class="form-control" rows="4"></textarea>
                                             </div>
                                             <div class="mb-3">
-                                                <label asp-for="Medical.Diagnoses" class="form-label">Diagnoses</label>
-                                                <textarea asp-for="Medical.Diagnoses" class="form-control" rows="4"></textarea>
+                                                <label asp-for="CreateMedicalViewModel.Diagnoses" class="form-label">Diagnoses</label>
+                                                <textarea asp-for="CreateMedicalViewModel.Diagnoses" class="form-control" rows="4"></textarea>
                                             </div>
                                             <div class="form-group">
-                                                <label class="control-label">Is the patient to be admitted?</label>
+                                                <label class="control-label">Is @patient.Patient.FirstName to be admitted?</label>
                                                 <div class="form-check">
-                                                    <input asp-for="Medical.IsAdmitted" type="radio" class="form-check-input" id="IsAdmittedTrue" value="true">
+                                                    <input asp-for="CreateMedicalViewModel.IsAdmitted" type="radio" class="form-check-input" id="IsAdmittedTrue" value="true">
                                                     <label class="form-check-label" for="IsAdmittedTrue">Yes</label>
                                                 </div>
                                                 <div class="form-check">
-                                                    <input asp-for="Medical.IsAdmitted" type="radio" class="form-check-input" id="IsAdmittedFalse" value="false">
+                                                    <input asp-for="CreateMedicalViewModel.IsAdmitted" type="radio" class="form-check-input" id="IsAdmittedFalse" value="false">
                                                     <label class="form-check-label" for="IsAdmittedFalse">No</label>
                                                 </div>
                                             </div>
-
                                             <div class="form-group" id="WardNoDiv" style="display: none;">
-                                                <label asp-for="Medical.WardNo" class="control-label">Ward Number</label>
-                                                <input asp-for="Medical.WardNo" type="text" class="form-control" id="WardNo">
+                                                <label asp-for="CreateMedicalViewModel.WardNo" class="control-label">Ward Number</label>
+                                                <input asp-for="CreateMedicalViewModel.WardNo" type="text" class="form-control" id="WardNo">
                                             </div>
-
-                                            @section Scripts {
-                                        <script type="text/javascript">
-                                            document.getElementById("IsAdmittedTrue").onchange = function () {
-                                                document.getElementById("WardNoDiv").style.display = this.checked ? "block" : "none";
-                                            };
-                                            document.getElementById("IsAdmittedFalse").onchange = function () {
-                                                document.getElementById("WardNoDiv").style.display = this.checked ? "none" : "block";
-                                            };
-                                        </script>
-                                            }
-
                                             <div class="mb-3">
-                                                <label asp-for="Medical.Drug" class="form-label">Drug Name</label>
-                                                <input asp-for="Medical.Drug" class="form-control" />
+                                                <label asp-for="CreateMedicalViewModel.DrugName" class="form-label">Drug Name</label>
+                                                <input asp-for="CreateMedicalViewModel.DrugName" class="form-control" />
                                             </div>
+                                            <div class="mb-3">
+                                                <label asp-for="CreateMedicalViewModel.Dosage" class="form-label">Drug Dosage</label>
+                                                <input asp-for="CreateMedicalViewModel.Dosage" class="form-control" />
+                                            </div>
+                                            <input type="hidden" asp-for="CreateMedicalViewModel.PatientNo" id="PatientNoField" value="@patient.PatientNo"/>
                                             <button type="submit" class="btn btn-primary">Save Medical Records</button>
                                         </form>
                                     </div>
@@ -131,12 +135,24 @@
 @section scripts {
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
+        document.getElementById("IsAdmittedTrue").onchange = function () {
+            document.getElementById("WardNoDiv").style.display = this.checked ? "block" : "none";
+        };
+        document.getElementById("IsAdmittedFalse").onchange = function () {
+            document.getElementById("WardNoDiv").style.display = this.checked ? "none" : "block";
+        };
+    </script>
+    <script>
         $(document).ready(function () {
-            $('.diagnose-patient').click(function () {
+            // Handle button click to set PatientNo in the hidden field
+            $('.btn-primary').click(function () {
                 var patientNo = $(this).data('patient-no');
+                $('#PatientNoField').val(patientNo);
+            });
 
-                // Redirect to the Doctor controller with the patientNo
-                window.location.href = '@Url.Action("Doctor", "Staff")?patientNo=' + encodeURIComponent(patientNo);
+            // Handle radio button change to toggle WardNoDiv visibility
+            $('input[name="Medical.IsAdmitted"]').change(function () {
+                $('#WardNoDiv').toggle(this.value === 'true');
             });
         });
     </script>

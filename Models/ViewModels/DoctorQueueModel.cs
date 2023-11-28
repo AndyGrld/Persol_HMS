@@ -3,7 +3,7 @@
     public class DoctorQueueModel
     {
 
-            public Medical Medical { get; set; }
+            public CreateMedicalViewModel CreateMedicalViewModel { get; set; }
             public QueueViewModel QueueViewModel { get; set; }
 
     }
