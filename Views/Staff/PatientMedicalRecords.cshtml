@@ -7,41 +7,53 @@
     ViewData["Title"] = "Patient Medical Records";
 }
 
-<h2>@($"Medical Records for {Model.Patient.FirstName} {Model.Patient.LastName}")</h2>
-<h2>@($"{Model.Patient.PatientNo}")</h2>
-
-@foreach (var medical in Model.MedicalRecords)
-{
-    <div class="card my-3">
-        <div class="card-header row">
-            <div class="col">
-                <h5>Medical Record ID: @medical.ID</h5>
-            </div>
-            <div class="col" style="text-align:right">
-                <h5>@medical.Date.ToShortDateString()</h5>
-            </div>
-        </div>
-        <div class="card-body">
-            <div class="row mb-2">
-                <div class="col">
-                    <p class="card-text"><b>Temperature: </b>@medical.Vital.Temperature °C</p>
-                </div>
-                <div class="col">
-                    <p class="card-text"><b>Height: </b>@medical.Vital.Height</p>
-                </div>
-            </div>
-            <div class="row mb-2">
-                <div class="col">
-                    <p class="card-text"><b>Weight: </b>@medical.Vital.Weight</p>
-                </div>
-                <div class="col">
-                    <p class="card-text"><b>Blood Pressure: </b>@medical.Vital.BloodPressure mmHg</p>
-                </div>
-            </div>
-            <p class="card-text"><b>Diagnoses: </b>@medical.Diagnoses</p>
-            <p class="card-text"><b>Symptoms: </b>@medical.Symptom?.Symptoms</p>
-            <p class="card-text"><b>Drugs: </b>@medical.Drug?.DrugName</p>
-            <p class="card-text"><b>Lab Results: </b>@medical.Lab?.Notes</p>
-        </div>
+<div class="grid">
+    <div class="left">
+        <a class="left-content" href="@Url.Action("RecordsClerk")">
+            <button type="button" class="btn btn-primary w-100">Home</button>
+        </a>
+        @*  <a href="@Url.Action("Lab")">
+        <button type="button" class="btn btn-primary w-100">Move onto next patient</button>
+        </a> *@
     </div>
-}
+    <div class="right">
+		<h2>@($"Medical Records for {Model.Patient.FirstName} {Model.Patient.LastName}")</h2>
+		<h2>@($"{Model.Patient.PatientNo}")</h2>
+
+		@foreach (var medical in Model.MedicalRecords)
+		{
+			<div class="card my-3">
+				<div class="card-header row">
+					<div class="col">
+						<h5>Medical Record ID: @medical.ID</h5>
+					</div>
+					<div class="col" style="text-align:right">
+						<h5>@medical.Date.ToShortDateString()</h5>
+					</div>
+				</div>
+				<div class="card-body">
+					<div class="row mb-2">
+						<div class="col">
+							<p class="card-text"><b>Temperature: </b>@medical.Vital.Temperature °C</p>
+						</div>
+						<div class="col">
+							<p class="card-text"><b>Height: </b>@medical.Vital.Height</p>
+						</div>
+					</div>
+					<div class="row mb-2">
+						<div class="col">
+							<p class="card-text"><b>Weight: </b>@medical.Vital.Weight</p>
+						</div>
+						<div class="col">
+							<p class="card-text"><b>Blood Pressure: </b>@medical.Vital.BloodPressure mmHg</p>
+						</div>
+					</div>
+					<p class="card-text"><b>Diagnoses: </b>@medical.Diagnoses</p>
+					<p class="card-text"><b>Symptoms: </b>@medical.Symptom?.Symptoms</p>
+					<p class="card-text"><b>Drugs: </b>@medical.Drug?.DrugName</p>
+					<p class="card-text"><b>Lab Results: </b>@medical.Lab?.Notes</p>
+				</div>
+			</div>
+		}
+    </div>
+</div>

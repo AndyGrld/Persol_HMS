@@ -124,7 +124,7 @@
                                             </form>
 
 
-                                        @* <form asp-controller="Staff" asp-action="SaveMedicalRecords" method="post" autocomplete="off">
+                                        <form asp-controller="Staff" asp-action="SaveMedicalRecords" method="post" autocomplete="off">
                                             <div class="mb-3">
                                                 <label asp-for="CreateMedicalViewModel.Symptoms" class="form-label">Symptoms</label>
                                                 <textarea asp-for="CreateMedicalViewModel.Symptoms" class="form-control" rows="4"></textarea>
@@ -158,7 +158,7 @@
                                             </div>
                                             <input type="hidden" asp-for="CreateMedicalViewModel.PatientNo" id="PatientNoField" value="@patient.PatientNo"/>
                                             <button type="submit" class="btn btn-primary">Save Medical Records</button>
-                                        </form> *@
+                                        </form>
                                     </div>
                                 </div>
                             </div>
