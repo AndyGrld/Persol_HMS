@@ -75,14 +75,6 @@ public class StaffController : Controller
         // {
         //     return RedirectToHome();
         // }
-
-        Console.WriteLine(model.CreateMedicalViewModel.PatientNo);
-        Console.WriteLine(model.CreateMedicalViewModel.Diagnoses);
-        Console.WriteLine(model.CreateMedicalViewModel.DrugName);
-        Console.WriteLine(model.CreateMedicalViewModel.Symptoms);
-        Console.WriteLine(model.CreateMedicalViewModel.IsAdmitted);
-        Console.WriteLine(model.CreateMedicalViewModel.Dosage);
-        Console.ReadLine();
         if (!string.IsNullOrEmpty(model.CreateMedicalViewModel.PatientNo) && model.CreateMedicalViewModel.Diagnoses != null && model.CreateMedicalViewModel.Dosage != null &&
             model.CreateMedicalViewModel.DrugName != null && model.CreateMedicalViewModel.Symptoms != null)
         {
