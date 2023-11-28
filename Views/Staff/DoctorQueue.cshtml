@@ -51,12 +51,17 @@
                             <td>@patient.PatientNo</td>
                             <td>@patient.QueueNo</td>
                             <td>
-								<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal-@patient.PatientNo">
+                                <a href="@Url.Action("Doctor", new { patientNo = "@patient.PatientNo" })">
+                                <buttonclass="btn btn-primary">
 									Diagnose Patient
 								</button>
+                                </a>
+								@* <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal-@patient.PatientNo">
+									Diagnose Patient
+								</button> *@
                             </td>
                         </tr>
-                        <div class="modal fade" id="exampleModal-@patient.PatientNo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        @* <div class="modal fade" id="exampleModal-@patient.PatientNo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -86,7 +91,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="form-group" id="WardNoDiv" style="display: none;">
+                                            <div class="form-group" style="display: none;">
                                                 <label asp-for="CreateMedicalViewModel.WardNo" class="control-label">Ward Number</label>
                                                 <input asp-for="CreateMedicalViewModel.WardNo" type="text" class="form-control" id="WardNo">
                                             </div>
@@ -139,7 +144,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> *@
                     }
                 </tbody>
             </table>

@@ -15,114 +15,119 @@
     </div>
 }
 
-<h2>Medical Records for Patient: @Model.PatientNo</h2>
-@* <h2>@Model.FirstName @Model.LastName</h2> *@
-
-<form onsubmit="submitForm()" asp-action="SaveMedicalRecords" method="post" autocomplete="off">
-    <input type="hidden" asp-for="PatientNo" value="@Model.PatientNo"/>
-    <div class="mb-3">
-        <label asp-for="Symptoms" class="form-label">Symptoms</label>
-        <textarea asp-for="Symptoms" class="form-control" rows="4"></textarea>
+<div class="grid">
+    <div class="left">
+        <a href="@Url.Action("DoctorQueue")">
+            <button type="button" class="btn btn-primary">Login Page</button>
+        </a>
+        <a class="left-content" href="@Url.Action("DoctorQueue")">
+            <button type="button" class="btn btn-primary">View Queue</button>
+        </a>
     </div>
-    <div class="mb-3">
-        <label asp-for="Diagnoses" class="form-label">Diagnoses</label>
-        <textarea asp-for="Diagnoses" class="form-control" rows="4"></textarea>
-    </div>
-    <div class="form-group">
-        <label class="control-label">Is the patient to be admitted?</label>
-        <div class="form-check">
-            <input asp-for="IsAdmitted" type="radio" class="form-check-input" id="IsAdmittedTrue" value="true">
-            <label class="form-check-label" for="IsAdmittedTrue">Yes</label>
-        </div>
-        <div class="form-check">
-            <input asp-for="IsAdmitted" type="radio" class="form-check-input" id="IsAdmittedFalse" value="false">
-            <label class="form-check-label" for="IsAdmittedFalse">No</label>
-        </div>
-    </div>
+    <div class="right">
+        <h2 class="text-center">Medical Records for Patient: @Model.PatientNo</h2>
+        @* <h2>@Model.FirstName @Model.LastName</h2> *@
 
-    <div class="form-group" id="WardNoDiv" style="display: none;">
-        <label asp-for="WardNo" class="control-label">Ward Number</label>
-        <input asp-for="WardNo" type="text" class="form-control" id="WardNo">
+        <form onsubmit="submitForm()" asp-action="SaveMedicalRecords" method="post" autocomplete="off">
+            <input type="hidden" asp-for="PatientNo" value="@Model.PatientNo"/>
+            <div class="mb-3">
+                <label asp-for="Symptoms" class="form-label">Symptoms</label>
+                <textarea asp-for="Symptoms" class="form-control" rows="4"></textarea>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Diagnoses" class="form-label">Diagnoses</label>
+                <textarea asp-for="Diagnoses" class="form-control" rows="4"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Is the patient to be admitted?</label>
+                <div class="form-check">
+                    <input asp-for="IsAdmitted" type="radio" class="form-check-input" id="IsAdmittedTrue" value="true">
+                    <label class="form-check-label" for="IsAdmittedTrue">Yes</label>
+                </div>
+                <div class="form-check">
+                    <input asp-for="IsAdmitted" type="radio" class="form-check-input" id="IsAdmittedFalse" value="false">
+                    <label class="form-check-label" for="IsAdmittedFalse">No</label>
+                </div>
+            </div>
+
+            <div class="form-group" id="WardNoDiv" style="display: none;">
+                <label asp-for="WardNo" class="control-label">Ward Number</label>
+                <input asp-for="WardNo" type="text" class="form-control" id="WardNo">
+            </div>
+            
+            
+            
+            <div class="mb-3">
+                <label asp-for="DrugName" class="form-label">Drug Name</label>
+                <input asp-for="DrugName" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label asp-for="Dosage" class="form-label">Dosage</label>
+                <input asp-for="Dosage" class="form-control" />
+            </div>
+
+            <input type="hidden" id="CombinedDrugs" name="CombinedDrugs" />
+        <input type="hidden" id="CombinedDosages" name="CombinedDosages" />
+
+            <div id="additionalDrugs">
+                <!-- Container for dynamically added drug and dosage fields -->
+            </div>
+
+            <button type="button" class="btn btn-success" onclick="addDrugField()">Add Drug</button>
+            <button type="button" class="btn btn-danger" onclick="removeLastDrugField()">Remove Last Drug</button>
+
+            <button type="submit" class="btn btn-primary">Save Medical Records</button>
+        </form>
+
+        
+
     </div>
-    
-    
-    
-    <div class="mb-3">
-        <label asp-for="DrugName" class="form-label">Drug Name</label>
-        <input asp-for="DrugName" class="form-control" />
-    </div>
-    <div class="mb-3">
-        <label asp-for="Dosage" class="form-label">Dosage</label>
-        <input asp-for="Dosage" class="form-control" />
-    </div>
-
-    <input type="hidden" id="CombinedDrugs" name="CombinedDrugs" />
-<input type="hidden" id="CombinedDosages" name="CombinedDosages" />
-
-    <div id="additionalDrugs">
-        <!-- Container for dynamically added drug and dosage fields -->
-    </div>
-
-    <button type="button" class="btn btn-success" onclick="addDrugField()">Add Drug</button>
-    <button type="button" class="btn btn-danger" onclick="removeLastDrugField()">Remove Last Drug</button>
-
-    <button type="submit" class="btn btn-primary">Save Medical Records</button>
-</form>
-
-<a class="my-3" asp-action="DoctorQueue" asp-controller="Staff">Go to Doctor Queue</a>
+</div>
 
 @section Scripts {
-        <script type="text/javascript">
-            document.getElementById("IsAdmittedTrue").onchange = function () {
-                document.getElementById("WardNoDiv").style.display = this.checked ? "block" : "none";
-            };
-            document.getElementById("IsAdmittedFalse").onchange = function () {
-                document.getElementById("WardNoDiv").style.display = this.checked ? "none" : "block";
-            };
-        </script>
-        <script type="text/javascript">
-            function addDrugField() {
-                var container = document.getElementById("additionalDrugs");
-                var drugInput = document.createElement("input");
-                drugInput.type = "text";
-                drugInput.name = "AdditionalDrugs";
-                drugInput.placeholder = "Drug Name";
-                drugInput.classList.add("form-control");
-
-                var dosageInput = document.createElement("input");
-                dosageInput.type = "text";
-                dosageInput.name = "AdditionalDosages";
-                dosageInput.placeholder = "Dosage";
-                dosageInput.classList.add("form-control");
-
-                container.appendChild(drugInput);
-                container.appendChild(dosageInput);
+    <script type="text/javascript">
+        document.getElementById("IsAdmittedTrue").onchange = function () {
+            document.getElementById("WardNoDiv").style.display = this.checked ? "block" : "none";
+        };
+        document.getElementById("IsAdmittedFalse").onchange = function () {
+            document.getElementById("WardNoDiv").style.display = this.checked ? "none" : "block";
+        };
+    </script>
+    <script type="text/javascript">
+        function addDrugField() {
+            var container = document.getElementById("additionalDrugs");
+            var drugInput = document.createElement("input");
+            drugInput.type = "text";
+            drugInput.name = "AdditionalDrugs";
+            drugInput.placeholder = "Drug Name";
+            drugInput.classList.add("form-control");
+            var dosageInput = document.createElement("input");
+            dosageInput.type = "text";
+            dosageInput.name = "AdditionalDosages";
+            dosageInput.placeholder = "Dosage";
+            dosageInput.classList.add("form-control");
+            container.appendChild(drugInput);
+            container.appendChild(dosageInput);
+        }
+        function removeLastDrugField() {
+            var container = document.getElementById("additionalDrugs");
+            var children = container.children;
+            if (children.length > 0) {
+                container.removeChild(children[children.length - 1]);
+                container.removeChild(children[children.length - 1]);
             }
-
-            function removeLastDrugField() {
-                var container = document.getElementById("additionalDrugs");
-                var children = container.children;
-
-                if (children.length > 0) {
-                    container.removeChild(children[children.length - 1]);
-                    container.removeChild(children[children.length - 1]);
-                }
-            }
-
-            function submitForm() {
-                var additionalDrugs = document.getElementsByName("AdditionalDrugs");
-                var additionalDosages = document.getElementsByName("AdditionalDosages");
-
-                // Combine additional drugs and dosages into a single sentence
-                var drugsSentence = Array.from(additionalDrugs).map(input => input.value).join(', ');
-                var dosagesSentence = Array.from(additionalDosages).map(input => input.value).join(', ');
-
-                // Set the combined values to hidden fields
-                document.getElementById("CombinedDrugs").value = drugsSentence;
-                document.getElementById("CombinedDosages").value = dosagesSentence;
-
-                // Submit the form
-                document.getElementById("medicalRecordsForm").submit();
-            }
-        </script>
-    }
+        }
+        function submitForm() {
+            var additionalDrugs = document.getElementsByName("AdditionalDrugs");
+            var additionalDosages = document.getElementsByName("AdditionalDosages");
+            // Combine additional drugs and dosages into a single sentence
+            var drugsSentence = Array.from(additionalDrugs).map(input => input.value).join(', ');
+            var dosagesSentence = Array.from(additionalDosages).map(input => input.value).join(', ');
+            // Set the combined values to hidden fields
+            document.getElementById("CombinedDrugs").value = drugsSentence;
+            document.getElementById("CombinedDosages").value = dosagesSentence;
+            // Submit the form
+            document.getElementById("medicalRecordsForm").submit();
+        }
+    </script>
+}
