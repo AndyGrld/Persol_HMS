@@ -23,7 +23,7 @@ namespace Persol_HMS.Models
         public virtual Vital Vital { get; set; }//
         public virtual List<Drug> Drugs { get; set; }//
         public virtual Symptom Symptom { get; set; }//
-        public virtual Lab Lab { get; set; }
+        public virtual List<Lab> Labs { get; set; }
         public virtual Patient Patient { get; set; }//
     }
 }

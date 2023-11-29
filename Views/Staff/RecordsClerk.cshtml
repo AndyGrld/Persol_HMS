@@ -7,12 +7,14 @@
 {
     <div class="alert alert-success">
         @TempData["R_ConfirmationMessage"]
+        <button type="button" style="position:absolute;right: 0" data-bs-dismiss="alert" class="btn-close" aria-label="Close"></button>
     </div>
 }
 @if (TempData.ContainsKey("R_WarningMessage"))
 {
     <div class="alert alert-danger">
         @TempData["R_WarningMessage"]
+        <button type="button" style="position:absolute;right: 0" data-bs-dismiss="alert" class="btn-close" aria-label="Close"></button>
     </div>
 }
 

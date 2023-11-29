@@ -5,11 +5,9 @@ using System.Threading.Tasks;
 
 namespace Persol_HMS.Models.ViewModels
 {
-    public class LabQueueViewModel
+    public class LabsViewModel
     {
-        public Lab Lab { get; set; }
-        public QueueViewModel QueueViewModel { get; set; }
-
+        public string PatientNo { get; set; }
         public List<Lab> Labs { get; set; }
     }
 }

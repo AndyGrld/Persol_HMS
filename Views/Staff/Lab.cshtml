@@ -1,49 +1,103 @@
-@model Persol_HMS.Models.Lab
+@model Persol_HMS.Models.ViewModels.LabsViewModel
 
 <partial name="Navbar" />
 
+@if (TempData.ContainsKey("L_ConfirmationMessage"))
+{
+    <div class="alert alert-success">
+        @TempData["L_ConfirmationMessage"]
+        <button type="button" style="position:absolute;right: 0" data-bs-dismiss="alert" class="btn-close" aria-label="Close"></button>
+    </div>
+}
+@if (TempData.ContainsKey("L_WarningMessage"))
+{
+    <div class="alert alert-danger">
+        @TempData["L_WarningMessage"]
+        <button type="button" style="position:absolute;right: 0" data-bs-dismiss="alert" class="btn-close" aria-label="Close"></button>
+    </div>
+}
+
 <div class="grid">
     <div class="left">
-        <a class="left-content" href="@Url.Action("Lab")">
-            <button type="button" class="btn btn-primary w-100">Home</button>
+        <a class="left-content" href="@Url.Action("LabQueue")">
+            <button type="button" class="btn btn-primary w-100">View Queue</button>
         </a>
-       @*  <a href="@Url.Action("Lab")">
+        @*  <a href="@Url.Action("Lab")">
             <button type="button" class="btn btn-primary w-100">Move onto next patient</button>
         </a> *@
     </div>
 
     <div class="right">
-<h2>Lab for Patient: @ViewBag.Name</h2>
-
-<form asp-controller="Staff" asp-action="Lab" autocomplete="off">
-    <div class="mb-3">
-        <label asp-for="LabName" class="form-label">Lab Name</label>
-        <input asp-for="LabName" type="text" class="form-control" id="LabName">
-    </div>
-    <div class="mb-3">
-        <label asp-for="Result" class="form-label">Lab Result</label>
-        <div class="form-check">
-            <input asp-for="Result" type="radio" class="form-check-input" id="ResultTrue" value="true">
-            <label class="form-check-label" for="ResultTrue">Positive</label>
+<h2 class="text-center">Lab for Patient: @ViewBag.Name</h2>
+<form asp-controller="Staff" asp-action="PatientLab" autocomplete="off">
+    <div class="container text-center">
+	<div id="lab-fields">
+        <div class="row">
+            <div class="col">
+                <div class="mb-3">
+                    <textarea asp-for="Labs[0].LabName" style="height: 200px" class="form-control" placeholder="Lab Name" name="Labs[0].LabName"></textarea>
+                </div>
+            </div>
+            <div class="col">
+                <div class="mb-3">
+                    <textarea asp-for="Labs[0].Result" style="height: 200px" class="form-control" placeholder="Lab Result" name="Labs[0].Result"></textarea>
+                </div>
+            </div>
+            <div class="col">
+                <div class="mb-3">
+                    <textarea asp-for="Labs[0].Notes" style="height: 200px" class="form-control" placeholder="Lab Notes" name="Labs[0].Notes"></textarea>
+                </div>
+            </div>
         </div>
-        <div class="form-check">
-            <input asp-for="Result" type="radio" class="form-check-input" id="ResultFalse" value="false">
-            <label class="form-check-label" for="ResultFalse">Negative</label>
-        </div>
+	</div>
+    <input asp-for="PatientNo" value="@Model.PatientNo" style="display:none" />
     </div>
-
-    <div class="mb-3">
-        <label asp-for="Notes" class="form-label">Lab Notes</label>
-        <input asp-for="Notes" type="text" class="form-control">
+    <div class="modal-footer">
+        <button type="button" id="addMore"class="btn btn-success">Add More Labs</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save</button>
     </div>
-    <div class="mb-3">
-        <label asp-for="Date" class="form-label">Lab Date</label>
-        <input asp-for="Date" type="date" class="form-control">
-    </div>
-    <input asp-for="PatientNo" type="hidden" />
-    <button type="submit" class="btn btn-primary">Submit</button>
 </form>
     </div>
 </div>
 
-<a asp-action="LabQueue" asp-controller="Staff">Go to Lab Queue</a>
+@section scripts {
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var index = 1;
+            $('#addMore').click(function () {
+                $('#lab-fields').append(`
+                    <div class="row">
+                        <div class="col">
+                            <div class="mb-3">
+                                <textarea asp-for="Labs[${index}].LabName" style="height: 200px" class="form-control" placeholder="Lab Name" name="Labs[${index}].LabName"></textarea>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="mb-3">
+                                <textarea asp-for="Labs[${index}].Result" style="height: 200px" class="form-control" placeholder="Lab Result" name="Labs[${index}].Result"></textarea>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="mb-3">
+                                <textarea asp-for="Labs[${index}].Notes" style="height: 200px" class="form-control" placeholder="Lab Notes" name="Labs[${index}].Notes"></textarea>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <button type="button" class="btn btn-danger remove-lab">Remove Lab</button>
+                        </div>
+                    </div>
+                `);
+                index++;
+            });
+        $('#lab-fields').on('click', '.remove-lab', function () {
+            var removeIndex = $(this).closest('.row').index();
+            $(this).closest('.row').remove();
+            index--;
+        });
+    });
+    </script>
+
+}

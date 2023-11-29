@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Persol_HMS.Migrations
+namespace Persol_Hms.Migrations
 {
-    public partial class INitialCreate : Migration
+    public partial class migration01 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -436,8 +436,7 @@ namespace Persol_HMS.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Labs_MedicalID",
                 table: "Labs",
-                column: "MedicalID",
-                unique: true);
+                column: "MedicalID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Medicals_PatientNo",

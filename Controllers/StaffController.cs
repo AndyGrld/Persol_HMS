@@ -78,7 +78,7 @@ public class StaffController : Controller
         // {
         //     return RedirectToHome();
         // }
-        if (!string.IsNullOrEmpty(model.CreateMedicalViewModel.PatientNo) && model.CreateMedicalViewModel.Diagnoses != null && model.CreateMedicalViewModel.Dosages != null &&
+        if (!string.IsNullOrEmpty(model.CreateMedicalViewModel.PatientNo) && model.CreateMedicalViewModel.Diagnoses != null &&
             model.CreateMedicalViewModel.DrugNames != null && model.CreateMedicalViewModel.Symptoms != null)
         {
 			
@@ -97,8 +97,6 @@ public class StaffController : Controller
             var vital = await _context.Vitals.OrderBy(l => l.Id).LastOrDefaultAsync(v => v.PatientNo.Equals(model.CreateMedicalViewModel.PatientNo));
 
             int? drugId = await GetDrugIdAsync(d => d.PatientNo == model.CreateMedicalViewModel.PatientNo && d.Date == DateTime.Now);
-           
-            // Handle the case where drugId is null
 
             int? symptomId = await GetSymptomIdAsync(s => s.PatientNo == model.CreateMedicalViewModel.PatientNo && s.Date == DateTime.Now);
 
@@ -132,7 +130,6 @@ public class StaffController : Controller
             }
 			_context.Medicals.Add(medicalRecord);
 			await _context.SaveChangesAsync();
-
 
 			for (int i = 0; i < model.CreateMedicalViewModel.DrugNames.Count; i++)
 			{
@@ -369,44 +366,75 @@ public class StaffController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Lab([Bind("PatientNo, LabName, Result, Notes")] Persol_HMS.Models.Lab lab)
+    public async Task<IActionResult> Lab(LabQueueViewModel labView)
     {
-        if (!string.IsNullOrEmpty(lab.PatientNo) &&
-            lab.LabName != null &&
-            lab.Result != null &&
-            lab.Notes != null)
+        if (!string.IsNullOrEmpty(labView.Lab.PatientNo) && labView.Labs != null)
         {
-            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo == lab.PatientNo);
-            
+            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo == labView.Lab.PatientNo);
+
             if (patient != null)
             {
-				var medical = await _context.Medicals.OrderBy(m => m.ID).LastOrDefaultAsync(m => m.PatientNo == lab.PatientNo);
-                var labEntry = new Persol_HMS.Models.Lab
+                var medical = await _context.Medicals.OrderBy(m => m.ID).LastOrDefaultAsync(m => m.PatientNo == labView.Lab.PatientNo);
+
+                if (labView.Labs.Any())
                 {
-                    ID = _context.Labs.Count() == 0 ? 1 : _context.Labs.Max(s => s.ID) + 1,
-                    PatientNo = lab.PatientNo,
-                    LabName = lab.LabName,
-                    Result = lab.Result,
-                    Notes = lab.Notes,
-                    Date = DateTime.Today
-                };
-                RemovePatientFromQueue("Lab", patient.PatientNo);
+                    _context.Labs.AddRange(labView.Labs.Select(lab => new Persol_HMS.Models.Lab
+                    {
+                        ID = _context.Labs.Count() == 0 ? 1 : _context.Labs.Max(s => s.ID) + 1,
+                        PatientNo = labView.Lab.PatientNo,
+                        LabName = lab.LabName,
+                        Result = lab.Result,
+                        Notes = lab.Notes,
+                        Date = DateTime.Today,
+                        MedicalID = medical.ID
+                    }));
+                    await _context.SaveChangesAsync();
+                }
 
-                
-                await _context.SaveChangesAsync();
+                // RemovePatientFromQueue("Lab", patient.PatientNo);
+
                 TempData["L_ConfirmationMessage"] = $"Patient's lab added successfully, patient can leave";
-                return RedirectToAction(nameof(Lab));
-
+                return RedirectToAction(nameof(LabQueue));
             }
-
         }
 
         TempData["L_WarningMessage"] = "Error processing patient's lab. Please try again";
         return RedirectToAction(nameof(LabQueue));
     }
 
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> PatientLab(LabsViewModel labView)
+    {
+        if (!string.IsNullOrEmpty(labView.PatientNo) && labView.Labs != null)
+        {
+            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo == labView.PatientNo);
 
-
+            if (patient != null)
+            {
+                var medical = await _context.Medicals.OrderBy(m => m.ID).LastOrDefaultAsync(m => m.PatientNo == labView.PatientNo);
+                if (labView.Labs.Any())
+                {
+                    _context.Labs.AddRange(labView.Labs.Select(lab => new Persol_HMS.Models.Lab
+                    {
+                        ID = _context.Labs.Count() == 0 ? 1 : _context.Labs.Max(s => s.ID) + 1,
+                        PatientNo = labView.PatientNo,
+                        LabName = lab.LabName,
+                        Result = lab.Result,
+                        Notes = lab.Notes,
+                        Date = DateTime.Today,
+                        MedicalID = medical.ID
+                    }));
+                    await _context.SaveChangesAsync();
+                }
+                // RemovePatientFromQueue("Lab", patient.PatientNo);
+                TempData["L_ConfirmationMessage"] = $"Patient's lab added successfully, patient can leave";
+                return RedirectToAction(nameof(LabQueue));
+            }
+        }
+        TempData["L_WarningMessage"] = "Error processing patient's lab. Please try again";
+        return RedirectToAction(nameof(LabQueue));
+    }
 
 
     public IActionResult NurseQueue(int page = 1, string search = "")
@@ -501,7 +529,7 @@ public class StaffController : Controller
         if (patientNo != null)
         {
             var patientDetails = _context.Patients.FirstOrDefault(p => p.PatientNo == patientNo);
-            var labEntry = new Persol_HMS.Models.Lab
+            var labEntry = new LabsViewModel
             {
                 PatientNo = patientDetails.PatientNo
             };
@@ -516,7 +544,7 @@ public class StaffController : Controller
         var patientsInQueue = GetNextPatientInLine("Lab");
         if (patientsInQueue != null)
         {
-            var labEntry = new Persol_HMS.Models.Lab
+            var labEntry = new LabsViewModel
             {
                 PatientNo = patientsInQueue.PatientNo
             };
@@ -657,7 +685,7 @@ public class StaffController : Controller
             Diagnoses = m.Diagnoses,
             Symptom = m.Symptom,
             Drugs = m.Drugs,
-            Lab = m.Lab
+            Labs = m.Labs
         }).ToList();
 
         var viewModel = new PatientMedicalViewModel
@@ -698,5 +726,101 @@ public class StaffController : Controller
         return lab?.ID;
     }
 
+    [HttpPost]
+    public async Task<IActionResult> SavePatientMedicals(CreateMedicalViewModel model)
+    {
+        // if (!IsUserAuthorized(3))
+        // {
+        //     return RedirectToHome();
+        // }
+        if (!string.IsNullOrEmpty(model.PatientNo) && model.Diagnoses != null &&
+            model.DrugNames.Count() > 1 && model.Symptoms != null)
+        {
+            Console.WriteLine(model.DrugNames.Count());
+            Console.ReadLine();
+			
+            var symptoms = new Symptom
+            {
+                ID = _context.Symptoms.Count() == 0 ? 1 : _context.Symptoms.Max(s => s.ID) + 1,
+                PatientNo = model.PatientNo,
+                Symptoms = model.Symptoms,
+                Date = DateTime.Now.Date,
+
+            };
+			_context.Symptoms.Add(symptoms);
+			await _context.SaveChangesAsync();
+
+			var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(model.PatientNo));
+            var vital = await _context.Vitals.OrderBy(l => l.Id).LastOrDefaultAsync(v => v.PatientNo.Equals(model.PatientNo));
+
+            int? drugId = await GetDrugIdAsync(d => d.PatientNo == model.PatientNo && d.Date == DateTime.Now);
+
+            int? symptomId = await GetSymptomIdAsync(s => s.PatientNo == model.PatientNo && s.Date == DateTime.Now);
+
+			var medicalRecord = new Medical
+			{
+				ID = _context.Medicals.Count() == 0 ? 1 : _context.Medicals.Max(s => s.ID) + 1,
+				PatientNo = model.PatientNo,
+				Date = DateTime.Today,
+				Diagnoses = model.Diagnoses,
+				WardNo = model.IsAdmitted == true ? GenerateWardNumber() : null,
+				IsAdmitted = model.IsAdmitted,
+				DateAdmitted = model.IsAdmitted == true ? DateTime.Now.Date : (DateTime?)null
+			};
+
+			if (symptoms != null)
+            {
+                medicalRecord.SymptomsID = symptoms.ID;
+                medicalRecord.Symptom = symptoms;
+            }
+
+            if (patient != null)
+            {
+                medicalRecord.Patient = patient;
+				medicalRecord.PatientNo = patient.PatientNo;
+            }
+
+            if (vital != null)
+            {
+                medicalRecord.Vital = vital;
+                medicalRecord.VitalsID = vital.Id;
+            }
+			_context.Medicals.Add(medicalRecord);
+			await _context.SaveChangesAsync();
+
+			for (int i = 0; i < model.DrugNames.Count; i++)
+			{
+				var drug = new Drug
+				{
+					MedicalID = medicalRecord.ID,
+					ID = _context.Drugs.Count() == 0 ? 1 : _context.Drugs.Max(d => d.ID) + 1,
+					PatientNo = model.PatientNo,
+					DrugName = model.DrugNames[i].DrugName,
+					Dosage = model.DrugNames[i].Dosage,
+					Date = DateTime.Today
+				};
+				_context.Drugs.Add(drug);
+			}
+			await _context.SaveChangesAsync();
+
+            var labQueueNo = GetNextQueueNumber("Lab");
+            var labQueue = new Queue
+            {
+                PatientNo = model.PatientNo,
+                QueueNo = labQueueNo,
+                Status = "Lab",
+                DateCreated = DateTime.Now
+            };
+            RemovePatientFromQueue("Doctor", model.PatientNo);
+            _context.Queues.Add(labQueue);
+            await _context.SaveChangesAsync();
+
+            TempData["D_ConfirmationMessage"] = $"Patient's medical details added successfully. Patient's queue number is {labQueueNo} in the lab queue.";
+            return RedirectToAction(nameof(Doctor));
+        }
+
+        TempData["D_WarningMessage"] = $"Error processing patient's medical details. Please try again";
+        return RedirectToAction(nameof(Doctor));
+    }
 
 }

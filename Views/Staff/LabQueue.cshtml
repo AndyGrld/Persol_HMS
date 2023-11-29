@@ -6,21 +6,23 @@
 {
     <div class="alert alert-success">
         @TempData["L_ConfirmationMessage"]
+        <button type="button" style="position:absolute;right: 0" data-bs-dismiss="alert" class="btn-close" aria-label="Close"></button>
     </div>
 }
 @if (TempData.ContainsKey("L_WarningMessage"))
 {
     <div class="alert alert-danger">
         @TempData["L_WarningMessage"]
+        <button type="button" style="position:absolute;right: 0" data-bs-dismiss="alert" class="btn-close" aria-label="Close"></button>
     </div>
 }
 
 <div class="grid">
     <div class="left">
         <a class="left-content" href="@Url.Action("Lab")">
-            <button type="button" class="btn btn-primary w-100">Home</button>
+            <button type="button" class="btn btn-primary w-100">View Next Patient</button>
         </a>
-       @*  <a href="@Url.Action("Lab")">
+        @*  <a href="@Url.Action("Lab")">
             <button type="button" class="btn btn-primary w-100">Move onto next patient</button>
         </a> *@
     </div>
@@ -67,32 +69,29 @@
                                         <form asp-controller="Staff" asp-action="Lab" autocomplete="off">
 										
 										<div class="container text-center">
-											<div class="row">
-                                                <div id="lab-fields">
-												<div class="col">
-													<div class="mb-3">
-                                                                <label asp-for="LabNames[0]" for="floatingTextarea" id="LabName">Lab</label>
-														<textarea asp-for="Lab.LabName[0]"  style="height: 200px" class="form-control" placeholder="Lab Name" id="floatingTextarea"></textarea>
-													</div>
-												</div>
-												<div class="col">
-													<div class="mb-3">
-														<label asp-for="Lab.Result[0]" for="floatingTextarea"  id="LabResult">Result</label>
-														<textarea asp-for="Lab.Result[0]"  style="height: 200px" class="form-control" placeholder="Lab Name" id="floatingTextarea"></textarea>
-													</div>
-												</div>
-												<div class="col">
-													<div class="mb-3">
-														<label asp-for="Lab.Notes[0]" for="floatingTextarea"  id="LabNotes">Notes</label>
-														<textarea asp-for="Lab.Notes[0]"  style="height: 200px" class="form-control" placeholder="Lab Name" id="floatingTextarea"></textarea>
-													</div>
-												</div>
+											<div id="lab-fields">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div class="mb-3">
+                                                            <textarea asp-for="Labs[0].LabName" style="height: 200px" class="form-control" placeholder="Lab Name" name="Labs[0].LabName"></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="mb-3">
+                                                            <textarea asp-for="Labs[0].Result" style="height: 200px" class="form-control" placeholder="Lab Result" name="Labs[0].Result"></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="mb-3">
+                                                            <textarea asp-for="Labs[0].Notes" style="height: 200px" class="form-control" placeholder="Lab Notes" name="Labs[0].Notes"></textarea>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                    <button id="addMore">Add More Labs</button>
 											</div>
-											<input asp-for="Lab.PatientNo" value="@patient.PatientNo" type="hidden" />
+                                            <input asp-for="Lab.PatientNo" value="@patient.PatientNo" style="display:none" />
 										</div>
                                             <div class="modal-footer">
+                                                <button type="button" id="addMore"class="btn btn-success">Add More Labs</button>
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                                 <button type="submit" class="btn btn-primary">Save</button>
                                             </div>
@@ -150,31 +149,38 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         $(document).ready(function () {
-            var index = 2;
+            var index = 1;
             $('#addMore').click(function () {
-                $('#labFields').append(`
-                            <div class="col">
-                                      <div class="mb-3">
-                                         <label asp-for="Lab.LabName[${index}]" for="floatingTextarea"  id="LabName">Lab</label>
-                                                <textarea asp-for="Lab.LabName[${index}]"  style="height: 200px" class="form-control" placeholder="Lab Name" id="floatingTextarea"></textarea>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col">
-                                                            <div class="mb-3">
-                                                                        <label asp-for="Lab.Result[${index}]" for="floatingTextarea"  id="LabResult">Result</label>
-                                                                        <textarea asp-for="Lab.Result[${index}]"  style="height: 200px" class="form-control" placeholder="Lab Name" id="floatingTextarea"></textarea>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col">
-                                                            <div class="mb-3">
-                                                                        <label asp-for="Lab.Notes[${index}]" for="floatingTextarea"  id="LabNotes">Notes</label>
-                                                                        <textarea asp-for="Lab.Notes[${index}]"  style="height: 200px" class="form-control" placeholder="Lab Name" id="floatingTextarea"></textarea>
-                                                            </div>
-                                                        </div>
+                $('#lab-fields').append(`
+                    <div class="row">
+                        <div class="col">
+                            <div class="mb-3">
+                                <textarea asp-for="Labs[${index}].LabName" style="height: 200px" class="form-control" placeholder="Lab Name" name="Labs[${index}].LabName"></textarea>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="mb-3">
+                                <textarea asp-for="Labs[${index}].Result" style="height: 200px" class="form-control" placeholder="Lab Result" name="Labs[${index}].Result"></textarea>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="mb-3">
+                                <textarea asp-for="Labs[${index}].Notes" style="height: 200px" class="form-control" placeholder="Lab Notes" name="Labs[${index}].Notes"></textarea>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <button type="button" class="btn btn-danger remove-lab">Remove Lab</button>
+                        </div>
+                    </div>
                 `);
                 index++;
             });
+        $('#lab-fields').on('click', '.remove-lab', function () {
+            var removeIndex = $(this).closest('.row').index();
+            $(this).closest('.row').remove();
+            index--;
         });
+    });
     </script>
 
 }

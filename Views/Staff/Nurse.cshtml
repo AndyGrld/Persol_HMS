@@ -7,12 +7,14 @@
 {
     <div class="alert alert-success">
         @TempData["N_ConfirmationMessage"]
+        <button type="button" style="position:absolute;right: 0" data-bs-dismiss="alert" class="btn-close" aria-label="Close"></button>
     </div>
 }
 @if (TempData.ContainsKey("N_WarningMessage"))
 {
     <div class="alert alert-danger">
         @TempData["N_WarningMessage"]
+        <button type="button" style="position:absolute;right: 0" data-bs-dismiss="alert" class="btn-close" aria-label="Close"></button>
     </div>
 }
 

@@ -20,7 +20,17 @@ html {
   width: 100%;
   text-align: center;
   padding: 15px;
+  height: 20px;
   background-color: white;
+}
+.footer-space{
+	height: 50px;
+  z-index: -10;
+}
+.alert{
+  position: absolute;
+  width: 100%;
+  top: 10px;
 }
 
 .center-card{
@@ -43,9 +53,7 @@ html {
 .space{
 	position: relative;
 	height: 60px;
-}
-.footer-space{
-	height: 50px;
+  z-index: -10;
 }
 
 .grid{

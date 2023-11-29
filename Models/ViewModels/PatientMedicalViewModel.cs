@@ -19,6 +19,6 @@ namespace Persol_HMS.Models.ViewModels
         public string Diagnoses { get; set; }
         public Symptom Symptom { get; set; }
         public List<Drug> Drugs { get; set; }
-        public List<Drug> Labs { get; set; }
+        public List<Lab> Labs { get; set; }
     }
 }

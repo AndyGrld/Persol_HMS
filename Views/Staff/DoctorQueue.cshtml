@@ -6,24 +6,27 @@
 {
     <div class="alert alert-success">
         @TempData["D_ConfirmationMessage"]
+        <button type="button" style="position:absolute;right: 0" data-bs-dismiss="alert" class="btn-close" aria-label="Close"></button>
     </div>
 }
 @if (TempData.ContainsKey("D_WarningMessage"))
 {
     <div class="alert alert-danger">
         @TempData["D_WarningMessage"]
+        <button type="button" style="position:absolute;right: 0" data-bs-dismiss="alert" class="btn-close" aria-label="Close"></button>
     </div>
 }
 
 <div class="grid">
     <div class="left">
-        <a class="left-content" href="@Url.Action("DoctorQueue")">
-            <button type="button" class="btn btn-primary w-100">Home</button>
-        </a>
-        <a href="@Url.Action("GetNextPatientinLine")">
+        <a class="left-content" href="@Url.Action("Doctor")">
             <button type="button" class="btn btn-primary w-100">Move onto next patient</button>
         </a>
+        <a href="@Url.Action("PatientList")">
+            <button type="button" class="btn btn-primary w-100">Patients Records</button>
+        </a>
     </div>
+
     <div class="right">
         <h2 class="text-center">Doctor Queue</h2>
 
@@ -53,10 +56,10 @@
                             <td>
                                 @* <a href="@Url.Action("Doctor", new { patientNo = "@patient.PatientNo" })">
                                     <button class=" btn btn-primary">
-									    Diagnose Patient
-								    </button>
+                                        Diagnose Patient
+                                    </button>
                                 </a> *@
-								 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal-@patient.PatientNo">
+								<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal-@patient.PatientNo">
 									Diagnose Patient
 								</button> 
                             </td>
@@ -87,7 +90,6 @@
                                                 <div id="drugFields">
                                                     <div class="row">
                                                         <div class="col">
-                                                                         
                                                             <div class="mb-2">
                                                                 <input asp-for="CreateMedicalViewModel.DrugNames[0].DrugName" class="form-control" placeholder="Drug Name"/>
                                                             </div>
@@ -113,13 +115,14 @@
 																<div class="form-check">
 																	<input asp-for="CreateMedicalViewModel.IsAdmitted" type="radio" class="form-check-input" id="IsAdmittedFalse" value="false">
 																	<label style="position: relative;right:80px;" class="form-check-label" for="IsAdmittedFalse">No</label>
+                                                                </div>
 															</div>
 														</div>
                                                     </div>
                                                     
 													<input asp-for="CreateMedicalViewModel.PatientNo" value="@patient.PatientNo" style="display:none" />
                                                     <div class="modal-footer">
-														<button id="addMoreDrugs" type="button" class="btn btn-primary w-100">Add More Drugs</button>
+														<button id="addMoreDrugs" type="button" class="btn btn-success w-100">Add More Drugs</button>
                                                         <button type="submit" class="btn btn-primary w-100">Save Medical Records</button>
                                                     </div>
 												</div>
@@ -160,14 +163,6 @@
 @section scripts {
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
-        document.getElementById("IsAdmittedTrue").onchange = function () {
-            document.getElementById("WardNoDiv").style.display = this.checked ? "block" : "none";
-        };
-        document.getElementById("IsAdmittedFalse").onchange = function () {
-            document.getElementById("WardNoDiv").style.display = this.checked ? "none" : "block";
-        };
-    </script>
-    <script>
         $(document).ready(function () {
             // Handle button click to set PatientNo in the hidden field
             $('.btn-primary').click(function () {
@@ -189,18 +184,26 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="mb-2">
-                                        <input placeholder="Drug Name" name="CreateMedicalViewModel.DrugNames[${index}].DrugName" id="drugName${index}" class="form-control" />
+                                        <input placeholder="Drug Name" asp-for="CreateMedicalViewModel.DrugNames[${index}].DrugName" id="drugName${index}" class="form-control" />
                                     </div>
                                 </div>
                                 <div class="col">
                                     <div class="mb-2">
-                                        <input placeholder="Dosage" name="CreateMedicalViewModel.DrugNames[${index}].Dosage" id="dosage${index}" class="form-control" />
+                                        <input placeholder="Dosage" asp-for="CreateMedicalViewModel.DrugNames[${index}].Dosage" id="dosage${index}" class="form-control" />
                                     </div>
+                                </div>
+                                <div class="col">
+                                    <button type="button" class="btn btn-danger remove-drug" data-index="${index}">Remove Drug</button>
                                 </div>
                             </div>
                         `);
                 index++;
             });
+            $('#drugFields').on('click', '.remove-drug', function () {
+            var removeIndex = $(this).data('index');
+            $(`#drugName${removeIndex}`).closest('.row').remove();
+            index--;
         });
-    </script>x
+    });
+    </script>
 }

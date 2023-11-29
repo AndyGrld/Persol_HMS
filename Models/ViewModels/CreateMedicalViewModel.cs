@@ -33,5 +33,14 @@ namespace Persol_HMS.Models.ViewModels
         public string Dosage { get; set; }
 
         public List<Drug> DrugNames { get; set; }
+
+        public CreateMedicalViewModel(){
+            var drugs = new List<Drug>();
+            for (int i = 0; i < 10; i++)
+            {
+                drugs.Add(new Drug());
+            }
+            DrugNames = drugs;
+        }
     }
 }

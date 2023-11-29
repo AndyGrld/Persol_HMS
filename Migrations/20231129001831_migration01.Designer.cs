@@ -8,11 +8,11 @@ using Persol_HMS.Data;
 
 #nullable disable
 
-namespace Persol_HMS.Migrations
+namespace Persol_Hms.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231128160814_INitialCreate")]
-    partial class INitialCreate
+    [Migration("20231129001831_migration01")]
+    partial class migration01
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -264,8 +264,7 @@ namespace Persol_HMS.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("MedicalID")
-                        .IsUnique();
+                    b.HasIndex("MedicalID");
 
                     b.ToTable("Labs");
                 });
@@ -615,8 +614,8 @@ namespace Persol_HMS.Migrations
             modelBuilder.Entity("Persol_HMS.Models.Lab", b =>
                 {
                     b.HasOne("Persol_HMS.Models.Medical", null)
-                        .WithOne("Lab")
-                        .HasForeignKey("Persol_HMS.Models.Lab", "MedicalID");
+                        .WithMany("Labs")
+                        .HasForeignKey("MedicalID");
                 });
 
             modelBuilder.Entity("Persol_HMS.Models.Medical", b =>
@@ -681,8 +680,7 @@ namespace Persol_HMS.Migrations
                 {
                     b.Navigation("Drugs");
 
-                    b.Navigation("Lab")
-                        .IsRequired();
+                    b.Navigation("Labs");
                 });
 
             modelBuilder.Entity("Persol_HMS.Models.Patient", b =>

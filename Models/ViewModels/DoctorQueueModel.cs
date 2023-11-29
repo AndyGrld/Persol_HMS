@@ -5,6 +5,5 @@
 
             public CreateMedicalViewModel CreateMedicalViewModel { get; set; }
             public QueueViewModel QueueViewModel { get; set; }
-
     }
 }
