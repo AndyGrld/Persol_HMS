@@ -27,17 +27,19 @@
         <div class="row1 mb-2">
             <div class="col">
                 <div>
-                    <textarea asp-for="Labs[0].LabName" style="height: 200px;border-radius: 10px 0 0 10px;" class="form-control" placeholder="Lab Name" name="Labs[0].LabName"></textarea>
+                                <h5>
+                                    @ViewBag.LabName for @ViewBag.PatientNo
+                                </h5>
+                            </div>
+            </div>
+            <div class="col">
+                <div>
+                    <textarea asp-for="Lab.Result" style="height: 200px;border-radius: 0;" class="form-control" placeholder="Lab Result" name="Lab.Result"></textarea>
                 </div>
             </div>
             <div class="col">
                 <div>
-                    <textarea asp-for="Labs[0].Result" style="height: 200px;border-radius: 0;" class="form-control" placeholder="Lab Result" name="Labs[0].Result"></textarea>
-                </div>
-            </div>
-            <div class="col">
-                <div>
-                    <textarea asp-for="Labs[0].Notes" style="height: 200px;border-radius: 0 10px 10px 0;" class="form-control" placeholder="Lab Notes" name="Labs[0].Notes"></textarea>
+                    <textarea asp-for="Lab.Notes" style="height: 200px;border-radius: 0 10px 10px 0;" class="form-control" placeholder="Lab Notes" name="Lab.Notes"></textarea>
                 </div>
             </div>
         </div>

@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -66,7 +65,7 @@ public class StaffController : Controller
 
         return RedirectToAction(nameof(DoctorQueue));
     }
-    
+
     [HttpPost]
     public async Task<IActionResult> SaveMedicalRecords(DoctorQueueModel model)
     {
@@ -142,7 +141,7 @@ public class StaffController : Controller
                 await _context.SaveChangesAsync();
             }
 
-            
+
             if (model.CreateMedicalViewModel.NeedsLab && model.CreateMedicalViewModel.SelectedLabNames.Count > 0)
             {
                 foreach (var labName in model.CreateMedicalViewModel.SelectedLabNames)
@@ -150,7 +149,7 @@ public class StaffController : Controller
                     var labQueueNo = GetNextQueueNumber("Lab");
                     var labQueue = new Queue
                     {
-                        LabName =  labName,
+                        LabName = labName,
                         PatientNo = model.CreateMedicalViewModel.PatientNo,
                         QueueNo = labQueueNo,
                         Status = "Lab",
@@ -376,7 +375,7 @@ public class StaffController : Controller
     ////[ValidateAntiForgeryToken]
     public async Task<IActionResult> Lab(LabQueueViewModel labView)
     {
-        if (!string.IsNullOrEmpty(labView.Lab.PatientNo) && labView.Labs != null)
+        if (!string.IsNullOrEmpty(labView.Lab.PatientNo))
         {
             var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo == labView.Lab.PatientNo);
 
@@ -384,20 +383,20 @@ public class StaffController : Controller
             {
                 var medical = await _context.Medicals.OrderBy(m => m.ID).LastOrDefaultAsync(m => m.PatientNo == labView.Lab.PatientNo);
 
-                if (labView.Labs.Any())
+
+                var lab = new Persol_HMS.Models.Lab
                 {
-                    _context.Labs.AddRange(labView.Labs.Select(lab => new Persol_HMS.Models.Lab
-                    {
-                        ID = _context.Labs.Count() == 0 ? 1 : _context.Labs.Max(s => s.ID) + 1,
-                        PatientNo = labView.Lab.PatientNo,
-                        LabName = lab.LabName,
-                        Result = lab.Result,
-                        Notes = lab.Notes,
-                        Date = DateTime.Today,
-                        MedicalID = medical.ID
-                    }));
-                    await _context.SaveChangesAsync();
-                }
+                    ID = _context.Labs.Count() == 0 ? 1 : _context.Labs.Max(s => s.ID) + 1,
+                    PatientNo = labView.Lab.PatientNo,
+                    LabName = labView.Lab.LabName,
+                    Result = labView.Lab.Result,
+                    Notes = labView.Lab.Notes,
+                    Date = DateTime.Today,
+                    MedicalID = medical.ID
+                };
+                _context.Labs.Add(lab);
+                await _context.SaveChangesAsync();
+
 
                 RemovePatientFromQueue("Lab", patient.PatientNo);
 
@@ -414,27 +413,27 @@ public class StaffController : Controller
     //[ValidateAntiForgeryToken]
     public async Task<IActionResult> PatientLab(LabsViewModel labView)
     {
-        if (!string.IsNullOrEmpty(labView.PatientNo) && labView.Labs != null)
+        if (!string.IsNullOrEmpty(labView.PatientNo) && labView.Lab != null)
         {
             var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo == labView.PatientNo);
 
             if (patient != null)
             {
                 var medical = await _context.Medicals.OrderBy(m => m.ID).LastOrDefaultAsync(m => m.PatientNo == labView.PatientNo);
-                if (labView.Labs.Any())
-                {
-                    _context.Labs.AddRange(labView.Labs.Select(lab => new Persol_HMS.Models.Lab
+                
+                    var lab = new Persol_HMS.Models.Lab
                     {
                         ID = _context.Labs.Count() == 0 ? 1 : _context.Labs.Max(s => s.ID) + 1,
-                        PatientNo = labView.PatientNo,
-                        LabName = lab.LabName,
-                        Result = lab.Result,
-                        Notes = lab.Notes,
+                        PatientNo = labView.Lab.PatientNo,
+                        LabName = labView.Lab.LabName,
+                        Result = labView.Lab.Result,
+                        Notes = labView.Lab.Notes,
                         Date = DateTime.Today,
                         MedicalID = medical.ID
-                    }));
+                    };
+                    _context.Labs.Add(lab);
                     await _context.SaveChangesAsync();
-                }
+                
                 RemovePatientFromQueue("Lab", patient.PatientNo);
                 TempData["L_ConfirmationMessage"] = $"Patient's lab added successfully, patient can leave";
                 return RedirectToAction(nameof(LabQueue));
@@ -665,8 +664,8 @@ public class StaffController : Controller
 
         return View(patients.ToList());
     }
-	
-	public IActionResult PatientListOnly(int page = 1, string search = "")
+
+    public IActionResult PatientListOnly(int page = 1, string search = "")
     {
         int pageSize = 10;
         var patients = _context.Patients.AsQueryable();

@@ -8,6 +8,6 @@ namespace Persol_HMS.Models.ViewModels
     public class LabsViewModel
     {
         public string PatientNo { get; set; }
-        public List<Lab> Labs { get; set; }
+        public Lab Lab { get; set; }
     }
 }

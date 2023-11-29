@@ -65,23 +65,26 @@
                                                 <div class="row">
                                                     <div class="col">
                                                         <div class="mb-3">
-                                                            <textarea asp-for="@patient.LabName" style="height: 200px" class="form-control" placeholder="Lab Name" name="@patient.LabName"></textarea>
+                                                            <h5>
+                                                                @patient.LabName for @patient.PatientNo
+                                                            </h5>
                                                         </div>
                                                     </div>
                                                     <div class="col1">
                                                         <div>
-                                                            <textarea asp-for="Labs[0].Result" style="height: 200px;border-radius: 0;" class="form-control" placeholder="Lab Result" name="Labs[0].Result"></textarea>
+                                                            <textarea asp-for="Lab.Result" style="height: 200px;border-radius: 0;" class="form-control" placeholder="Lab Result" name="Labs[0].Result"></textarea>
                                                         </div>
                                                     </div>
                                                     <div class="col1">
                                                         <div>
-                                                            <textarea asp-for="Labs[0].Notes" style="height: 200px;border-radius: 0 10px 10px 0;" class="form-control" placeholder="Lab Notes" name="Labs[0].Notes"></textarea>
+                                                            <textarea asp-for="Lab.Notes" style="height: 200px;border-radius: 0 10px 10px 0;" class="form-control" placeholder="Lab Notes" name="Labs[0].Notes"></textarea>
                                                         </div>
                                                     </div>
                                                 </div>
 											</div>
                                             <input asp-for="Lab.PatientNo" value="@patient.PatientNo" style="display:none" />
-										</div>
+                                                <input asp-for="Lab.LabName" value="@patient.LabName" style="display:none" />
+                                            </div>
                                             <div class="modal-footer">
                                                 <button type="button" id="addMore"class="btn btn-success">Add More Labs</button>
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
