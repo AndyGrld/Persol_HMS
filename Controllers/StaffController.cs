@@ -224,19 +224,19 @@ public class StaffController : Controller
         _context.Patients.Add(newPatient);
         await _context.SaveChangesAsync();
 
-        var nurseQueueNo = GetNextQueueNumber("Nurse");
-        var nurseQueue = new Queue
-        {
-            PatientNo = newPatient.PatientNo,
-            QueueNo = nurseQueueNo,
-            Status = "Nurse",
-            DateCreated = DateTime.Now
-        };
-        _context.Queues.Add(nurseQueue);
+        //var nurseQueueNo = GetNextQueueNumber("Nurse");
+        //var nurseQueue = new Queue
+        //{
+        //    PatientNo = newPatient.PatientNo,
+        //    QueueNo = nurseQueueNo,
+        //    Status = "Nurse",
+        //    DateCreated = DateTime.Now
+        //};
+        //_context.Queues.Add(nurseQueue);
 
-        await _context.SaveChangesAsync();
+        //await _context.SaveChangesAsync();
 
-        TempData["R_ConfirmationMessage"] = $"Patient created successfully. Patients Queue number is {nurseQueueNo}";
+        TempData["R_ConfirmationMessage"] = $"Patient created successfully. Patients Id is {newPatient.PatientNo}";
         return RedirectToAction(nameof(RecordsClerk));
     }
 
