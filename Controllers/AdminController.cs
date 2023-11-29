@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Persol_HMS.Data;
 using Persol_HMS.Models;
 
-// [Authorize]
+[Authorize]
 public class AdminController : Controller
 {
     private readonly ApplicationDbContext _context;
@@ -31,20 +31,20 @@ public class AdminController : Controller
 
     public IActionResult Index()
     {
-        // if (!IsUserAuthorized(5))
-        // {
-        //     return RedirectToHome();
-        // }
+        if (!IsUserAuthorized(5))
+        {
+            return RedirectToHome();
+        }
         var users = _context.Users.Include(u => u.Department).ToList();
         return View(users);
     }
 
     public IActionResult Details(string id)
     {
-        // if (!IsUserAuthorized(5))
-        // {
-        //     return RedirectToHome();
-        // }
+        if (!IsUserAuthorized(5))
+        {
+            return RedirectToHome();
+        }
         if (id == null)
         {
             return NotFound();
@@ -64,10 +64,10 @@ public class AdminController : Controller
 
     public IActionResult Edit(string id)
     {
-        // if (!IsUserAuthorized(5))
-        // {
-        //     return RedirectToHome();
-        // }
+        if (!IsUserAuthorized(5))
+        {
+            return RedirectToHome();
+        }
         if (id == null)
         {
             return NotFound();
@@ -89,10 +89,10 @@ public class AdminController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Edit(string id, User user)
     {
-        // if (!IsUserAuthorized(5))
-        // {
-        //     return RedirectToHome();
-        // }
+        if (!IsUserAuthorized(5))
+        {
+            return RedirectToHome();
+        }
         if (id != user.Id)
         {
             return NotFound();
@@ -125,10 +125,10 @@ public class AdminController : Controller
 
     public IActionResult Delete(string id)
     {
-        // if (!IsUserAuthorized(5))
-        // {
-        //     return RedirectToHome();
-        // }
+        if (!IsUserAuthorized(5))
+        {
+            return RedirectToHome();
+        }
         var user = _context.Users.Find(id);
         _context.Users.Remove(user);
         _context.SaveChanges();

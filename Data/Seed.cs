@@ -1,284 +1,126 @@
-﻿namespace Persol_HMS.Data
+﻿using Microsoft.AspNetCore.Identity;
+
+public static class SeedData
 {
-    public class Seed
+    public static async Task Initialize(IServiceProvider serviceProvider, UserManager<User> userManager)
     {
-        public static void SeedData(IApplicationBuilder applicationBuilder)
+        var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
+
+        // Ensure the database is created.
+        context.Database.EnsureCreated();
+
+        // Check if users already exist
+        if (context.Users.Any())
         {
-            using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
+            return; // Database has been seeded
+        }
+
+        // Seed users
+        var users = new List<UserSeedData>
+        {
+            new UserSeedData
             {
-                var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
+                UserName = "Records_01",
+                Email = "Records_01@example.com",
+                FirstName = "John",
+                MiddleName = "l",
+                LastName = "Doe",
+                DepartmentId = 001,
+                DateOfBirth = DateTime.Parse("1990-01-01"),
+                Password = "Records_01"
+            },
+            new UserSeedData
+            {
+                UserName = "Nurse@123",
+                Email = "Nurse_01@example.com",
+                FirstName = "Ama",
+                MiddleName = "l",
+                LastName = "Sam",
+                DepartmentId = 002,
+                DateOfBirth = DateTime.Parse("1990-01-01"),
+                Password = "Nurse_01"
+            },
+            new UserSeedData
+            {
+                UserName = "Doctor@123",
+                Email = "Doctor_01@example.com",
+                FirstName = "Doc",
+                MiddleName = "d",
+                LastName = "James",
+                DepartmentId = 003,
+                DateOfBirth = DateTime.Parse("1990-01-01"),
+                Password = "Doctor_01",
+            },
+            new UserSeedData
+            {
+                UserName = "Lab@123",
+                Email = "Lab_01@example.com",
+                FirstName = "Lab",
+                MiddleName = "l",
+                LastName = "Strange",
+                DepartmentId = 004,
+                DateOfBirth = DateTime.Parse("1990-01-01"),
+                Password = "Lab@123"
+            },
+            new UserSeedData
+            {
+                UserName = "Admin",
+                Email = "admin@example.com",
+                FirstName = "Admin",
+                MiddleName = "l",
+                LastName = "Admin",
+                DateOfBirth = DateTime.Parse("1990-01-01"),
+                DepartmentId = 005,
+                Password = "Admin@123"
+            }
 
-                context.Database.EnsureCreated();
+            // Add more users as needed
+        };
 
-                if (!context.Users.Any())
-                {
-                    context.Users.AddRange(new List<User>
-                    {
-                        new User()
-                        {
-                            AccessFailedCount = 0,
-                            Attempts = 0,
-                            CreatedDate = DateTime.Now,
-                            DateOfBirth = new DateTime(2000,06,17),
-                            LockEnabled = false,
-                            EmailConfirmed = false,
-                            Email = "James@Gmail.com",
-                            DepartmentId = 001,
-                            FirstName = "James",
-                            LockEnd = DateTime.Now,
-                            MiddleName = null,
-                            LastName = "John",
-                            LockoutEnd = DateTime.Now,
-                            PasswordHash = "James123",
-                            Status = "Active",
-                            LockoutEnabled = false,
-                            NormalizedEmail = "james@hospital.com",
-                            PhoneNumberConfirmed = false,
-                            NormalizedUserName = null,
-                            PhoneNumber = null,
-                            SecurityStamp = null,
-                            ConcurrencyStamp = null,
-                            TwoFactorEnabled = false,
-                            UserName = "James"
-                        },
-                        new User()
-                        {
-                            AccessFailedCount = 0,
-                            Attempts = 0,
-                            CreatedDate = DateTime.Now,
-                            DateOfBirth = new DateTime(2000,06,17),
-                            LockEnabled = false,
-                            EmailConfirmed = false,
-                            Email = "Paul@Gmail.com",
-                            DepartmentId = 003,
-                            FirstName = "Paul",
-                            LockEnd = DateTime.Now,
-                            MiddleName = null,
-                            LastName = "John",
-                            LockoutEnd = DateTime.Now,
-                            PasswordHash = "Paul123",
-                            Status = "Active",
-                            LockoutEnabled = false,
-                            NormalizedEmail = "paul@hospital.com",
-                            PhoneNumberConfirmed = false,
-                            NormalizedUserName = null,
-                            PhoneNumber = null,
-                            SecurityStamp = null,
-                            ConcurrencyStamp = null,
-                            TwoFactorEnabled = false,
-                            UserName = "Paul"
-                        },
+        foreach (var userSeedData in users)
+        {
+            var user = new User
+            {
+                UserName = userSeedData.UserName,
+                Email = userSeedData.Email,
+                FirstName = userSeedData.FirstName,
+                MiddleName = userSeedData.MiddleName,
+                LastName = userSeedData.LastName,
+                DepartmentId = userSeedData.DepartmentId,
+                DateOfBirth = userSeedData.DateOfBirth,
+                Status = "Active",
+                CreatedDate = DateTime.Now,
+                Attempts = 0,
+                LockEnabled = false,
+            };
 
-                        new User()
-                        {
-                            AccessFailedCount = 0,
-                            Attempts = 0,
-                            CreatedDate = DateTime.Now,
-                            DateOfBirth = new DateTime(2000,06,17),
-                            LockEnabled = false,
-                            EmailConfirmed = false,
-                            Email = "Ama@Gmail.com",
-                            DepartmentId = 002,
-                            FirstName = "Ama",
-                            LockEnd = DateTime.Now,
-                            MiddleName = null,
-                            LastName = "John",
-                            LockoutEnd = DateTime.Now,
-                            PasswordHash = "Ama123",
-                            Status = "Active",
-                            LockoutEnabled = false,
-                            NormalizedEmail = "ama@hospital.com",
-                            PhoneNumberConfirmed = false,
-                            NormalizedUserName = null,
-                            PhoneNumber = null,
-                            SecurityStamp = null,
-                            ConcurrencyStamp = null,
-                            TwoFactorEnabled = false,
-                            UserName = "Ama"
-                        },
+            var result = await userManager.CreateAsync(user, userSeedData.Password);
 
-                        new User()
-                        {
-                            AccessFailedCount = 0,
-                            Attempts = 0,
-                            CreatedDate = DateTime.Now,
-                            DateOfBirth = new DateTime(2000,06,17),
-                            LockEnabled = false,
-                            EmailConfirmed = false,
-                            Email = "Nana@Gmail.com",
-                            DepartmentId = 004,
-                            FirstName = "Nana",
-                            LockEnd = DateTime.Now,
-                            MiddleName = null,
-                            LastName = "John",
-                            LockoutEnd = DateTime.Now,
-                            PasswordHash = "Nana123",
-                            Status = "Active",
-                            LockoutEnabled = false,
-                            NormalizedEmail = "nana@hospital.com",
-                            PhoneNumberConfirmed = false,
-                            NormalizedUserName = null,
-                            PhoneNumber = null,
-                            SecurityStamp = null,
-                            ConcurrencyStamp = null,
-                            TwoFactorEnabled = false,
-                            UserName = "Nana"
-                        }
-
-
-                    });
-
-                }
-                //Department
-                if (!context.Departments.Any())
-                {
-                    context.Departments.AddRange(new List<Department>()
-                    {
-                        new Department()
-                        {
-                            DepartmentName = "Nursing",
-                            DepartmentCode = 002
-                        },
-                        new Department()
-                        {
-                            DepartmentCode = 003,
-                            DepartmentName = "Doctor"
-                        },
-                        new Department()
-                        {
-                            DepartmentCode = 001,
-                            DepartmentName = "Records"
-                        },
-                        new Department()
-                        {
-                            DepartmentCode = 004,
-                            DepartmentName = "Lab"
-                        }
-                    });
-                    context.SaveChanges();
-                }
-                //Drug
-                if (!context.Drugs.Any())
-                {
-                    context.Drugs.AddRange(new List<Drug>()
-                    {
-                        new Drug()
-                        {
-                            Date = DateTime.Now,
-                            DrugName = "Paracetamol",
-                            Dosage = "2x daily",
-                            PatientNo = "HMS-1121-2023-K001"
-                        }
-                    });
-                    context.SaveChanges();
-                }
-                //Lab
-                if (!context.Labs.Any())
-                {
-                    context.Labs.AddRange(new List<Lab>()
-                    { new Lab()
-                        {
-                            Date = DateTime.Now,
-                            PatientNo = "HMS-1121-2023-K001",
-                            LabName = "Malaria",
-                            Result = "Very ill",
-                            Notes = ""
-                        }
-                    });
-                    context.SaveChanges();
-                }
-                //Medical
-                if (!context.Medicals.Any())
-                {
-                    context.Medicals.AddRange(new List<Medical>()
-                    {
-                        new Medical()
-                        {
-                            Date = DateTime.Now,
-                            DateAdmitted = DateTime.Now,
-                            VitalsID = 1,
-                            Diagnoses = "Has Malaria",
-                            IsAdmitted = true,
-                            SymptomsID = 1,
-                            WardNo = 1,
-                            PatientNo = "HMS-1121-2023-K001"
-                        }
-                    });
-                    context.SaveChanges();
-                }
-                //Patient
-                if (!context.Patients.Any())
-                {
-                    context.Patients.AddRange(new List<Patient>()
-                    {
-                        new Patient()
-                        {
-                            ContactNo = "0223344567",
-                            DateOfBirth = new DateTime(2002,7,7),
-                            FirstName = "Manny",
-                            LastName = "Brown",
-                            Gender = 'M',
-                            EmergencyContactFirstName = "Tobi",
-                            EmergencyContactLastName = "Brown",
-                            InsuranceNo = null,
-                            InsuranceType = null,
-                            EmergencyContactNo = "0553322195"
-                        }
-                    });
-                    context.SaveChanges();
-                }
-                //Queue
-                if (!context.Queues.Any())
-                {
-                    context.Queues.AddRange(new List<Queue>()
-                    {
-                        new Queue()
-                        {
-                            DateCreated = DateTime.Now,
-                            PatientNo = "HMS-1121-2023-K001",
-                            QueueNo = 1,
-                            Status = "In progess"
-                        }
-                    });
-                }
-                //Symptom
-                if (!context.Symptoms.Any())
-                {
-                    context.Symptoms.AddRange(new List<Symptom>()
-                    {
-                        new Symptom()
-                        {
-                            Date = DateTime.Now,
-                            PatientNo = "HMS-1121-2023-K001",
-                            Symptoms = "Fever.Headache"
-                        }
-                    });
-                    context.SaveChanges();
-                }
-                //User
-                if (!context.Users.Any())
-                {
-
-
-                }
-                //Vital
-                if (!context.Vitals.Any())
-                {
-                    context.Vitals.AddRange(new List<Vital>()
-                    {
-                        new Vital()
-                        {
-                            BloodPressure = 123,
-                            Date = DateTime.Now,
-                            Height = 20,
-                            Weight = 20,
-                            PatientNo = "HMS-1121-2023-K001",
-                            Temperature = 60
-                        }
-                    });
-                }
+            if (result.Succeeded)
+            {
+                // Assign roles to users if needed
+                // Example: await userManager.AddToRoleAsync(user, "UserRole");
+            }
+            else
+            {
+                // Handle errors if user creation fails
+                throw new Exception($"Failed to create user {userSeedData.UserName}: {string.Join(", ", result.Errors)}");
             }
         }
 
+        // Save changes to the database
+        await context.SaveChangesAsync();
+    }
+
+    private class UserSeedData
+    {
+        public string UserName { get; set; }
+        public string Email { get; set; }
+        public string FirstName { get; set; }
+        public string MiddleName { get; set; }
+        public string LastName { get; set; }
+        public int DepartmentId { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public string Password { get; set; }
     }
 }
