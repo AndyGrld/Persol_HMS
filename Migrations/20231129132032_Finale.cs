@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Persol_Hms.Migrations
+namespace Persol_HMS.Migrations
 {
-    public partial class migration01 : Migration
+    public partial class Finale : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -147,6 +147,7 @@ namespace Persol_Hms.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     PatientNo = table.Column<string>(type: "TEXT", nullable: false),
                     QueueNo = table.Column<int>(type: "INTEGER", nullable: false),
+                    LabName = table.Column<string>(type: "TEXT", nullable: true),
                     Status = table.Column<string>(type: "TEXT", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },

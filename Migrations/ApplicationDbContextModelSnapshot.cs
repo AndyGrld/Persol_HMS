@@ -7,7 +7,7 @@ using Persol_HMS.Data;
 
 #nullable disable
 
-namespace Persol_Hms.Migrations
+namespace Persol_HMS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -367,6 +367,9 @@ namespace Persol_Hms.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("DateCreated")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LabName")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PatientNo")

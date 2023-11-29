@@ -8,11 +8,11 @@ using Persol_HMS.Data;
 
 #nullable disable
 
-namespace Persol_Hms.Migrations
+namespace Persol_HMS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231129001831_migration01")]
-    partial class migration01
+    [Migration("20231129132032_Finale")]
+    partial class Finale
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -369,6 +369,9 @@ namespace Persol_Hms.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("DateCreated")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LabName")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PatientNo")
