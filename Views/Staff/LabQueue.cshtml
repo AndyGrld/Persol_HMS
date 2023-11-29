@@ -71,13 +71,17 @@
                                                         </div>
                                                     </div>
                                                     <div class="col1">
-                                                        <div>
-                                                            <textarea asp-for="Lab.Result" style="height: 200px;border-radius: 0;" class="form-control" placeholder="Lab Result" name="Lab.Result"></textarea>
-                                                        </div>
+                                                            <div>
+                                                                <select asp-for="Lab.Result" style="height: auto;border-radius:10px 10px 10px 10px;" class="form-control" name="Lab.Result">
+                                                                    <option value="">Select Result</option>
+                                                                    <option value="Positive">Positive</option>
+                                                                    <option value="Negative">Negative</option>
+                                                                </select>
+                                                            </div>
                                                     </div>
                                                     <div class="col1">
                                                         <div>
-                                                            <textarea asp-for="Lab.Notes" style="height: 200px;border-radius: 0 10px 10px 0;" class="form-control" placeholder="Lab Notes" name="Lab.Notes"></textarea>
+                                                            <textarea asp-for="Lab.Notes" style="height: auto;border-radius: 10px 10px 10px 10px;" class="form-control" placeholder="Lab Notes" name="Lab.Notes"></textarea>
                                                         </div>
                                                     </div>
                                                 </div>
