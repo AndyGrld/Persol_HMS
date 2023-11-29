@@ -51,11 +51,11 @@
 	
 	@if(ViewBag.deptId == 5)
 	{
-		<a href="@Url.Action("PatientListOnly")">
+		<a href="@Url.Action("PatientList", "Staff")">
 			<button type="button">Patients List</button>
 		</a>
-		<a href="@Url.Action("Doctor")">
-			<button type="button">Diagnose next patient</button>
+		<a href="@Url.Action("Index", "Admin")">
+			<button type="button">View Users</button>
 		</a>
 	}
 	

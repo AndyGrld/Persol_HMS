@@ -18,10 +18,10 @@ public class AdminController : Controller
         _userManager = userManager;
     }
 
-    private bool IsUserAuthorized(int departmentId)
+    private int? GetDepartmentId()
     {
-        var user = _context.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
-        return user?.DepartmentId == departmentId;
+       var user = _context.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
+       return user?.DepartmentId;
     }
 
     private IActionResult RedirectToHome()
@@ -31,7 +31,8 @@ public class AdminController : Controller
 
     public IActionResult Index()
     {
-        if (!IsUserAuthorized(5))
+        ViewBag.deptId = GetDepartmentId();
+        if (ViewBag.deptId != 5)
         {
             return RedirectToHome();
         }
@@ -41,7 +42,8 @@ public class AdminController : Controller
 
     public IActionResult Details(string id)
     {
-        if (!IsUserAuthorized(5))
+        ViewBag.deptId = GetDepartmentId();
+        if (ViewBag.deptId != 5)
         {
             return RedirectToHome();
         }
@@ -64,7 +66,8 @@ public class AdminController : Controller
 
     public IActionResult Edit(string id)
     {
-        if (!IsUserAuthorized(5))
+        ViewBag.deptId = GetDepartmentId();
+        if (ViewBag.deptId != 5)
         {
             return RedirectToHome();
         }
@@ -89,7 +92,8 @@ public class AdminController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Edit(string id, User user)
     {
-        if (!IsUserAuthorized(5))
+        ViewBag.deptId = GetDepartmentId();
+        if (ViewBag.deptId != 5)
         {
             return RedirectToHome();
         }
@@ -98,7 +102,7 @@ public class AdminController : Controller
             return NotFound();
         }
 
-        if (ModelState.IsValid)
+        if (user.UserName != null)
         {
             try
             {
@@ -125,7 +129,8 @@ public class AdminController : Controller
 
     public IActionResult Delete(string id)
     {
-        if (!IsUserAuthorized(5))
+        ViewBag.deptId = GetDepartmentId();
+        if (ViewBag.deptId != 5)
         {
             return RedirectToHome();
         }
