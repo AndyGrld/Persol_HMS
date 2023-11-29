@@ -18,15 +18,7 @@
 }
 
 <div class="grid">
-    <div class="left">
-        <a class="left-content" href="@Url.Action("Lab")">
-            <button type="button" class="btn btn-primary w-100">View Next Patient</button>
-        </a>
-        @*  <a href="@Url.Action("Lab")">
-            <button type="button" class="btn btn-primary w-100">Move onto next patient</button>
-        </a> *@
-    </div>
-
+    <partial name="SidebarPartial" />
     <div class="right">
         <h2 class="text-center">Lab Queue</h2>
         <form method="get" action="@Url.Action("LabQueue")">

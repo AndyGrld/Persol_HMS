@@ -18,15 +18,7 @@
 }
 
 <div class="grid">
-    <div class="left">
-        <a class="left-content" href="@Url.Action("LabQueue")">
-            <button type="button" class="btn btn-primary w-100">View Queue</button>
-        </a>
-        @*  <a href="@Url.Action("Lab")">
-            <button type="button" class="btn btn-primary w-100">Move onto next patient</button>
-        </a> *@
-    </div>
-
+    <partial name="SidebarPartial" />
     <div class="right">
 <h2 class="text-center">Lab for Patient: @ViewBag.Name</h2>
 <form asp-controller="Staff" asp-action="PatientLab" autocomplete="off">

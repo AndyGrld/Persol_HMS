@@ -33,10 +33,10 @@ public class StaffController : Controller
     [HttpGet]
     public async Task<IActionResult> Doctor(string? patientNo)
     {
-        if (!IsUserAuthorized(3))
-        {
-            return RedirectToHome();
-        }
+        //if (!IsUserAuthorized(3))
+        //{
+        //    return RedirectToHome();
+        //}
 
         var patientDetails = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(patientNo));
 
@@ -96,10 +96,6 @@ public class StaffController : Controller
 			var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(model.CreateMedicalViewModel.PatientNo));
             var vital = await _context.Vitals.OrderBy(l => l.Id).LastOrDefaultAsync(v => v.PatientNo.Equals(model.CreateMedicalViewModel.PatientNo));
 
-            int? drugId = await GetDrugIdAsync(d => d.PatientNo == model.CreateMedicalViewModel.PatientNo && d.Date == DateTime.Now);
-
-            int? symptomId = await GetSymptomIdAsync(s => s.PatientNo == model.CreateMedicalViewModel.PatientNo && s.Date == DateTime.Now);
-
 			var medicalRecord = new Medical
 			{
 				ID = _context.Medicals.Count() == 0 ? 1 : _context.Medicals.Max(s => s.ID) + 1,
@@ -143,8 +139,8 @@ public class StaffController : Controller
 					Date = DateTime.Today
 				};
 				_context.Drugs.Add(drug);
+			    await _context.SaveChangesAsync();
 			}
-			await _context.SaveChangesAsync();
 
             var labQueueNo = GetNextQueueNumber("Lab");
             var labQueue = new Queue
@@ -751,10 +747,6 @@ public class StaffController : Controller
 			var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(model.PatientNo));
             var vital = await _context.Vitals.OrderBy(l => l.Id).LastOrDefaultAsync(v => v.PatientNo.Equals(model.PatientNo));
 
-            int? drugId = await GetDrugIdAsync(d => d.PatientNo == model.PatientNo && d.Date == DateTime.Now);
-
-            int? symptomId = await GetSymptomIdAsync(s => s.PatientNo == model.PatientNo && s.Date == DateTime.Now);
-
 			var medicalRecord = new Medical
 			{
 				ID = _context.Medicals.Count() == 0 ? 1 : _context.Medicals.Max(s => s.ID) + 1,
@@ -798,8 +790,8 @@ public class StaffController : Controller
 					Date = DateTime.Today
 				};
 				_context.Drugs.Add(drug);
+			    await _context.SaveChangesAsync();
 			}
-			await _context.SaveChangesAsync();
 
             var labQueueNo = GetNextQueueNumber("Lab");
             var labQueue = new Queue

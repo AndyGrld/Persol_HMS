@@ -30,14 +30,7 @@
     </div>
 }
 <div class="grid">
-    <div class="left">
-        <a class="left-content" href="@Url.Action("RecordsClerk")">
-            <button type="button" class="btn btn-primary w-100">Home</button>
-        </a>
-        <a href="@Url.Action("PatientList")">
-            <button type="button" class="btn btn-primary w-100">Patient Records</button>
-        </a>
-    </div>
+    <partial name="SidebarPartial" />
     <div class="right">
     <h2 id="title" class="text-center">Create a new patient</h2>
         <div class="form-check form-switch">
