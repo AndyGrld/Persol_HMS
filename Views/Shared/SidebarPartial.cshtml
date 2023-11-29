@@ -1,29 +1,75 @@
 <div class="left">
-    <a href="@Url.Action("PatientListOnly")">
-        <button type="button">Patients List</button>
-    </a>
-    <a href="@Url.Action("Doctor")">
-        <button type="button">Diagnose next patient</button>
-    </a>
-    <a href="@Url.Action("PatientList")">
-        <button type="button">View Patients List</button>
-    </a>
-    <a href="@Url.Action("DoctorQueue")">
-        <button type="button">View doctor Queue</button>
-    </a>
-    <a href="@Url.Action("LabQueue")">
-        <button class="active" type="button">View lab Queue</button>
-    </a>
-    <a href="@Url.Action("Lab")">
-        <button type="button">Check labs for next patient</button>
-    </a>
-    <a href="@Url.Action("Nurse")">
-        <button type="button">Record vitals for next patient</button>
-    </a>
-    <a href="@Url.Action("NurseQueue")">
-        <button type="button">View nurse queue</button>
-    </a>
+	@if(ViewBag.deptId == 1)
+	{
+		<a href="@Url.Action("RecordsClerk")">
+			<button type="button">Home</button>
+		</a>
+		<a href="@Url.Action("PatientListOnly")">
+			<button type="button">Patients List</button>
+		</a>
+	}
+	
+	@if(ViewBag.deptId == 2)
+	{
+		<a href="@Url.Action("Nurse")">
+			<button type="button">Record vitals for next patient</button>
+		</a>
+		<a href="@Url.Action("NurseQueue")">
+			<button type="button">View queue</button>
+		</a>
+	}
+	
+	@if(ViewBag.deptId == 3)
+	{
+		<a href="@Url.Action("Doctor")">
+			<button type="button">Diagnose next patient</button>
+		</a>
+		<a href="@Url.Action("DoctorQueue")">
+			<button type="button">View Queue</button>
+		</a>
+		<a href="@Url.Action("PatientList")">
+			<button type="button">View Patients List</button>
+		</a>
+	}
+	
+	@if(ViewBag.deptId == 4)
+	{
+		<a href="@Url.Action("Lab")">
+			<button type="button">Check labs for next patient</button>
+		</a>
+		<a href="@Url.Action("LabQueue")">
+			<button class="active" type="button">View Queue</button>
+		</a>
+		<a href="@Url.Action("PatientList")">
+			<button type="button">View Patients List</button>
+		</a>
+	}
+	
+	@if(ViewBag.deptId == 5)
+	{
+		<a href="@Url.Action("PatientListOnly")">
+			<button type="button">Patients List</button>
+		</a>
+		<a href="@Url.Action("Doctor")">
+			<button type="button">Diagnose next patient</button>
+		</a>
+	}
+	
     <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
         <button id="logout" type="submit">Logout</button>
     </form>
 </div>
+
+
+<script>
+    const currentUrl = window.location.pathname;
+	let button = {}
+	let index = 0
+	const navigationLinks = document.querySelectorAll('.left a');
+
+    navigationLinks.forEach(link => {
+		button[index] = link.childNodes[1]
+        button[index].classList.toggle('active', link.href.split("/")[4].startsWith(currentUrl.split("/")[2]));
+		index++
+    });
+</script>
