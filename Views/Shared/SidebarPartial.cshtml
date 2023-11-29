@@ -1,35 +1,29 @@
-@using Microsoft.AspNetCore.Identity
-
-@inject SignInManager<User> SignInManager
-@inject UserManager<User> UserManager
-
-
 <div class="left">
-    <a href="@Url.Action("PatientList")" class="my-3">
-        <button type="button" class="btn btn-primary w-100">Patients Records</button>
+    <a href="@Url.Action("PatientListOnly")">
+        <button type="button">Patients List</button>
     </a>
-    <a class="mb-3" href="@Url.Action("Doctor")">
-        <button type="button" class="btn btn-primary w-100">Diagnose next patient</button>
+    <a href="@Url.Action("Doctor")">
+        <button type="button">Diagnose next patient</button>
     </a>
-    <a class="mb-3" href="@Url.Action("PatientList")">
-        <button type="button" class="btn btn-primary w-100">Patients Records</button>
+    <a href="@Url.Action("PatientList")">
+        <button type="button">View Patients List</button>
     </a>
-    <a class="mb-3" href="@Url.Action("DoctorQueue")">
-        <button type="button" class="btn btn-primary w-100">View Queue</button>
+    <a href="@Url.Action("DoctorQueue")">
+        <button type="button">View doctor Queue</button>
     </a>
-    <a class="mb-3" href="@Url.Action("LabQueue")">
-        <button type="button" class="btn btn-primary w-100">View lab Queue</button>
+    <a href="@Url.Action("LabQueue")">
+        <button class="active" type="button">View lab Queue</button>
     </a>
-    <a class="mb-3" href="@Url.Action("Lab")">
-        <button type="button" class="btn btn-primary w-100">Check labs for next patient</button>
+    <a href="@Url.Action("Lab")">
+        <button type="button">Check labs for next patient</button>
     </a>
-    <a class="mb-3" href="@Url.Action("Nurse")">
-        <button type="button" class="btn btn-primary w-100">Record vitals for next patient</button>
+    <a href="@Url.Action("Nurse")">
+        <button type="button">Record vitals for next patient</button>
     </a>
-    <a class="mb-3" href="@Url.Action("NurseQueue")">
-        <button type="button" class="btn btn-primary w-100">View nurse queue</button>
+    <a href="@Url.Action("NurseQueue")">
+        <button type="button">View nurse queue</button>
     </a>
-    <form class="mb-3" id="logoutForm" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-        <button id="logout" type="submit" class="btn btn-primary w-100">Logout</button>
+    <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+        <button id="logout" type="submit">Logout</button>
     </form>
 </div>

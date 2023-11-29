@@ -24,20 +24,20 @@
 <form asp-controller="Staff" asp-action="PatientLab" autocomplete="off">
     <div class="container text-center">
 	<div id="lab-fields">
-        <div class="row">
+        <div class="row1 mb-2">
             <div class="col">
-                <div class="mb-3">
-                    <textarea asp-for="Labs[0].LabName" style="height: 200px" class="form-control" placeholder="Lab Name" name="Labs[0].LabName"></textarea>
+                <div>
+                    <textarea asp-for="Labs[0].LabName" style="height: 200px;border-radius: 10px 0 0 10px;" class="form-control" placeholder="Lab Name" name="Labs[0].LabName"></textarea>
                 </div>
             </div>
             <div class="col">
-                <div class="mb-3">
-                    <textarea asp-for="Labs[0].Result" style="height: 200px" class="form-control" placeholder="Lab Result" name="Labs[0].Result"></textarea>
+                <div>
+                    <textarea asp-for="Labs[0].Result" style="height: 200px;border-radius: 0;" class="form-control" placeholder="Lab Result" name="Labs[0].Result"></textarea>
                 </div>
             </div>
             <div class="col">
-                <div class="mb-3">
-                    <textarea asp-for="Labs[0].Notes" style="height: 200px" class="form-control" placeholder="Lab Notes" name="Labs[0].Notes"></textarea>
+                <div>
+                    <textarea asp-for="Labs[0].Notes" style="height: 200px;border-radius: 0 10px 10px 0;" class="form-control" placeholder="Lab Notes" name="Labs[0].Notes"></textarea>
                 </div>
             </div>
         </div>
@@ -61,32 +61,32 @@
             var index = 1;
             $('#addMore').click(function () {
                 $('#lab-fields').append(`
-                    <div class="row">
+                    <div class="row1 mb-2">
                         <div class="col">
-                            <div class="mb-3">
-                                <textarea asp-for="Labs[${index}].LabName" style="height: 200px" class="form-control" placeholder="Lab Name" name="Labs[${index}].LabName"></textarea>
+                            <div>
+                                <textarea style="height: 200px;border-radius: 10px 0 0 10px;" asp-for="Labs[${index}].LabName" style="height: 200px" class="form-control" placeholder="Lab Name" name="Labs[${index}].LabName"></textarea>
                             </div>
                         </div>
-                        <div class="col">
-                            <div class="mb-3">
-                                <textarea asp-for="Labs[${index}].Result" style="height: 200px" class="form-control" placeholder="Lab Result" name="Labs[${index}].Result"></textarea>
+                        <div class="col1">
+                            <div>
+                                <textarea style="height: 200px;border-radius: 0;" asp-for="Labs[${index}].Result" style="height: 200px" class="form-control" placeholder="Lab Result" name="Labs[${index}].Result"></textarea>
                             </div>
                         </div>
-                        <div class="col">
-                            <div class="mb-3">
-                                <textarea asp-for="Labs[${index}].Notes" style="height: 200px" class="form-control" placeholder="Lab Notes" name="Labs[${index}].Notes"></textarea>
+                        <div class="col1">
+                            <div>
+                                <textarea style="height: 200px;border-radius: 0 10px 10px 0;" asp-for="Labs[${index}].Notes" style="height: 200px" class="form-control" placeholder="Lab Notes" name="Labs[${index}].Notes"></textarea>
                             </div>
                         </div>
-                        <div class="col">
-                            <button type="button" class="btn btn-danger remove-lab">Remove Lab</button>
+                        <div class="col2">
+                            <button type="button" class="btn-close btn btn-danger remove-lab" aria-label="Close"></button>
                         </div>
                     </div>
                 `);
                 index++;
             });
         $('#lab-fields').on('click', '.remove-lab', function () {
-            var removeIndex = $(this).closest('.row').index();
-            $(this).closest('.row').remove();
+            var removeIndex = $(this).closest('.row1').index();
+            $(this).closest('.row1').remove();
             index--;
         });
     });
