@@ -665,6 +665,29 @@ public class StaffController : Controller
 
         return View(patients.ToList());
     }
+	
+	public IActionResult PatientListOnly(int page = 1, string search = "")
+    {
+        int pageSize = 10;
+        var patients = _context.Patients.AsQueryable();
+
+        if (!string.IsNullOrEmpty(search))
+        {
+            patients = patients.Where(p =>
+                                p.PatientNo.Contains(search) ||
+                                p.FirstName.Contains(search) ||
+                                p.LastName.Contains(search))
+                                .OrderBy(q => q.PatientNo)
+                                .Skip((page - 1) * pageSize)
+                                .Take(pageSize);
+        }
+        ViewBag.TotalPatients = _context.Patients.Count();
+        ViewBag.PageSize = pageSize;
+        ViewBag.CurrentPage = page;
+        ViewBag.Search = search;
+
+        return View(patients.ToList());
+    }
 
 
     public IActionResult PatientMedicalRecords(string patientNo)
