@@ -33,10 +33,10 @@ public class StaffController : Controller
     [HttpGet]
     public async Task<IActionResult> Doctor(string? patientNo)
     {
-        if (!IsUserAuthorized(3))
-        {
-           return RedirectToHome();
-        }
+        //if (!IsUserAuthorized(3))
+        //{
+        //    return RedirectToHome();
+        //}
 
         var patientDetails = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(patientNo));
 
@@ -387,7 +387,7 @@ public class StaffController : Controller
                     await _context.SaveChangesAsync();
                 }
 
-                // RemovePatientFromQueue("Lab", patient.PatientNo);
+                RemovePatientFromQueue("Lab", patient.PatientNo);
 
                 TempData["L_ConfirmationMessage"] = $"Patient's lab added successfully, patient can leave";
                 return RedirectToAction(nameof(LabQueue));
@@ -423,7 +423,7 @@ public class StaffController : Controller
                     }));
                     await _context.SaveChangesAsync();
                 }
-                // RemovePatientFromQueue("Lab", patient.PatientNo);
+                RemovePatientFromQueue("Lab", patient.PatientNo);
                 TempData["L_ConfirmationMessage"] = $"Patient's lab added successfully, patient can leave";
                 return RedirectToAction(nameof(LabQueue));
             }

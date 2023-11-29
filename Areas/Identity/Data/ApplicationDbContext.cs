@@ -16,6 +16,8 @@ public class ApplicationDbContext : IdentityDbContext<User>
     {
         base.OnModelCreating(builder);
 
+
+
         builder.Entity<Patient>()
             .HasMany(p => p.Medicals)
             .WithOne(m => m.Patient)
