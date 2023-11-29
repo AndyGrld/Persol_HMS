@@ -31,6 +31,7 @@ html {
   position: absolute;
   width: 100%;
   top: 10px;
+  z-index: 200;
 }
 
 .center-card{
@@ -58,7 +59,7 @@ html {
 
 .grid{
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: 15% 75%;
 }
 .left{
   border-right: 1px solid #ccc;
@@ -68,15 +69,14 @@ html {
   margin-right: 10px;
   display: flex;
   flex-direction: column;
-  padding: 10px;
+  padding: 10px 0;
 }
 .left button{
 	border: none;
 	border-bottom: 1px solid grey;
 	height: 50px;
-	width: 118%;
+	width: 100%;
 	position: relative;
-	right: 20px;
 	background-color: transparent;
 	transition: .5s;
 	bottom: 20px;
@@ -118,7 +118,7 @@ html {
 }
 .col4{
 	position: absolute;
-	right: 5px;
+	right: 16px;
 	bottom: 6px;
 	width: 20px;
 	scale: 1.4;

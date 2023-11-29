@@ -7,6 +7,10 @@
 		<a href="@Url.Action("PatientListOnly")">
 			<button type="button">Patients List</button>
 		</a>
+		
+		<a>
+			<button class="form-check-label" id="isNew" onclick="display()" for="isNew">Add to Queue</button>
+		</a>
 	}
 	
 	@if(ViewBag.deptId == 2)
@@ -58,6 +62,8 @@
     <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
         <button id="logout" type="submit">Logout</button>
     </form>
+	
+	
 </div>
 
 
@@ -69,7 +75,7 @@
 
     navigationLinks.forEach(link => {
 		button[index] = link.childNodes[1]
-        button[index].classList.toggle('active', link.href.split("/")[4].startsWith(currentUrl.split("/")[2]));
+        button[index].classList.toggle('active', link.href.split("/")[4] === currentUrl.split("/")[2]);
 		index++
     });
 </script>

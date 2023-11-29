@@ -33,10 +33,7 @@
     <partial name="SidebarPartial" />
     <div class="right">
     <h2 id="title" class="text-center">Create a new patient</h2>
-        <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" role="switch" id="isNew" onclick="display()">
-            <label class="form-check-label" for="isNew">Has Patient been at the hospital before?</label>
-        </div><br/>
+        
 
         <form asp-action="CreateOrGetPatient" method="post" autocomplete="off">
             <div class="forOldPatient">
@@ -129,12 +126,14 @@
                 {
                     oldContainer.style.display = "block"
                     newContainer.style.display = "none"
+					toggle.innerText = "Create Patient"
 					title.innerText = "Add existing patient to queue"
                 }else
                 {
                     oldContainer.style.display = "none"
                     newContainer.style.display = "block"
 					title.innerText = "Create a new patient"
+					toggle.innerText = "Add to Queue"
                 }
             }
         </script>
