@@ -59,41 +59,39 @@
                                     </div>
                                     <div class="modal-body">
                                         <form asp-controller="Staff" asp-action="Lab" autocomplete="off">
-										
-										<div class="container text-center">
-											<div id="lab-fields">
-                                                <div class="row">
-                                                    <div class="col">
-                                                        <div class="mb-3">
+                                            <div class="container text-center">
+                                                <div id="lab-fields">
+                                                    <div class="row mb-3">
+                                                        <div class="col">
                                                             <h5>
                                                                 @patient.LabName for @patient.PatientNo
                                                             </h5>
                                                         </div>
                                                     </div>
-                                                    <div class="col1">
-                                                            <div>
-                                                                <select asp-for="Lab.Result" style="height: auto;border-radius:10px 10px 10px 10px;" class="form-control" name="Lab.Result">
-                                                                    <option value="">Select Result</option>
-                                                                    <option value="Positive">Positive</option>
-                                                                    <option value="Negative">Negative</option>
-                                                                </select>
-                                                            </div>
-                                                    </div>
-                                                    <div class="col1">
-                                                        <div>
-                                                            <textarea asp-for="Lab.Notes" style="height: auto;border-radius: 10px 10px 10px 10px;" class="form-control" placeholder="Lab Notes" name="Lab.Notes"></textarea>
+                                                    <div class="row mb-3">
+                                                        <div class="col">
+                                                            <label for="LabResult" class="form-label">Result:</label>
+                                                            <select asp-for="Lab.Result" class="form-select" id="LabResult" name="Lab.Result">
+                                                                <option value="">Select Result</option>
+                                                                <option value="Positive">Positive</option>
+                                                                <option value="Negative">Negative</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col">
+                                                            <label for="LabNotes" class="form-label">Notes:</label>
+                                                            <textarea asp-for="Lab.Notes" class="form-control" id="LabNotes" placeholder="Lab Notes" name="Lab.Notes"></textarea>
                                                         </div>
                                                     </div>
                                                 </div>
-											</div>
-                                            <input asp-for="Lab.PatientNo" value="@patient.PatientNo" style="display:none" />
-                                                <input asp-for="Lab.LabName" value="@patient.LabName" style="display:none" />
+                                                <input asp-for="Lab.PatientNo" value="@patient.PatientNo" type="hidden" />
+                                                <input asp-for="Lab.LabName" value="@patient.LabName" type="hidden" />
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                                 <button type="submit" class="btn btn-primary">Save</button>
                                             </div>
                                         </form>
+
                                     </div>
                                 </div>
                             </div>
