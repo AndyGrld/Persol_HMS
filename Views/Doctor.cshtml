@@ -1,0 +1,108 @@
+@model Persol_HMS.Models.ViewModels.CreateMedicalViewModel
+
+<partial name="Navbar" />
+
+@if (TempData.ContainsKey("D_ConfirmationMessage"))
+{
+    <div class="alert alert-success">
+        @TempData["D_ConfirmationMessage"]
+        <button type="button" style="position:absolute;right: 0" data-bs-dismiss="alert" class="btn-close" aria-label="Close"></button>
+    </div>
+}
+@if (TempData.ContainsKey("D_WarningMessage"))
+{
+    <div class="alert alert-danger">
+        @TempData["D_WarningMessage"]
+        <button type="button" style="position:absolute;right: 0" data-bs-dismiss="alert" class="btn-close" aria-label="Close"></button>
+    </div>
+}
+
+<div class="grid">
+    <partial name="SidebarPartial" />
+    <div class="right">
+        <h2 class="text-center">Medical Records for Patient: @Model.PatientNo</h2>
+        @* <h2>@Model.FirstName @Model.LastName</h2> *@
+
+        <form asp-action="SavePatientMedicals" method="post" autocomplete="off">
+            <div class="container text-center">
+                    <div class="mb-2">
+                        <textarea asp-for="Symptoms" class="form-control" rows="4" placeholder="Symptoms"></textarea>
+                    </div>
+                    <div class="mb-2">
+                        <textarea asp-for="Diagnoses" class="form-control" rows="4" placeholder="Diagnoses"></textarea>
+                    </div>
+                </div>
+            <div id="drugFields">
+                <div class="row2 mb-2">
+                    <div class="col3">
+                        <div>
+                            <input asp-for="DrugNames[0].DrugName" id="drugName0" class="form-control" placeholder="Drug Name"/>
+                        </div>
+                    </div>
+                    <div class="col3">
+                        <div>
+                            <input asp-for="DrugNames[0].Dosage" id="dosage0" class="form-control" placeholder="Dosage"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+                <div class="form-group my-2 px-3">
+                    <label class="control-label">Is the patient to be admitted?</label>
+					<div class="row my-2">
+						<div class="col">
+							<div class="form-check">
+								<input asp-for="IsAdmitted" type="radio" class="form-check-input" id="IsAdmittedTrue" value="true">
+								<label class="form-check-label" for="IsAdmittedTrue">Yes</label>
+							</div>
+						</div>
+						<div class="col">
+							<div class="form-check">
+								<input asp-for="IsAdmitted" type="radio" class="form-check-input" id="IsAdmittedFalse" value="false">
+								<label class="form-check-label" for="IsAdmittedFalse">No</label>
+						</div>
+					</div>
+                </div>
+                
+				<input asp-for="PatientNo" value="@Model.PatientNo" style="display:none" />
+                <div class="modal-footer">
+					<button id="addMoreDrugs" type="button" class="btn btn-success w-100">Add More Drugs</button>
+                    <button type="submit" class="btn btn-primary w-100">Save Medical Records</button>
+                </div>
+			</div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var index = 1;
+            $('#addMoreDrugs').click(function () {
+                $('#drugFields').append(`
+                            <div class="row2 mb-2">
+                                <div class="col3">
+                                    <div>
+                                        <input placeholder="Drug Name" asp-for="DrugNames[${index}].DrugName" id="drugName${index}" class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="col3">
+                                    <div>
+                                        <input placeholder="Dosage" asp-for="DrugNames[${index}].Dosage" id="dosage${index}" class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="col4">
+									<button type="button" data-index="${index}" class="btn-close btn btn-danger remove-drug" aria-label="Close"></button>
+                                </div>
+                            </div>
+                        `);
+                index++;
+            });
+            $('#drugFields').on('click', '.remove-drug', function () {
+            var removeIndex = $(this).data('index');
+            $(`#drugName${removeIndex}`).closest('.row2').remove();
+            index--;
+        });
+    });
+    </script>
+}
