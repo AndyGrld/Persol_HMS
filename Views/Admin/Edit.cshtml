@@ -49,7 +49,10 @@
                 <label asp-for="LockEnd"></label>
                 <input asp-for="LockEnd" class="form-control" type="date" aria-required="true" />
             </div>
-            
+            <button type="submit" class="m-1 btn btn-warning w-100">Save Changes</button>
+			<a href="@Url.Action("Index", "Admin")">
+				<button type="button" class="m-1 btn btn-secondary w-100">Go Back</button>
+			</a>
         </form>
     </div>
 </div>
