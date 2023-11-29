@@ -87,6 +87,66 @@
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    <div class="row field1">
+                                                        <div class="col">
+                                                            <div class="mb-2">
+                                                                <input asp-for="CreateMedicalViewModel.DrugNames[1].DrugName" class="form-control" placeholder="Drug Name" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col">
+                                                            <div class="mb-2">
+                                                                <input asp-for="CreateMedicalViewModel.DrugNames[1].Dosage" class="form-control" placeholder="Dosage" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col">
+                                                            <button type="button" class="btn btn-danger remove-drug" onclick="removeDrug(1)">Remove Drug</button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row field2">
+                                                        <div class="col">
+                                                            <div class="mb-2">
+                                                                <input asp-for="CreateMedicalViewModel.DrugNames[2].DrugName" class="form-control" placeholder="Drug Name" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col">
+                                                            <div class="mb-2">
+                                                                <input asp-for="CreateMedicalViewModel.DrugNames[2].Dosage" class="form-control" placeholder="Dosage" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col">
+                                                            <button type="button" class="btn btn-danger remove-drug" onclick="removeDrug(2)">Remove Drug</button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row field3">
+                                                        <div class="col">
+                                                            <div class="mb-2">
+                                                                <input asp-for="CreateMedicalViewModel.DrugNames[3].DrugName" class="form-control" placeholder="Drug Name" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col">
+                                                            <div class="mb-2">
+                                                                <input asp-for="CreateMedicalViewModel.DrugNames[3].Dosage" class="form-control" placeholder="Dosage" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col">
+                                                            <button type="button" class="btn btn-danger remove-drug" onclick="removeDrug(3)">Remove Drug</button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row field4">
+                                                        <div class="col">
+                                                            <div class="mb-2">
+                                                                <input asp-for="CreateMedicalViewModel.DrugNames[4].DrugName" class="form-control" placeholder="Drug Name" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col">
+                                                            <div class="mb-2">
+                                                                <input asp-for="CreateMedicalViewModel.DrugNames[4].Dosage" class="form-control" placeholder="Dosage" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col">
+                                                            <button type="button" class="btn btn-danger remove-drug" onclick="removeDrug(4)">Remove Drug</button>
+                                                        </div>
+                                                    </div>
                                                 </div>
 
                                                 <div class="form-group">
@@ -168,7 +228,7 @@
                                                 }
 
                                                 <div class="modal-footer">
-                                                    <button id="addMoreDrugs" type="button" class="btn btn-success w-100">Add More Drugs</button>
+                                                    <button id="addMoreDrugs" onclick="addDrug()" type="button" class="btn btn-success w-100">Add More Drugs</button>
                                                     <button type="submit" class="btn btn-primary w-100">Save Medical Records</button>
                                                 </div>
                                             </div>
@@ -208,41 +268,6 @@
 </div>
 @section scripts {
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            var index = 1;
-
-            // Add more drugs button click event
-            $('#addMoreDrugs').click(function () {
-                $('#drugFields').append(`
-                            <div class="row">
-                                <div class="col">
-                                    <div class="mb-2">
-                                        <input placeholder="Drug Name" asp-for="CreateMedicalViewModel.DrugNames[${index}].DrugName" id="drugName${index}" class="form-control" />
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="mb-2">
-                                        <input placeholder="Dosage" asp-for="CreateMedicalViewModel.DrugNames[${index}].Dosage" id="dosage${index}" class="form-control" />
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <button type="button" class="btn btn-danger remove-drug" data-index="${index}">Remove Drug</button>
-                                </div>
-                            </div>
-                        `);
-                index++;
-            });
-
-            // Remove drug button click event
-            $('#drugFields').on('click', '.remove-drug', function () {
-                var removeIndex = $(this).data('index');
-                $(`#drugName${removeIndex}`).closest('.row').remove();
-                index--;
-            });
-        });
-    </script>
-
     <script>
         $(document).ready(function () {
             // Show/hide lab fields based on the radio button selection
