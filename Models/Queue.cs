@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Persol_HMS.Models
@@ -13,6 +12,8 @@ namespace Persol_HMS.Models
         public string PatientNo { get; set; }
 
         public int QueueNo { get; set; }
+        public string? LabName { get; set; }
+
         public string Status { get; set; }
         public DateTime DateCreated { get; set; }
         public virtual Patient Patient { get; set; }

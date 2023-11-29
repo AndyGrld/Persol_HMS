@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Persol_HMS.Models.ViewModels
@@ -26,21 +27,44 @@ namespace Persol_HMS.Models.ViewModels
         public DateTime? DateAdmitted { get; set; }
 
         // Fields for drug information
-        [Required(ErrorMessage = "Drug Name is required.")]
-        public string DrugName { get; set; }
-
-        [Required(ErrorMessage = "Dosage is required.")]
-        public string Dosage { get; set; }
-
         public List<Drug> DrugNames { get; set; }
 
-        public CreateMedicalViewModel(){
+        // Fields for lab information
+        [Display(Name = "Needs Lab")]
+        public bool NeedsLab { get; set; }
+
+        public List<string> LabNames { get; set; }
+
+        // New property for selected lab names
+        public List<string> SelectedLabNames { get; set; }
+
+        public string LabName { get; set; }
+
+        public string Dosage { get; set; }
+
+        // Add the new property for available lab names
+        public List<string> AvailableLabNames { get; set; }
+
+        public CreateMedicalViewModel()
+        {
             var drugs = new List<Drug>();
             for (int i = 0; i < 10; i++)
             {
                 drugs.Add(new Drug());
             }
             DrugNames = drugs;
+            // Default lab names
+            AvailableLabNames = new List<string>
+            {
+                "Blood Test",
+                "Urinalysis",
+                "X-ray",
+                "MRI",
+                "CT Scan",
+                // Add more lab names as needed
+            };
+            LabNames = new List<string>();
+            SelectedLabNames = new List<string>();
         }
     }
 }
