@@ -268,6 +268,40 @@
 </div>
 @section scripts {
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+	<script>
+	
+	$(document).ready(function() {
+
+	  // Initially hide all drug fields except the first one
+	  for (let i = 2; i <= 4; i++) {
+		$(`.field${i}`).hide();
+	  }
+
+	  // Add drug button event handler
+	  $("#addMoreDrugs").click(function() {
+		let currentDrugField = $(".field:visible").last();
+		let nextDrugFieldIndex = parseInt(currentDrugField.attr("class").split(" ")[1]) + 1;
+
+		if (nextDrugFieldIndex <= 4) {
+		  $(`.field${nextDrugFieldIndex}`).show();
+		} else {
+		  alert("Maximum of 4 drugs allowed.");
+		}
+	  });
+
+	  // Remove drug button event handler
+	  $(".remove-drug").click(function() {
+		let drugFieldIndex = parseInt($(this).parent().parent().attr("class").split(" ")[1]);
+
+		if (drugFieldIndex > 1) {
+		  $(`.field${drugFieldIndex}`).hide();
+		} else {
+		  alert("Cannot remove the first drug field.");
+		}
+	  });
+	});
+	
+	</script>
     <script>
         $(document).ready(function () {
             // Show/hide lab fields based on the radio button selection
