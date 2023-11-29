@@ -278,27 +278,28 @@
 	  }
 
 	  // Add drug button event handler
-	  $("#addMoreDrugs").click(function() {
-		let currentDrugField = $(".field:visible").last();
-		let nextDrugFieldIndex = parseInt(currentDrugField.attr("class").split(" ")[1]) + 1;
+            $("#addMoreDrugs").click(function () {
+                let currentDrugField = $(".field:visible").last();
+                let nextDrugFieldIndex = parseInt(currentDrugField.attr("class").split("field")[1]) + 1;
 
-		if (nextDrugFieldIndex <= 4) {
-		  $(`.field${nextDrugFieldIndex}`).show();
-		} else {
-		  alert("Maximum of 4 drugs allowed.");
-		}
-	  });
+                if (nextDrugFieldIndex <= 4) {
+                    $(`.field${nextDrugFieldIndex}`).show();
+                } else {
+                    alert("Maximum of 4 drugs allowed.");
+                }
+            });
 
 	  // Remove drug button event handler
-	  $(".remove-drug").click(function() {
-		let drugFieldIndex = parseInt($(this).parent().parent().attr("class").split(" ")[1]);
+            $(".remove-drug").click(function () {
+                let drugFieldIndex = parseInt($(this).parent().parent().attr("class").split("field")[1]);
 
-		if (drugFieldIndex > 1) {
-		  $(`.field${drugFieldIndex}`).hide();
-		} else {
-		  alert("Cannot remove the first drug field.");
-		}
-	  });
+                if (drugFieldIndex > 0) {
+                    $(`.field${drugFieldIndex}`).hide();
+                } else {
+                    alert("Cannot remove the first drug field.");
+                }
+            });
+
 	});
 	
 	</script>
