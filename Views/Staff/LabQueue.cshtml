@@ -58,28 +58,32 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <form asp-controller="Staff" asp-action="Lab" autocomplete="off">
+                                        <form asp-controller="Staff" asp-action="Lab" autocomplete="off" class="p-3">
                                             <div class="container text-center">
                                                 <div id="lab-fields">
-                                                    <div class="row mb-3">
+                                                    <div class="row bg-light p-3 rounded mb-3">
                                                         <div class="col">
-                                                            <h5>
+                                                            <h5 class="text-primary">
                                                                 @patient.LabName for @patient.PatientNo
                                                             </h5>
                                                         </div>
                                                     </div>
-                                                    <div class="row mb-3">
+                                                    <div class="row bg-light p-3 rounded mb-3">
                                                         <div class="col">
-                                                            <label for="LabResult" class="form-label">Result:</label>
-                                                            <select asp-for="Lab.Result" class="form-select" id="LabResult" name="Lab.Result">
-                                                                <option value="">Select Result</option>
-                                                                <option value="Positive">Positive</option>
-                                                                <option value="Negative">Negative</option>
-                                                            </select>
+                                                            <div class="form-group">
+                                                                <label for="LabResult" class="form-label">Result:</label>
+                                                                <select asp-for="Lab.Result" class="form-select" id="LabResult" name="Lab.Result">
+                                                                    <option value="">Select Result</option>
+                                                                    <option value="Positive">Positive</option>
+                                                                    <option value="Negative">Negative</option>
+                                                                </select>
+                                                            </div>
                                                         </div>
                                                         <div class="col">
-                                                            <label for="LabNotes" class="form-label">Notes:</label>
-                                                            <textarea asp-for="Lab.Notes" class="form-control" id="LabNotes" placeholder="Lab Notes" name="Lab.Notes"></textarea>
+                                                            <div class="form-group">
+                                                                <label for="LabNotes" class="form-label">Notes:</label>
+                                                                <textarea asp-for="Lab.Notes" class="form-control" id="LabNotes" placeholder="Lab Notes" name="Lab.Notes"></textarea>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -91,6 +95,7 @@
                                                 <button type="submit" class="btn btn-primary">Save</button>
                                             </div>
                                         </form>
+
 
                                     </div>
                                 </div>
