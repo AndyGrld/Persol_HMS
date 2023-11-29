@@ -9,7 +9,7 @@ using System.Linq.Expressions;
 using Lab = Persol_HMS.Models.Lab;
 using MessagePack;
 
-// [Authorize]
+[Authorize]
 public class StaffController : Controller
 {
     private readonly ApplicationDbContext _context;
@@ -33,10 +33,10 @@ public class StaffController : Controller
     [HttpGet]
     public async Task<IActionResult> Doctor(string? patientNo)
     {
-        //if (!IsUserAuthorized(3))
-        //{
-        //    return RedirectToHome();
-        //}
+        if (!IsUserAuthorized(3))
+        {
+           return RedirectToHome();
+        }
 
         var patientDetails = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(patientNo));
 
@@ -74,10 +74,10 @@ public class StaffController : Controller
     [HttpPost]
     public async Task<IActionResult> SaveMedicalRecords(DoctorQueueModel model)
     {
-        // if (!IsUserAuthorized(3))
-        // {
-        //     return RedirectToHome();
-        // }
+        if (!IsUserAuthorized(3))
+        {
+            return RedirectToHome();
+        }
         if (!string.IsNullOrEmpty(model.CreateMedicalViewModel.PatientNo) && model.CreateMedicalViewModel.Diagnoses != null &&
             model.CreateMedicalViewModel.DrugNames != null && model.CreateMedicalViewModel.Symptoms != null)
         {
@@ -95,10 +95,6 @@ public class StaffController : Controller
 
 			var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(model.CreateMedicalViewModel.PatientNo));
             var vital = await _context.Vitals.OrderBy(l => l.Id).LastOrDefaultAsync(v => v.PatientNo.Equals(model.CreateMedicalViewModel.PatientNo));
-
-            int? drugId = await GetDrugIdAsync(d => d.PatientNo == model.CreateMedicalViewModel.PatientNo && d.Date == DateTime.Now);
-
-            int? symptomId = await GetSymptomIdAsync(s => s.PatientNo == model.CreateMedicalViewModel.PatientNo && s.Date == DateTime.Now);
 
 			var medicalRecord = new Medical
 			{
@@ -143,8 +139,8 @@ public class StaffController : Controller
 					Date = DateTime.Today
 				};
 				_context.Drugs.Add(drug);
+			    await _context.SaveChangesAsync();
 			}
-			await _context.SaveChangesAsync();
 
             var labQueueNo = GetNextQueueNumber("Lab");
             var labQueue = new Queue
@@ -179,20 +175,20 @@ public class StaffController : Controller
     [HttpGet]
     public async Task<IActionResult> RecordsClerk()
     {
-        // if (!IsUserAuthorized(1))
-        // {
-        //     return RedirectToHome();
-        // }
+        if (!IsUserAuthorized(1))
+        {
+            return RedirectToHome();
+        }
         return View(new Patient());
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateOrGetPatient([Bind("PatientNo, FirstName, LastName, DateOfBirth, ContactNo, InsuranceType, InsuranceNo, Gender, EmergencyContactFirstName, EmergencyContactLastName, EmergencyContactNo")] Patient newPatient)
     {
-        // if (!IsUserAuthorized(1))
-        // {
-        //     return RedirectToHome();
-        // }
+        if (!IsUserAuthorized(1))
+        {
+            return RedirectToHome();
+        }
 
         if (newPatient.PatientNo != null)
         {
@@ -277,10 +273,10 @@ public class StaffController : Controller
     // [Authorize(Roles = "Nursing")]
     public IActionResult Nurse(string? patientNo)
     {
-        // if (!IsUserAuthorized(2))
-        // {
-        //     return RedirectToHome();
-        // }
+        if (!IsUserAuthorized(2))
+        {
+            return RedirectToHome();
+        }
         if (patientNo != null)
         {
             var patientDetails = _context.Patients.FirstOrDefault(p => p.PatientNo == patientNo);
@@ -321,10 +317,10 @@ public class StaffController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Nurse([Bind("PatientNo, Temperature, Height, Weight, BloodPressure")] Vital vital)
     {
-        // if (!IsUserAuthorized(2))
-        // {
-        //     return RedirectToHome();
-        // }
+        if (!IsUserAuthorized(2))
+        {
+            return RedirectToHome();
+        }
         if (!string.IsNullOrEmpty(vital.PatientNo) &&
             vital.Temperature != null &&
             vital.Height != null &&
@@ -439,10 +435,10 @@ public class StaffController : Controller
 
     public IActionResult NurseQueue(int page = 1, string search = "")
     {
-        // if (!IsUserAuthorized(2))
-        // {
-        //     return RedirectToHome();
-        // }
+        if (!IsUserAuthorized(2))
+        {
+            return RedirectToHome();
+        }
 
         int pageSize = 10;
 
@@ -480,10 +476,10 @@ public class StaffController : Controller
 	
     public IActionResult LabQueue(int page = 1, string search = "")
     {
-        // if (!IsUserAuthorized(4))
-        // {
-        //     return RedirectToHome();
-        // }
+        if (!IsUserAuthorized(4))
+        {
+            return RedirectToHome();
+        }
 
         int pageSize = 10;
 
@@ -522,10 +518,10 @@ public class StaffController : Controller
     [HttpGet]
     public IActionResult Lab(string? patientNo)
     {
-        // if (!IsUserAuthorized(4))
-        // {
-        //     return RedirectToHome();
-        // }
+        if (!IsUserAuthorized(4))
+        {
+            return RedirectToHome();
+        }
         if (patientNo != null)
         {
             var patientDetails = _context.Patients.FirstOrDefault(p => p.PatientNo == patientNo);
@@ -561,10 +557,10 @@ public class StaffController : Controller
 	
     public IActionResult DoctorQueue(int page = 1, string search = "")
     {
-        // if (!IsUserAuthorized(3))
-        // {
-        //     return RedirectToHome();
-        // }
+        if (!IsUserAuthorized(3))
+        {
+            return RedirectToHome();
+        }
 
         int pageSize = 10;
 
@@ -729,15 +725,13 @@ public class StaffController : Controller
     [HttpPost]
     public async Task<IActionResult> SavePatientMedicals(CreateMedicalViewModel model)
     {
-        // if (!IsUserAuthorized(3))
-        // {
-        //     return RedirectToHome();
-        // }
+        if (!IsUserAuthorized(3))
+        {
+            return RedirectToHome();
+        }
         if (!string.IsNullOrEmpty(model.PatientNo) && model.Diagnoses != null &&
             model.DrugNames.Count() > 1 && model.Symptoms != null)
         {
-            Console.WriteLine(model.DrugNames.Count());
-            Console.ReadLine();
 			
             var symptoms = new Symptom
             {
@@ -752,10 +746,6 @@ public class StaffController : Controller
 
 			var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(model.PatientNo));
             var vital = await _context.Vitals.OrderBy(l => l.Id).LastOrDefaultAsync(v => v.PatientNo.Equals(model.PatientNo));
-
-            int? drugId = await GetDrugIdAsync(d => d.PatientNo == model.PatientNo && d.Date == DateTime.Now);
-
-            int? symptomId = await GetSymptomIdAsync(s => s.PatientNo == model.PatientNo && s.Date == DateTime.Now);
 
 			var medicalRecord = new Medical
 			{
@@ -800,8 +790,8 @@ public class StaffController : Controller
 					Date = DateTime.Today
 				};
 				_context.Drugs.Add(drug);
+			    await _context.SaveChangesAsync();
 			}
-			await _context.SaveChangesAsync();
 
             var labQueueNo = GetNextQueueNumber("Lab");
             var labQueue = new Queue
