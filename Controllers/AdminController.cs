@@ -32,10 +32,10 @@ public class AdminController : Controller
     public IActionResult Index()
     {
         ViewBag.deptId = GetDepartmentId();
-        // if (ViewBag.deptId != 5)
-        // {
-        //     return RedirectToHome();
-        // }
+        if (ViewBag.deptId != 5)
+        {
+            return RedirectToHome();
+        }
         var users = _context.Users.Include(u => u.Department).ToList();
         return View(users);
     }
@@ -43,10 +43,10 @@ public class AdminController : Controller
     public IActionResult Details(string id)
     {
         ViewBag.deptId = GetDepartmentId();
-        // if (ViewBag.deptId != 5)
-        // {
-        //     return RedirectToHome();
-        // }
+        if (ViewBag.deptId != 5)
+        {
+            return RedirectToHome();
+        }
         if (id == null)
         {
             return NotFound();
@@ -67,10 +67,10 @@ public class AdminController : Controller
     public IActionResult Edit(string id)
     {
         ViewBag.deptId = GetDepartmentId();
-        // if (ViewBag.deptId != 5)
-        // {
-        //     return RedirectToHome();
-        // }
+        if (ViewBag.deptId != 5)
+        {
+            return RedirectToHome();
+        }
         if (id == null)
         {
             return NotFound();
@@ -92,10 +92,10 @@ public class AdminController : Controller
     public IActionResult Edit(string id, User editedUser)
     {
         ViewBag.deptId = GetDepartmentId();
-        // if (ViewBag.deptId != 5)
-        // {
-        //     return RedirectToHome();
-        // }
+        if (ViewBag.deptId != 5)
+        {
+            return RedirectToHome();
+        }
         if (id != editedUser.Id)
         {
             return NotFound();
@@ -154,10 +154,10 @@ public class AdminController : Controller
     public IActionResult Delete(string id)
     {
         ViewBag.deptId = GetDepartmentId();
-        // if (ViewBag.deptId != 5)
-        // {
-        //     return RedirectToHome();
-        // }
+        if (ViewBag.deptId != 5)
+        {
+            return RedirectToHome();
+        }
         var user = _context.Users.Find(id);
         _context.Users.Remove(user);
         _context.SaveChanges();

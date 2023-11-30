@@ -31,9 +31,25 @@ namespace Persol_HMS.Models
         [RegularExpression(@"^\d{10,15}$", ErrorMessage = "Invalid Contact Number.")]
         public string ContactNo { get; set; }
 
+        public class Max130YearsOldAttribute : ValidationAttribute
+        {
+            public override bool IsValid(object value)
+            {
+                DateTime dateOfBirth = (DateTime)value;
+                if (dateOfBirth > DateTime.Now || dateOfBirth < DateTime.Now.AddYears(-130))
+                {
+                    return false;
+                }
+                return true;
+            }
+        }
+
         [Required(ErrorMessage = "The Date of Birth is required.")]
+        [Max130YearsOld(ErrorMessage = "The Date of Birth is invalid.")]
         [DataType(DataType.Date)]
+        
         public DateTime DateOfBirth { get; set; }
+
 
         [Display(Name = "Insurance Type")]
         public string? InsuranceType { get; set; }

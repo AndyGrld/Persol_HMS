@@ -1,9 +1,10 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using Lab = Persol_HMS.Models.Lab;
 
-//[Authorize]
+[Authorize]
 public class StaffController : Controller
 {
     private readonly ApplicationDbContext _context;
@@ -27,11 +28,11 @@ public class StaffController : Controller
     [HttpGet]
     public async Task<IActionResult> Doctor(string? patientNo)
     {
-        // ViewBag.deptId = GetDepartmentId();
-        // if (ViewBag.deptId != 3)
-        // {
-        //    return RedirectToHome();
-        // }
+        ViewBag.deptId = GetDepartmentId();
+        if (ViewBag.deptId != 3)
+        {
+            return RedirectToHome();
+        }
 
         var patientDetails = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(patientNo));
 
@@ -70,11 +71,11 @@ public class StaffController : Controller
     [HttpPost]
     public async Task<IActionResult> SaveMedicalRecords(DoctorQueueModel model)
     {
-        // ViewBag.deptId = GetDepartmentId();
-        // if (ViewBag.deptId != 3)
-        // {
-        //     return RedirectToHome();
-        // }
+        ViewBag.deptId = GetDepartmentId();
+        if (ViewBag.deptId != 3)
+        {
+            return RedirectToHome();
+        }
 
         if (!string.IsNullOrEmpty(model.CreateMedicalViewModel.PatientNo) &&
             model.CreateMedicalViewModel.Diagnoses != null &&
@@ -101,7 +102,7 @@ public class StaffController : Controller
                 PatientNo = model.CreateMedicalViewModel.PatientNo,
                 Date = DateTime.Today,
                 Diagnoses = model.CreateMedicalViewModel.Diagnoses,
-                WardNo = model.CreateMedicalViewModel.IsAdmitted == true ? GenerateWardNumber() : null,
+                WardName = model.CreateMedicalViewModel.IsAdmitted == true ? model.CreateMedicalViewModel.SelectedWardNames[0] : null,
                 IsAdmitted = model.CreateMedicalViewModel.IsAdmitted,
                 DateAdmitted = model.CreateMedicalViewModel.IsAdmitted == true ? DateTime.Now.Date : (DateTime?)null
             };
@@ -180,33 +181,28 @@ public class StaffController : Controller
 
 
 
-    private int GenerateWardNumber()
-    {
-        var maxWardNo = _context.Medicals.Max(m => (int?)m.WardNo);
-        int num = maxWardNo.HasValue ? maxWardNo.Value + 1 : 1;
-        return num;
-    }
+    
 
 
     [HttpGet]
     public async Task<IActionResult> RecordsClerk()
     {
         ViewBag.deptId = GetDepartmentId();
-        // if (ViewBag.deptId != 1)
-        // {
-        //     return RedirectToHome();
-        // }
+        if (ViewBag.deptId != 1)
+        {
+            return RedirectToHome();
+        }
         return View(new Patient());
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateOrGetPatient([Bind("PatientNo, FirstName, LastName, DateOfBirth, ContactNo, InsuranceType, InsuranceNo, Gender, EmergencyContactFirstName, EmergencyContactLastName, EmergencyContactNo")] Patient newPatient)
     {
-        // ViewBag.deptId = GetDepartmentId();
-        // if (ViewBag.deptId != 1)
-        // {
-        //    return RedirectToHome();
-        // }
+        ViewBag.deptId = GetDepartmentId();
+        if (ViewBag.deptId != 1)
+        {
+            return RedirectToHome();
+        }
 
         if (newPatient.PatientNo != null)
         {
@@ -291,11 +287,11 @@ public class StaffController : Controller
     // [Authorize(Roles = "Nursing")]
     public IActionResult Nurse(string? patientNo)
     {
-        // ViewBag.deptId = GetDepartmentId();
-        // if (ViewBag.deptId != 2)
-        // {
-        //    return RedirectToHome();
-        // }
+        ViewBag.deptId = GetDepartmentId();
+        if (ViewBag.deptId != 2)
+        {
+            return RedirectToHome();
+        }
         if (patientNo != null)
         {
             var patientDetails = _context.Patients.FirstOrDefault(p => p.PatientNo == patientNo);
@@ -336,11 +332,11 @@ public class StaffController : Controller
     //[ValidateAntiForgeryToken]
     public async Task<IActionResult> Nurse([Bind("PatientNo, Temperature, Height, Weight, BloodPressure")] Vital vital)
     {
-        // ViewBag.deptId = GetDepartmentId();
-        // if (ViewBag.deptId != 2)
-        // {
-        //    return RedirectToHome();
-        // }
+        ViewBag.deptId = GetDepartmentId();
+        if (ViewBag.deptId != 2)
+        {
+            return RedirectToHome();
+        }
         if (!string.IsNullOrEmpty(vital.PatientNo) &&
             vital.Temperature != null &&
             vital.Height != null &&
@@ -467,11 +463,11 @@ public class StaffController : Controller
 
     public IActionResult NurseQueue(int page = 1, string search = "")
     {
-        // ViewBag.deptId = GetDepartmentId();
-        // if (ViewBag.deptId != 2)
-        // {
-        //    return RedirectToHome();
-        // }
+        ViewBag.deptId = GetDepartmentId();
+        if (ViewBag.deptId != 2)
+        {
+            return RedirectToHome();
+        }
 
         int pageSize = 10;
 
@@ -509,11 +505,11 @@ public class StaffController : Controller
 
     public IActionResult LabQueue(int page = 1, string search = "")
     {
-        // ViewBag.deptId = GetDepartmentId();
-        // if (ViewBag.deptId != 4)
-        // {
-        //    return RedirectToHome();
-        // }
+        ViewBag.deptId = GetDepartmentId();
+        if (ViewBag.deptId != 4)
+        {
+            return RedirectToHome();
+        }
 
         int pageSize = 10;
 
@@ -552,11 +548,11 @@ public class StaffController : Controller
     [HttpGet]
     public IActionResult Lab(string? patientNo)
     {
-        // ViewBag.deptId = GetDepartmentId();
-        // if (ViewBag.deptId != 4)
-        // {
-        //    return RedirectToHome();
-        // }
+        ViewBag.deptId = GetDepartmentId();
+        if (ViewBag.deptId != 4)
+        {
+            return RedirectToHome();
+        }
         if (patientNo != null)
         {
             var patientDetails = _context.Patients.FirstOrDefault(p => p.PatientNo == patientNo);
@@ -592,11 +588,11 @@ public class StaffController : Controller
 
     public IActionResult DoctorQueue(int page = 1, string search = "")
     {
-        // ViewBag.deptId = GetDepartmentId();
-        // if (ViewBag.deptId != 3)
-        // {
-        //    return RedirectToHome();
-        // }
+        ViewBag.deptId = GetDepartmentId();
+        if (ViewBag.deptId != 3)
+        {
+            return RedirectToHome();
+        }
 
         int pageSize = 10;
 
@@ -787,11 +783,11 @@ public class StaffController : Controller
     [HttpPost]
     public async Task<IActionResult> SavePatientMedicals(CreateMedicalViewModel model)
     {
-        // ViewBag.deptId = GetDepartmentId();
-        // if (ViewBag.deptId != 3)
-        // {
-        //    return RedirectToHome();
-        // }
+        ViewBag.deptId = GetDepartmentId();
+        if (ViewBag.deptId != 3)
+        {
+            return RedirectToHome();
+        }
         if (!string.IsNullOrEmpty(model.PatientNo) && model.Diagnoses != null &&
             model.DrugNames.Count() > 1 && model.Symptoms != null)
         {
@@ -816,7 +812,7 @@ public class StaffController : Controller
                 PatientNo = model.PatientNo,
                 Date = DateTime.Today,
                 Diagnoses = model.Diagnoses,
-                WardNo = model.IsAdmitted == true ? GenerateWardNumber() : null,
+                WardName = model.IsAdmitted == true ? model.SelectedLabNames[0] : null,
                 IsAdmitted = model.IsAdmitted,
                 DateAdmitted = model.IsAdmitted == true ? DateTime.Now.Date : (DateTime?)null
             };

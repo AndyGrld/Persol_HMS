@@ -14,7 +14,7 @@ namespace Persol_HMS.Models
         [ForeignKey(nameof(Symptom))]
         public int SymptomsID { get; set; }//
         public string Diagnoses { get; set; }//
-        public int? WardNo { get; set; }//
+        public string? WardName { get; set; }//
         [DataType(DataType.Currency)]
         public double Bill { get; set; } = 0;
         public bool IsAdmitted { get; set; }//

@@ -171,7 +171,20 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
+                                                <div id="WardContainer"style="display:none">
+                                                    <div class="form-group" id="WardsTemplate">
+                                                        <label for="WardName">Select Ward Name</label>
+                                                        <div class="dropdown">
+                                                            <select asp-for="CreateMedicalViewModel.SelectedWardNames" class="form-control">
+                                                                <option value="">Select Ward</option>
+                                                                @foreach(var wardName in Model.CreateMedicalViewModel.AvailableWardNames)
+                                                                {
+                                                                    <option value="@wardName">@wardName</option>
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 <!-- Dynamic Lab Fields -->
                                                 <div id="labFieldsContainer" style="display:none;">
                                                     <div class="form-group" id="labFieldsTemplate">
@@ -296,6 +309,13 @@
                     $('#labFieldsContainer').show();
                 } else {
                     $('#labFieldsContainer').hide();
+                }
+            });
+            $('input[name="CreateMedicalViewModel.IsAdmitted"]').change(function () {
+                if ($(this).val() === 'true') {
+                    $('#WardContainer').show();
+                } else {
+                    $('#WardContainer').hide();
                 }
             });
 

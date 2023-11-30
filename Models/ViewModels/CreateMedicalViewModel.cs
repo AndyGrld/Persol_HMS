@@ -33,11 +33,17 @@ namespace Persol_HMS.Models.ViewModels
         [Display(Name = "Needs Lab")]
         public bool NeedsLab { get; set; }
 
+        public List<string> WardNames { get; set; }
         public List<string> LabNames { get; set; }
 
         // New property for selected lab names
         public List<string> SelectedLabNames { get; set; }
 
+        // New property for selected ward names
+        public List<string> SelectedWardNames { get; set; }
+
+        // Add the new property for available lab names
+        public List<string> AvailableWardNames { get; set; }
         public string LabName { get; set; }
 
         public string Dosage { get; set; }
@@ -58,6 +64,19 @@ namespace Persol_HMS.Models.ViewModels
             };
             LabNames = new List<string>();
             SelectedLabNames = new List<string>();
+
+            AvailableWardNames = new List<string>
+            {
+                "Pediatrics Ward",
+                "Medical Ward",
+                "Surgical Ward",
+                "Maternity Ward",
+                "Psychiatric Ward",
+                "Intensive Care Unit",
+                "Isolation Ward"
+            };
+            SelectedWardNames = new List<string>();
+            WardNames = new List<string>();
         }
     }
 }
