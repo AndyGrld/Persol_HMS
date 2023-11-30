@@ -165,33 +165,17 @@ table td, table thead{
 	box-shadow: 0 0 1px black;
 	border-radius: 15px 0 0 15px;
 }
-.lab_col1 label{
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	font-size: 1.1em;
-}
-.radio-two{
-	border-radius: 0 0 0 15px;
-}
 .lab_col textarea{
 	border-radius: 0 15px 15px 0;
+}
+.lab_col textarea{
+	border-radius: 15px 0 0 15px;
 }
 .lab_col, .lab_col1{
 	height: 200px;
 }
-.lab_col1{
-	display: grid;
-	grid-template-rows: 33% 67%;
-}
-.lab_col textarea{
+.lab_col textarea, .lab_col1 textarea{
 	height: 100%;
-}
-.lab_col select{
-	height: 25%;
-}
-.lab_col select option{
-	height: 20px;
 }
 .switch-field {
 	display: grid;
