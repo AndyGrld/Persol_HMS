@@ -10,9 +10,9 @@
     <partial name="SidebarPartial" />
     <div class="right">
         <h2 class="text-center">Patient List</h2>
-        <form method="get" action="@Url.Action("PatientList")">
+        <form method="get" action="@Url.Action("PatientListOnly")">
             <div class="input-group mb-3">
-                <input type="text" name="search" class="form-control" placeholder="Search by Patient No" aria-describedby="button-addon2">
+                <input type="text" name="search" class="form-control" placeholder="Search by Patient No, First Name or Last Name" aria-describedby="button-addon2">
                 <button class="btn btn-outline-primary" type="submit" id="button-addon2">Search</button>
             </div>
         </form>
