@@ -404,20 +404,20 @@ public class StaffController : Controller
                 _context.Labs.Add(lab);
                 await _context.SaveChangesAsync();
 
-                var pharmacyQueueNo = GetNextQueueNumber("Pharmacy");
-                var pharmacyQueue = new Queue
-                {
-                    PatientNo = labView.Lab.PatientNo,
-                    QueueNo = pharmacyQueueNo,
-                    Status = "Pharmacy",
-                    DateCreated = DateTime.Now
-                };
+                //var pharmacyQueueNo = GetNextQueueNumber("Pharmacy");
+                //var pharmacyQueue = new Queue
+                //{
+                //    PatientNo = labView.Lab.PatientNo,
+                //    QueueNo = pharmacyQueueNo,
+                //    Status = "Pharmacy",
+                //    DateCreated = DateTime.Now
+                //};
                 RemovePatientFromQueue("Lab", patient.PatientNo);
-                _context.Queues.Add(pharmacyQueue);
+                //_context.Queues.Add(pharmacyQueue);
 
                 await _context.SaveChangesAsync();
 
-                TempData["L_ConfirmationMessage"] = $"Patient's lab added successfully, patient can visit the pharmacist to make payment";
+                TempData["L_ConfirmationMessage"] = $"Patient's lab added successfully, thank you";
                 return RedirectToAction(nameof(LabQueue));
             }
         }

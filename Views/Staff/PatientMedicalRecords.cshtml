@@ -13,75 +13,95 @@
 		<h2>@($"Medical Records for {Model.Patient.FirstName} {Model.Patient.LastName}")</h2>
 		<h2>@($"{Model.Patient.PatientNo}")</h2>
 
-		@foreach (var medical in Model.MedicalRecords)
+		@if (Model.MedicalRecords.Any())
 		{
-			<div class="card my-3">
-				<div class="card-header row">
-					<div class="col">
-						<h5>Medical Record ID: @medical.ID</h5>
+			@foreach (var medical in Model.MedicalRecords)
+			{
+				<div class="card my-3">
+					<div class="card-header row">
+						<div class="col">
+							<h5>Medical Record ID: @medical.ID</h5>
+						</div>
+						<div class="col" style="text-align:right">
+							<h5>@medical.Date.ToShortDateString()</h5>
+						</div>
 					</div>
-					<div class="col" style="text-align:right">
-						<h5>@medical.Date.ToShortDateString()</h5>
+					<div class="card-body">
+						<div class="row mb-2">
+							<div class="col">
+								<p class="card-text"><b>Temperature: </b>@medical.Vital.Temperature °C</p>
+							</div>
+							<div class="col">
+								<p class="card-text"><b>Height: </b>@medical.Vital.Height</p>
+							</div>
+						</div>
+						<div class="row mb-2">
+							<div class="col">
+								<p class="card-text"><b>Weight: </b>@medical.Vital.Weight</p>
+							</div>
+							<div class="col">
+								<p class="card-text"><b>Blood Pressure: </b>@medical.Vital.BloodPressure mmHg</p>
+							</div>
+						</div>
+						<p class="card-text"><b>Diagnoses: </b>@medical.Diagnoses</p>
+						<p class="card-text"><b>Symptoms: </b>@medical.Symptom?.Symptoms</p>
+						@if (medical.Drugs.Any())
+						{
+							<table class="table table-hover" style="border-top:1px solid black">
+								<thead>
+									<tr>
+										<th>Drug Name</th>
+										<th>Dosage</th>
+									</tr>
+								</thead>
+								<tbody>
+									@foreach (var drug in medical.Drugs)
+									{
+										<tr>
+											<td>@drug.DrugName</td>
+											<td>@drug.Dosage</td>
+										</tr>
+									}
+								</tbody>
+							</table>
+						}
+						else
+						{
+							<p>No drugs</p>
+						}
+						@if (medical.Labs.Any())
+						{
+							<table class="table table-hover" style="border-top:1px solid black">
+								<thead>
+									<tr>
+										<th>Lab Name</th>
+										<th>Notes</th>
+										<th>Result</th>
+									</tr>
+								</thead>
+								<tbody>
+									@foreach (var lab in medical.Labs)
+									{
+										<tr>
+											<td>@lab.LabName</td>
+											<td>@lab.Notes</td>
+											<td>@lab.Result</td>
+										</tr>
+									}
+								</tbody>
+							</table>
+						}
+						else
+						{
+							<p>No Labs</p>
+						}
 					</div>
 				</div>
-				<div class="card-body">
-					<div class="row mb-2">
-						<div class="col">
-							<p class="card-text"><b>Temperature: </b>@medical.Vital.Temperature °C</p>
-						</div>
-						<div class="col">
-							<p class="card-text"><b>Height: </b>@medical.Vital.Height</p>
-						</div>
-					</div>
-					<div class="row mb-2">
-						<div class="col">
-							<p class="card-text"><b>Weight: </b>@medical.Vital.Weight</p>
-						</div>
-						<div class="col">
-							<p class="card-text"><b>Blood Pressure: </b>@medical.Vital.BloodPressure mmHg</p>
-						</div>
-					</div>
-					<p class="card-text"><b>Diagnoses: </b>@medical.Diagnoses</p>
-					<p class="card-text"><b>Symptoms: </b>@medical.Symptom?.Symptoms</p>
-					
-					<table class="table table-hover" style="border-top:1px solid black">
-						<thead>
-							<tr>
-								<th>Drug Name</th>
-								<th>Dosage</th>
-							</tr>
-						</thead>
-						<tbody>
-							@foreach(var drug in medical.Drugs)
-							{
-								<tr>
-									<td>@drug.DrugName</td>
-									<td>@drug.Dosage</td>
-								</tr>
-							}
-						</tbody>
-					</table>
-					<table class="table table-hover" style="border-top:1px solid black">
-						<thead>
-							<tr>
-								<th>Lab Name</th>
-								<th>Notes</th>
-								<th>Result</th>
-							</tr>
-						</thead>
-						<tbody>
-							@foreach(var lab in medical.Labs)
-							{
-								<tr>
-									<td>@lab.LabName</td>
-									<td>@lab.Notes</td>
-									<td>@lab.Result</td>
-								</tr>
-							}
-						</tbody>
-					</table>
-				</div>
-			</div>
+			}
 		}
-    </div>
+		else
+		{
+			<p>No Medical Records Yet</p>
+		}
+	</div>
 </div>
