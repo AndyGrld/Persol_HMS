@@ -71,12 +71,13 @@
                                                     <div class="lab_row bg-light p-3 rounded mb-3">
                                                         <div class="lab_col1">
                                                             <label>Select Result</label>
-                                                            <div class="switch-field">
+                                                            <textarea asp-for="Lab.Result" class="form-control" id="LabResult" placeholder="Lab Result" name="Lab.Result"></textarea>
+                                                            @* <div class="switch-field">
                                                                 <input asp-for="Lab.Result" type="radio" id="radio-one" name="switch-one" value="Positive" checked/>
                                                                 <label for="radio-one">Positive</label>
                                                                 <input asp-for="Lab.Result" type="radio" id="radio-two" name="switch-one" value="Negative" />
                                                                 <label class='radio-two' for="radio-two">Negative</label>
-                                                            </div>
+                                                            </div> *@
                                                         </div>
                                                         <div class="lab_col">
                                                             <textarea asp-for="Lab.Notes" class="form-control" id="LabNotes" placeholder="Lab Notes" name="Lab.Notes"></textarea>

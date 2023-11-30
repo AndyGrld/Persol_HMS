@@ -391,7 +391,9 @@ public class StaffController : Controller
             if (patient != null)
             {
                 var medical = await _context.Medicals.OrderBy(m => m.ID).LastOrDefaultAsync(m => m.PatientNo == labView.Lab.PatientNo);
-
+                // Console.WriteLine($"lab result{labView.Lab.Result}");
+                // Console.WriteLine($"lab notes{labView.Lab.Notes}");
+                // Console.ReadLine();
 
                 var lab = new Persol_HMS.Models.Lab
                 {
@@ -879,16 +881,11 @@ public class StaffController : Controller
 
     public IActionResult PharmacyQueue(int page = 1, string search = "")
     {
-        // ViewBag.deptId = GetDepartmentId();
-        // if (ViewBag.deptId != 4)
-        // {
-        //    return RedirectToHome();
-        // }
-
         int pageSize = 10;
 
         var query = _context.Queues
             .Include(q => q.Patient)
+            .Include(q => q.MedicalRecords) // Include MedicalRecords for each Queue
             .Where(q => q.Status == "Pharmacy" &&
                         (q.PatientNo.Contains(search) ||
                         q.Patient.FirstName.Contains(search) ||
@@ -900,22 +897,25 @@ public class StaffController : Controller
         var patientsInLine = query.ToList();
         var totalPatients = query.Count();
 
-
-        var model = new QueueViewModel
+        // Map to PharmacyQueueViewModel
+        var pharmacyQueueViewModel = new PharmacyQueueViewModel
         {
             PatientsInLine = patientsInLine,
+            PatientsWithDrugs = patientsInLine
+                .Select(q => new PatientWithDrugs
+                {
+                    PatientQueue = q,
+                    PatientDrugs = q.MedicalRecords?.SelectMany(m => m.Drugs).ToList() ?? new List<Drug>()
+                })
+                .ToList(),
             CurrentPage = page,
             PageSize = pageSize,
             TotalPatients = totalPatients,
             Search = search
         };
 
-        var viewModel = new DoctorQueueModel
-        {
-            CreateMedicalViewModel = new CreateMedicalViewModel(),
-            QueueViewModel = model
-        };
-
-        return View(viewModel);
+        return View(pharmacyQueueViewModel);
     }
+
+
 }
