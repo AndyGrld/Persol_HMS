@@ -17,7 +17,7 @@
 		{
 			@foreach (var medical in Model.MedicalRecords)
 			{
-				<div class="card my-3">
+				<div class="card my-3" style="overflow:hidden">
 					<div class="card-header row">
 						<div class="col">
 							<h5>Medical Record ID: @medical.ID</h5>
@@ -47,7 +47,7 @@
 						<p class="card-text"><b>Symptoms: </b>@medical.Symptom?.Symptoms</p>
 						@if (medical.Drugs.Any())
 						{
-							<table class="table table-hover" style="border-top:1px solid black">
+							<table class="table table-bordered table-hover">
 								<thead>
 									<tr>
 										<th>Drug Name</th>
@@ -67,11 +67,11 @@
 						}
 						else
 						{
-							<p>No drugs</p>
+							<h6>No drugs</h6>
 						}
 						@if (medical.Labs.Any())
 						{
-							<table class="table table-hover" style="border-top:1px solid black">
+							<table class="table table-hover table-bordered">
 								<thead>
 									<tr>
 										<th>Lab Name</th>
@@ -93,7 +93,7 @@
 						}
 						else
 						{
-							<p>No Labs</p>
+							<h6>No Labs</h6>
 						}
 					</div>
 				</div>
@@ -101,7 +101,10 @@
 		}
 		else
 		{
-			<p>No Medical Records Yet</p>
+			<br>
+			<br />
+			<br />
+			<h4 style="text-align:center">No Medical Records Yet</h4>
 		}
 	</div>
 </div>
