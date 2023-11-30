@@ -65,10 +65,10 @@
                                         <form asp-controller="Staff" asp-action="Lab" autocomplete="off">
                                             <div class="container text-center">
                                                 <div id="lab-fields">
-                                                    <h5 class="bg-light rounded text-primary fs-4">
+                                                    <h5 class=" rounded text-primary fs-4">
                                                         @patient.LabName for @patient.Patient.LastName @patient.Patient.FirstName
                                                     </h5>
-                                                    <div class="lab_row bg-light p-3 rounded mb-3">
+                                                    <div class="lab_row p-3 rounded mb-3">
                                                         <div class="lab_col1">
                                                            <textarea asp-for="Lab.Result" class="form-control" id="LabResult" placeholder="Lab Result" name="Lab.Result"></textarea>
                                                         </div>
