@@ -179,6 +179,7 @@ table td, table thead{
 	display: grid;
 	overflow: hidden;
 	height: 100%;
+	
 }
 .switch-field input {
 	position: absolute !important;
