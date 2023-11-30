@@ -31,7 +31,7 @@ public static class SeedData
             },
             new UserSeedData
             {
-                UserName = "Nurse@123",
+                UserName = "Nurse_01",
                 Email = "Nurse_01@example.com",
                 FirstName = "Ama",
                 MiddleName = "l",
@@ -42,7 +42,7 @@ public static class SeedData
             },
             new UserSeedData
             {
-                UserName = "Doctor@123",
+                UserName = "Doctor_01",
                 Email = "Doctor_01@example.com",
                 FirstName = "Doc",
                 MiddleName = "d",
@@ -53,14 +53,14 @@ public static class SeedData
             },
             new UserSeedData
             {
-                UserName = "Lab@123",
+                UserName = "Lab_01",
                 Email = "Lab_01@example.com",
                 FirstName = "Lab",
                 MiddleName = "l",
                 LastName = "Strange",
                 DepartmentId = 004,
                 DateOfBirth = DateTime.Parse("1990-01-01"),
-                Password = "Lab@123"
+                Password = "Lab_01"
             },
             new UserSeedData
             {
