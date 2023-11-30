@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Auth.Migrations
+namespace Persol_Hms.Migrations
 {
     public partial class migration01 : Migration
     {
@@ -279,9 +279,11 @@ namespace Auth.Migrations
                     SymptomsID = table.Column<int>(type: "INTEGER", nullable: false),
                     Diagnoses = table.Column<string>(type: "TEXT", nullable: false),
                     WardNo = table.Column<int>(type: "INTEGER", nullable: true),
+                    Bill = table.Column<double>(type: "REAL", nullable: false),
                     IsAdmitted = table.Column<bool>(type: "INTEGER", nullable: false),
                     DateAdmitted = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    PatientNo = table.Column<string>(type: "TEXT", nullable: false)
+                    PatientNo = table.Column<string>(type: "TEXT", nullable: false),
+                    QueueId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -292,6 +294,11 @@ namespace Auth.Migrations
                         principalTable: "Patients",
                         principalColumn: "PatientNo",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Medicals_Queues_QueueId",
+                        column: x => x.QueueId,
+                        principalTable: "Queues",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Medicals_Symptoms_SymptomsID",
                         column: x => x.SymptomsID,
@@ -315,6 +322,7 @@ namespace Auth.Migrations
                     MedicalID = table.Column<int>(type: "INTEGER", nullable: false),
                     DrugName = table.Column<string>(type: "TEXT", nullable: false),
                     Dosage = table.Column<string>(type: "TEXT", nullable: false),
+                    Price = table.Column<double>(type: "REAL", nullable: false),
                     Date = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
@@ -382,6 +390,11 @@ namespace Auth.Migrations
                 columns: new[] { "Id", "DepartmentCode", "DepartmentName" },
                 values: new object[] { 5, 5, "Admin" });
 
+            migrationBuilder.InsertData(
+                table: "Departments",
+                columns: new[] { "Id", "DepartmentCode", "DepartmentName" },
+                values: new object[] { 6, 6, "Pharmacy" });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -445,6 +458,11 @@ namespace Auth.Migrations
                 column: "PatientNo");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Medicals_QueueId",
+                table: "Medicals",
+                column: "QueueId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Medicals_SymptomsID",
                 table: "Medicals",
                 column: "SymptomsID");
@@ -489,9 +507,6 @@ namespace Auth.Migrations
                 name: "Labs");
 
             migrationBuilder.DropTable(
-                name: "Queues");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
@@ -502,6 +517,9 @@ namespace Auth.Migrations
 
             migrationBuilder.DropTable(
                 name: "Departments");
+
+            migrationBuilder.DropTable(
+                name: "Queues");
 
             migrationBuilder.DropTable(
                 name: "Symptoms");

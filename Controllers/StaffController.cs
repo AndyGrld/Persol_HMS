@@ -406,10 +406,20 @@ public class StaffController : Controller
                 _context.Labs.Add(lab);
                 await _context.SaveChangesAsync();
 
-
+                var pharmacyQueueNo = GetNextQueueNumber("Pharmacy");
+                var pharmacyQueue = new Queue
+                {
+                    PatientNo = labView.Lab.PatientNo,
+                    QueueNo = pharmacyQueueNo,
+                    Status = "Pharmacy",
+                    DateCreated = DateTime.Now
+                };
                 RemovePatientFromQueue("Lab", patient.PatientNo);
+                _context.Queues.Add(pharmacyQueue);
 
-                TempData["L_ConfirmationMessage"] = $"Patient's lab added successfully, patient can leave";
+                await _context.SaveChangesAsync();
+
+                TempData["L_ConfirmationMessage"] = $"Patient's lab added successfully, patient can visit the pharmacist to make payment";
                 return RedirectToAction(nameof(LabQueue));
             }
         }
@@ -862,5 +872,50 @@ public class StaffController : Controller
 
         TempData["D_WarningMessage"] = $"Error processing patient's medical details. Please try again";
         return RedirectToAction(nameof(Doctor));
+    }
+
+
+
+
+    public IActionResult PharmacyQueue(int page = 1, string search = "")
+    {
+        // ViewBag.deptId = GetDepartmentId();
+        // if (ViewBag.deptId != 4)
+        // {
+        //    return RedirectToHome();
+        // }
+
+        int pageSize = 10;
+
+        var query = _context.Queues
+            .Include(q => q.Patient)
+            .Where(q => q.Status == "Pharmacy" &&
+                        (q.PatientNo.Contains(search) ||
+                        q.Patient.FirstName.Contains(search) ||
+                        q.Patient.LastName.Contains(search)))
+            .OrderBy(q => q.DateCreated)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize);
+
+        var patientsInLine = query.ToList();
+        var totalPatients = query.Count();
+
+
+        var model = new QueueViewModel
+        {
+            PatientsInLine = patientsInLine,
+            CurrentPage = page,
+            PageSize = pageSize,
+            TotalPatients = totalPatients,
+            Search = search
+        };
+
+        var viewModel = new DoctorQueueModel
+        {
+            CreateMedicalViewModel = new CreateMedicalViewModel(),
+            QueueViewModel = model
+        };
+
+        return View(viewModel);
     }
 }

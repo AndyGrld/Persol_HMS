@@ -8,16 +8,16 @@ using Persol_HMS.Data;
 
 #nullable disable
 
-namespace Auth.Migrations
+namespace Persol_Hms.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231129150404_migration01")]
+    [Migration("20231130044716_migration01")]
     partial class migration01
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.23");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.25");
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -198,6 +198,12 @@ namespace Auth.Migrations
                             Id = 5,
                             DepartmentCode = 5,
                             DepartmentName = "Admin"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            DepartmentCode = 6,
+                            DepartmentName = "Pharmacy"
                         });
                 });
 
@@ -224,6 +230,9 @@ namespace Auth.Migrations
                     b.Property<string>("PatientNo")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("REAL");
 
                     b.HasKey("ID");
 
@@ -275,6 +284,9 @@ namespace Auth.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<double>("Bill")
+                        .HasColumnType("REAL");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("TEXT");
 
@@ -292,6 +304,9 @@ namespace Auth.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("QueueId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("SymptomsID")
                         .HasColumnType("INTEGER");
 
@@ -304,6 +319,8 @@ namespace Auth.Migrations
                     b.HasKey("ID");
 
                     b.HasIndex("PatientNo");
+
+                    b.HasIndex("QueueId");
 
                     b.HasIndex("SymptomsID");
 
@@ -629,6 +646,10 @@ namespace Auth.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Persol_HMS.Models.Queue", null)
+                        .WithMany("MedicalRecords")
+                        .HasForeignKey("QueueId");
+
                     b.HasOne("Persol_HMS.Models.Symptom", "Symptom")
                         .WithMany()
                         .HasForeignKey("SymptomsID")
@@ -689,6 +710,11 @@ namespace Auth.Migrations
             modelBuilder.Entity("Persol_HMS.Models.Patient", b =>
                 {
                     b.Navigation("Medicals");
+                });
+
+            modelBuilder.Entity("Persol_HMS.Models.Queue", b =>
+                {
+                    b.Navigation("MedicalRecords");
                 });
 #pragma warning restore 612, 618
         }

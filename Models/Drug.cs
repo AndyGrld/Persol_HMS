@@ -12,7 +12,7 @@ namespace Persol_HMS.Models
         public int MedicalID { get; set; }
         public string DrugName { get; set; }
         public string Dosage { get; set; }
-        // public double Price { get; set; } = 0;
+        public double Price { get; set; } = 0;
         public DateTime Date { get; set; }
         public virtual Patient Patient { get; set; }
     }
