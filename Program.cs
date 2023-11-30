@@ -37,8 +37,8 @@ internal class Program
         builder.Services.Configure<IdentityOptions>(options =>
         {
             options.Password.RequireUppercase = false;
-            options.Lockout.MaxFailedAccessAttempts = int.MaxValue;
-            options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromDays(365);
+            options.Lockout.MaxFailedAccessAttempts = 3;
+            options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
         });
 
         var app = builder.Build();
