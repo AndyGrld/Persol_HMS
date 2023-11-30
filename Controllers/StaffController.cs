@@ -13,10 +13,10 @@ public class StaffController : Controller
         _context = context;
     }
 
-    private int? GetDepartmentId()
+    private int GetDepartmentId()
     {
-       var user = _context.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
-       return user?.DepartmentId;
+        var user = _context.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
+        return user.DepartmentId;
     }
 
     private IActionResult RedirectToHome()
@@ -27,11 +27,11 @@ public class StaffController : Controller
     [HttpGet]
     public async Task<IActionResult> Doctor(string? patientNo)
     {
-        ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 3)
-        {
-           return RedirectToHome();
-        }
+        // ViewBag.deptId = GetDepartmentId();
+        // if (ViewBag.deptId != 3)
+        // {
+        //    return RedirectToHome();
+        // }
 
         var patientDetails = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(patientNo));
 
@@ -70,11 +70,11 @@ public class StaffController : Controller
     [HttpPost]
     public async Task<IActionResult> SaveMedicalRecords(DoctorQueueModel model)
     {
-        ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 3)
-        {
-            return RedirectToHome();
-        }
+        // ViewBag.deptId = GetDepartmentId();
+        // if (ViewBag.deptId != 3)
+        // {
+        //     return RedirectToHome();
+        // }
 
         if (!string.IsNullOrEmpty(model.CreateMedicalViewModel.PatientNo) &&
             model.CreateMedicalViewModel.Diagnoses != null &&
@@ -129,18 +129,21 @@ public class StaffController : Controller
 
             for (int i = 0; i < model.CreateMedicalViewModel.DrugNames.Count; i++)
             {
-                var drug = new Drug
-                {
-                    MedicalID = medicalRecord.ID,
-                    ID = _context.Drugs.Count() == 0 ? 1 : _context.Drugs.Max(d => d.ID) + 1,
-                    PatientNo = model.CreateMedicalViewModel.PatientNo,
-                    DrugName = model.CreateMedicalViewModel.DrugNames[i].DrugName,
-                    Dosage = model.CreateMedicalViewModel.DrugNames[i].Dosage,
-                    Date = DateTime.Today
-                };
+                if(!string.IsNullOrEmpty(model.CreateMedicalViewModel.DrugNames[i].DrugName) &&
+                    !string.IsNullOrEmpty(model.CreateMedicalViewModel.DrugNames[i].Dosage)){
+                    var drug = new Drug
+                    {
+                        MedicalID = medicalRecord.ID,
+                        ID = _context.Drugs.Count() == 0 ? 1 : _context.Drugs.Max(d => d.ID) + 1,
+                        PatientNo = model.CreateMedicalViewModel.PatientNo,
+                        DrugName = model.CreateMedicalViewModel.DrugNames[i].DrugName,
+                        Dosage = model.CreateMedicalViewModel.DrugNames[i].Dosage,
+                        Date = DateTime.Today
+                    };
 
-                _context.Drugs.Add(drug);
-                await _context.SaveChangesAsync();
+                    _context.Drugs.Add(drug);
+                    await _context.SaveChangesAsync();
+                }
             }
 
 
@@ -189,21 +192,21 @@ public class StaffController : Controller
     public async Task<IActionResult> RecordsClerk()
     {
         ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 1)
-        {
-           return RedirectToHome();
-        }
+        // if (ViewBag.deptId != 1)
+        // {
+        //     return RedirectToHome();
+        // }
         return View(new Patient());
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateOrGetPatient([Bind("PatientNo, FirstName, LastName, DateOfBirth, ContactNo, InsuranceType, InsuranceNo, Gender, EmergencyContactFirstName, EmergencyContactLastName, EmergencyContactNo")] Patient newPatient)
     {
-        ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 1)
-        {
-           return RedirectToHome();
-        }
+        // ViewBag.deptId = GetDepartmentId();
+        // if (ViewBag.deptId != 1)
+        // {
+        //    return RedirectToHome();
+        // }
 
         if (newPatient.PatientNo != null)
         {
@@ -288,11 +291,11 @@ public class StaffController : Controller
     // [Authorize(Roles = "Nursing")]
     public IActionResult Nurse(string? patientNo)
     {
-        ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 2)
-        {
-           return RedirectToHome();
-        }
+        // ViewBag.deptId = GetDepartmentId();
+        // if (ViewBag.deptId != 2)
+        // {
+        //    return RedirectToHome();
+        // }
         if (patientNo != null)
         {
             var patientDetails = _context.Patients.FirstOrDefault(p => p.PatientNo == patientNo);
@@ -333,11 +336,11 @@ public class StaffController : Controller
     //[ValidateAntiForgeryToken]
     public async Task<IActionResult> Nurse([Bind("PatientNo, Temperature, Height, Weight, BloodPressure")] Vital vital)
     {
-        ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 2)
-        {
-           return RedirectToHome();
-        }
+        // ViewBag.deptId = GetDepartmentId();
+        // if (ViewBag.deptId != 2)
+        // {
+        //    return RedirectToHome();
+        // }
         if (!string.IsNullOrEmpty(vital.PatientNo) &&
             vital.Temperature != null &&
             vital.Height != null &&
@@ -452,11 +455,11 @@ public class StaffController : Controller
 
     public IActionResult NurseQueue(int page = 1, string search = "")
     {
-        ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 2)
-        {
-           return RedirectToHome();
-        }
+        // ViewBag.deptId = GetDepartmentId();
+        // if (ViewBag.deptId != 2)
+        // {
+        //    return RedirectToHome();
+        // }
 
         int pageSize = 10;
 
@@ -494,11 +497,11 @@ public class StaffController : Controller
 
     public IActionResult LabQueue(int page = 1, string search = "")
     {
-        ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 4)
-        {
-           return RedirectToHome();
-        }
+        // ViewBag.deptId = GetDepartmentId();
+        // if (ViewBag.deptId != 4)
+        // {
+        //    return RedirectToHome();
+        // }
 
         int pageSize = 10;
 
@@ -537,11 +540,11 @@ public class StaffController : Controller
     [HttpGet]
     public IActionResult Lab(string? patientNo)
     {
-        ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 4)
-        {
-           return RedirectToHome();
-        }
+        // ViewBag.deptId = GetDepartmentId();
+        // if (ViewBag.deptId != 4)
+        // {
+        //    return RedirectToHome();
+        // }
         if (patientNo != null)
         {
             var patientDetails = _context.Patients.FirstOrDefault(p => p.PatientNo == patientNo);
@@ -577,11 +580,11 @@ public class StaffController : Controller
 
     public IActionResult DoctorQueue(int page = 1, string search = "")
     {
-        ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 3)
-        {
-           return RedirectToHome();
-        }
+        // ViewBag.deptId = GetDepartmentId();
+        // if (ViewBag.deptId != 3)
+        // {
+        //    return RedirectToHome();
+        // }
 
         int pageSize = 10;
 
@@ -772,11 +775,11 @@ public class StaffController : Controller
     [HttpPost]
     public async Task<IActionResult> SavePatientMedicals(CreateMedicalViewModel model)
     {
-        ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 3)
-        {
-           return RedirectToHome();
-        }
+        // ViewBag.deptId = GetDepartmentId();
+        // if (ViewBag.deptId != 3)
+        // {
+        //    return RedirectToHome();
+        // }
         if (!string.IsNullOrEmpty(model.PatientNo) && model.Diagnoses != null &&
             model.DrugNames.Count() > 1 && model.Symptoms != null)
         {
@@ -860,5 +863,4 @@ public class StaffController : Controller
         TempData["D_WarningMessage"] = $"Error processing patient's medical details. Please try again";
         return RedirectToAction(nameof(Doctor));
     }
-
 }

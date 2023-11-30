@@ -34,6 +34,7 @@
                 <thead>
                     <tr>
                         <th>PatientNo</th>
+                        <th>Patient Name</th>
                         <th>QueueNo</th>
                         <th>Action</th>
                     </tr>
@@ -43,6 +44,7 @@
                     {
                         <tr>
                             <td>@patient.PatientNo</td>
+                            <td>@patient.Patient.LastName @patient.Patient.FirstName</td>
                             <td>@patient.QueueNo</td>
                             <td>
 								<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal-@patient.PatientNo">

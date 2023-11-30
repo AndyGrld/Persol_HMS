@@ -18,10 +18,10 @@ public class AdminController : Controller
         _userManager = userManager;
     }
 
-    private int? GetDepartmentId()
+    private int GetDepartmentId()
     {
-       var user = _context.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
-       return user?.DepartmentId;
+        var user = _context.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
+        return user.DepartmentId;
     }
 
     private IActionResult RedirectToHome()
@@ -32,10 +32,10 @@ public class AdminController : Controller
     public IActionResult Index()
     {
         ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 5)
-        {
-            return RedirectToHome();
-        }
+        // if (ViewBag.deptId != 5)
+        // {
+        //     return RedirectToHome();
+        // }
         var users = _context.Users.Include(u => u.Department).ToList();
         return View(users);
     }
@@ -43,10 +43,10 @@ public class AdminController : Controller
     public IActionResult Details(string id)
     {
         ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 5)
-        {
-            return RedirectToHome();
-        }
+        // if (ViewBag.deptId != 5)
+        // {
+        //     return RedirectToHome();
+        // }
         if (id == null)
         {
             return NotFound();
@@ -67,10 +67,10 @@ public class AdminController : Controller
     public IActionResult Edit(string id)
     {
         ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 5)
-        {
-            return RedirectToHome();
-        }
+        // if (ViewBag.deptId != 5)
+        // {
+        //     return RedirectToHome();
+        // }
         if (id == null)
         {
             return NotFound();
@@ -82,7 +82,6 @@ public class AdminController : Controller
             return NotFound();
         }
 
-        // You might want to load the departments for a dropdown list in your view
         ViewBag.Departments = _context.Departments.ToList();
 
         return View(user);
@@ -90,28 +89,50 @@ public class AdminController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Edit(string id, User user)
+    public IActionResult Edit(string id, User editedUser)
     {
         ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 5)
-        {
-            return RedirectToHome();
-        }
-        if (id != user.Id)
+        // if (ViewBag.deptId != 5)
+        // {
+        //     return RedirectToHome();
+        // }
+        if (id != editedUser.Id)
         {
             return NotFound();
         }
 
-        if (user.UserName != null)
+        if (ModelState.IsValid)
         {
             try
             {
-                _context.Update(user);
+                // Retrieve the existing user from the database
+                var userToUpdate = _context.Users
+                                        .Include(u => u.Department)
+                                        .FirstOrDefault(u => u.Id == id);
+
+                if (userToUpdate == null)
+                {
+                    return NotFound();
+                }
+
+                // Update user properties
+                userToUpdate.FirstName = editedUser.FirstName;
+                userToUpdate.MiddleName = editedUser.MiddleName;
+                userToUpdate.LastName = editedUser.LastName;
+                userToUpdate.DateOfBirth = editedUser.DateOfBirth;
+                userToUpdate.LockEnabled = editedUser.LockEnabled;
+                userToUpdate.Attempts = editedUser.Attempts;
+                userToUpdate.LockEnd = editedUser.LockEnd;
+
+                // Update the Department
+                userToUpdate.DepartmentId = editedUser.DepartmentId;
+
+                _context.Update(userToUpdate);
                 _context.SaveChanges();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(user.Id))
+                if (!UserExists(editedUser.Id))
                 {
                     return NotFound();
                 }
@@ -124,16 +145,19 @@ public class AdminController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        return View(user);
+        // If ModelState is not valid, reload departments for the dropdown
+        ViewBag.Departments = _context.Departments.ToList();
+
+        return View(editedUser);
     }
 
     public IActionResult Delete(string id)
     {
         ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 5)
-        {
-            return RedirectToHome();
-        }
+        // if (ViewBag.deptId != 5)
+        // {
+        //     return RedirectToHome();
+        // }
         var user = _context.Users.Find(id);
         _context.Users.Remove(user);
         _context.SaveChanges();

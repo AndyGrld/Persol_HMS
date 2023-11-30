@@ -53,6 +53,12 @@ public class ApplicationDbContext : IdentityDbContext<User>
                             Id = 5,
                             DepartmentCode = 005,
                             DepartmentName = "Admin"
+                        },
+                        new Department()
+                        {
+                            Id = 6,
+                            DepartmentCode = 006,
+                            DepartmentName = "Pharmacy"
                         }
         );
     }

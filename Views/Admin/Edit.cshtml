@@ -9,6 +9,7 @@
     <hr />
     <div class="row">
         <form asp-action="Edit">
+            <div asp-validation-summary="All" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="mb-3">
                 <label asp-for="UserName" class="form-label"></label>
@@ -17,18 +18,22 @@
             <div class="mb-3">
                 <label asp-for="FirstName" class="form-label"></label>
                 <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span> <!-- Display validation error -->
             </div>
             <div class="my-3">
                 <label asp-for="MiddleName"></label>
                 <input asp-for="MiddleName" class="form-control" autocomplete="middlename" aria-required="true" />
+                <span asp-validation-for="MiddleName" class="text-danger"></span> <!-- Display validation error -->
             </div>
             <div class="mb-3">
                 <label asp-for="LastName" class="form-label"></label>
                 <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span> <!-- Display validation error -->
             </div>
             <div class="my-3">
                 <label asp-for="DateOfBirth"></label>
                 <input asp-for="DateOfBirth" class="form-control" type="date" aria-required="true" />
+                <span asp-validation-for="DateOfBirth" class="text-danger"></span> <!-- Display validation error -->
             </div>
             <label>Department</label>
             <div class="form-floating my-2">
@@ -40,19 +45,32 @@
                     <option value="4">Lab</option>
                     <option value="5">Admin</option>
                 </select>
+                <span asp-validation-for="DepartmentId" class="text-danger"></span> <!-- Display validation error -->
             </div>
             <div class="my-3">
                 <label asp-for="Status"></label>
                 <input asp-for="Status" class="form-control" type="text" aria-required="true" />
+                <span asp-validation-for="Status" class="text-danger"></span> <!-- Display validation error -->
             </div>
             <div class="my-3">
                 <label asp-for="LockEnd"></label>
                 <input asp-for="LockEnd" class="form-control" type="date" aria-required="true" />
+                <span asp-validation-for="LockEnd" class="text-danger"></span> <!-- Display validation error -->
             </div>
-            <button type="submit" class="m-1 btn btn-warning w-100">Save Changes</button>
-			<a href="@Url.Action("Index", "Admin")">
-				<button type="button" class="m-1 btn btn-secondary w-100">Go Back</button>
-			</a>
+            <div class="row">
+                <div class="col">
+                    <button type="submit" class="m-1 btn btn-warning w-100">Save Changes</button>
+                </div>
+                <div class="col">
+                    <a href="@Url.Action("Index", "Admin")">
+                        <button type="button" class="m-1 btn btn-secondary w-100">Go Back</button>
+                    </a>
+                </div>
+            </div>
         </form>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

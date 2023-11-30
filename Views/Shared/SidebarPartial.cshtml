@@ -1,62 +1,104 @@
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
 <div class="left">
 	@if(ViewBag.deptId == 1)
 	{
+		<div class="avatar">
+			<div class="a-overlay"></div>
+			<img src="~/images/records.webp"/>
+			<p>@UserManager.GetUserName(User)</p>
+		</div>
 		<a href="@Url.Action("RecordsClerk")">
+			<img src="~/icons/house-solid.svg"/>
 			<button type="button">Home</button>
 		</a>
 		<a href="@Url.Action("PatientListOnly")">
+			<img src="~/icons/hospital-user-solid.svg"/>
 			<button type="button">Patients List</button>
 		</a>
-		
 		<a>
+			<img src="~/icons/database-solid.svg"/>
 			<button class="form-check-label" id="isNew" onclick="display()" for="isNew">Add to Queue</button>
 		</a>
 	}
 	
 	@if(ViewBag.deptId == 2)
 	{
+		<div class="avatar">
+			<div class="a-overlay"></div>
+			<img src="~/images/nurse.webp"/>
+			<p>@UserManager.GetUserName(User)</p>
+		</div>
 		<a href="@Url.Action("Nurse")">
+			<img src="~/icons/heart-pulse-solid.svg"/>
 			<button type="button">Record vitals for next patient</button>
 		</a>
 		<a href="@Url.Action("NurseQueue")">
+			<img src="~/icons/list-solid.svg"/>
 			<button type="button">View queue</button>
 		</a>
 	}
 	
 	@if(ViewBag.deptId == 3)
 	{
+		<div class="avatar">
+			<div class="a-overlay"></div>
+			<img src="~/images/doctor.jpg"/>
+			<p>@UserManager.GetUserName(User)</p>
+		</div>
 		<a href="@Url.Action("DoctorQueue")">
+			<img src="~/icons/user-doctor-solid.svg"/>
 			<button type="button">View Queue</button>
 		</a>
 		<a href="@Url.Action("PatientList")">
+			<img src="~/icons/hospital-user-solid.svg"/>
 			<button type="button">View Patients List</button>
 		</a>
 	}
 	
 	@if(ViewBag.deptId == 4)
 	{
+		<div class="avatar">
+			<div class="a-overlay"></div>
+			<img src="~/images/lab.webp"/>
+			<p>@UserManager.GetUserName(User)</p>
+		</div>
 		<a href="@Url.Action("Lab")">
+			<img src="~/icons/syringe-solid.svg"/>
 			<button type="button">Check labs for next patient</button>
 		</a>
 		<a href="@Url.Action("LabQueue")">
+			<img src="~/icons/list-solid.svg"/>
 			<button class="active" type="button">View Queue</button>
 		</a>
 		<a href="@Url.Action("PatientList")">
+			<img src="~/icons/hospital-user-solid.svg"/>
 			<button type="button">View Patients List</button>
 		</a>
 	}
 	
 	@if(ViewBag.deptId == 5)
 	{
+		<div class="avatar">
+			<div class="a-overlay"></div>
+			<img src="~/images/admin.jpg"/>
+			<p>@UserManager.GetUserName(User)</p>
+		</div>
 		<a href="@Url.Action("PatientList", "Staff")">
+			<img src="~/icons/list-solid.svg"/>
 			<button type="button">Patients List</button>
 		</a>
 		<a href="@Url.Action("Index", "Admin")">
+			<img src="~/icons/database-solid.svg"/>
 			<button type="button">View Users</button>
 		</a>
 	}
 	
     <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+		<img src="~/icons/right-from-bracket-solid.svg"/>
         <button id="logout" type="submit">Logout</button>
     </form>
 	
@@ -71,7 +113,8 @@
 	const navigationLinks = document.querySelectorAll('.left a');
 
     navigationLinks.forEach(link => {
-		button[index] = link.childNodes[1]
+		console.log(link.childNodes);
+		button[index] = link.childNodes[3]
         button[index].classList.toggle('active', link.href.split("/")[4] === currentUrl.split("/")[2]);
 		index++
     });

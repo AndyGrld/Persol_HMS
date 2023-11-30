@@ -47,13 +47,6 @@ namespace Persol_HMS.Models.ViewModels
 
         public CreateMedicalViewModel()
         {
-            var drugs = new List<Drug>();
-            for (int i = 0; i < 10; i++)
-            {
-                drugs.Add(new Drug());
-            }
-            DrugNames = drugs;
-            // Default lab names
             AvailableLabNames = new List<string>
             {
                 "Blood Test",

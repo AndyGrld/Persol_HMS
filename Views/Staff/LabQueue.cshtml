@@ -29,29 +29,13 @@
         </form>
         @if (Model.QueueViewModel.PatientsInLine.Any())
         {
-
-            <style>
-    .form-container {
-        background: #f8f9fa;
-        border-radius: 10px;
-        padding: 20px;
-        box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
-    }
-    .form-header {
-        border-bottom: 1px solid #dee2e6;
-        margin-bottom: 10px;
-    }
-    .form-footer {
-        border-top: 1px solid #dee2e6;
-        margin-top: 10px;
-        padding-top: 10px;
-    }
-</style>
             <table class="table table-hover">
                 <thead>
                     <tr>
                         <th>PatientNo</th>
+                        <th>Patient Name</th>
                         <th>QueueNo</th>
+                        <th>Lab Name</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -60,7 +44,9 @@
                     {
                         <tr>
                             <td>@patient.PatientNo</td>
+                            <td>@patient.Patient.LastName @patient.Patient.FirstName</td>
                             <td>@patient.QueueNo</td>
+                            <td>@patient.LabName</td>
                             <td>
 								<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal-@patient.PatientNo">
 									Check Labs
@@ -76,32 +62,24 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <form asp-controller="Staff" asp-action="Lab" autocomplete="off" class="p-3">
+                                        <form asp-controller="Staff" asp-action="Lab" autocomplete="off">
                                             <div class="container text-center">
                                                 <div id="lab-fields">
-                                                    <div class="row bg-light p-3 rounded mb-3">
-                                                        <div class="col">
-                                                            <h5 class="text-primary">
-                                                                @patient.LabName for @patient.PatientNo
-                                                            </h5>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row bg-light p-3 rounded mb-3">
-                                                        <div class="col">
-                                                            <div class="form-group">
-                                                                <label for="LabResult" class="form-label">Result:</label>
-                                                                <select asp-for="Lab.Result" class="form-select" id="LabResult" name="Lab.Result">
-                                                                    <option value="">Select Result</option>
-                                                                    <option value="Positive">Positive</option>
-                                                                    <option value="Negative">Negative</option>
-                                                                </select>
+                                                    <h5 class="bg-light rounded text-primary fs-4">
+                                                        @patient.LabName for @patient.Patient.LastName @patient.Patient.FirstName
+                                                    </h5>
+                                                    <div class="lab_row bg-light p-3 rounded mb-3">
+                                                        <div class="lab_col1">
+                                                            <label>Select Result</label>
+                                                            <div class="switch-field">
+                                                                <input asp-for="Lab.Result" type="radio" id="radio-one" name="switch-one" value="Positive" checked/>
+                                                                <label for="radio-one">Positive</label>
+                                                                <input asp-for="Lab.Result" type="radio" id="radio-two" name="switch-one" value="Negative" />
+                                                                <label class='radio-two' for="radio-two">Negative</label>
                                                             </div>
                                                         </div>
-                                                        <div class="col">
-                                                            <div class="form-group">
-                                                                <label for="LabNotes" class="form-label">Notes:</label>
-                                                                <textarea asp-for="Lab.Notes" class="form-control" id="LabNotes" placeholder="Lab Notes" name="Lab.Notes"></textarea>
-                                                            </div>
+                                                        <div class="lab_col">
+                                                            <textarea asp-for="Lab.Notes" class="form-control" id="LabNotes" placeholder="Lab Notes" name="Lab.Notes"></textarea>
                                                         </div>
                                                     </div>
                                                 </div>

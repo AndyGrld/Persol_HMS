@@ -62,12 +62,18 @@
                 </div>
             </div>
             <div class="card-footer text-muted">
-                <a href="@Url.Action("Edit", new { id = Model.Id })">
-                    <button type="button" class="m-1 btn btn-warning">Edit</button>
-                </a>
-                <a href="@Url.Action("Index")">
-                    <button type="button" class="btn btn-secondary">Back to List</button>
-                </a>
+                <div class="row">
+                    <div class="col">
+                        <a href="@Url.Action("Edit", new { id = Model.Id })">
+                            <button type="button" class="w-100 btn btn-warning">Edit</button>
+                        </a>
+                    </div>
+                    <div class="col">
+                        <a href="@Url.Action("Index")">
+                            <button type="button" class="btn w-100 btn-secondary">Back to List</button>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
