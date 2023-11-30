@@ -43,26 +43,26 @@
                 </thead>
                 <tbody>
                     @foreach (var patientWithDrugs in Model.PatientsWithDrugs)
-                    {
-                        <tr>
-                            <td>@patientWithDrugs.PatientQueue.PatientNo</td>
-                            <td>@patientWithDrugs.PatientQueue.Patient.LastName @patientWithDrugs.PatientQueue.Patient.FirstName</td>
-                            <td>@patientWithDrugs.PatientQueue.QueueNo</td>
-                            <td>
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal-@patient.PatientNo">
-                                    Give Drugs
-                                </button>
-                            </td>
-                        </tr>
-                        <div class="modal fade" id="exampleModal-@patientWithDrugs.PatientQueue.PatientNo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+{
+    <tr>
+        <td>@patientWithDrugs.PatientQueue.PatientNo</td>
+        <td>@patientWithDrugs.PatientQueue.Patient.LastName @patientWithDrugs.PatientQueue.Patient.FirstName</td>
+        <td>@patientWithDrugs.PatientQueue.QueueNo</td>
+        <td>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal-@patientWithDrugs.PatientQueue.PatientNo">
+                Give Drugs
+            </button>
+        </td>
+    </tr>
+    <div class="modal fade" id="exampleModal-@patientWithDrugs.PatientQueue.PatientNo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Diagnose Patient</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Give Drugs</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form asp-action="SaveMedicalRecords" method="post" autocomplete="off">
+                    <form asp-action="UpdateDrugPrice" method="post" autocomplete="off">
                         <div class="container text-center">
 
                             <!-- Display drugs associated with the patient -->
@@ -73,6 +73,7 @@
                                         <tr>
                                             <th>Drug Name</th>
                                             <th>Dosage</th>
+                                            <th>Price</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -81,6 +82,9 @@
                                             <tr>
                                                 <td>@drug.DrugName</td>
                                                 <td>@drug.Dosage</td>
+                                                <td>
+                                                    <input type="number" step="0.01" name="DrugPrices[@drug.Id]" value="@drug.Price" />
+                                                </td>
                                             </tr>
                                         }
                                     </tbody>
@@ -91,11 +95,9 @@
                                 <p>No drugs associated with this patient.</p>
                             }
 
-                            <!-- Your existing form inputs -->
-
                             <div class="modal-footer">
-                                <button id="addMoreDrugs" onclick="addDrug()" type="button" class="btn btn-success w-100">Add More Drugs</button>
-                                <button type="submit" class="btn btn-primary w-100">Save Medical Records</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Update Drug Prices</button>
                             </div>
                         </div>
                     </form>
@@ -103,7 +105,8 @@
             </div>
         </div>
     </div>
-                    }
+}
+
                 </tbody>
             </table>
 
