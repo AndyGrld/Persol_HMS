@@ -917,5 +917,37 @@ public class StaffController : Controller
         return View(pharmacyQueueViewModel);
     }
 
+    [HttpPost]
+    public IActionResult UpdateDrugPrice(int drugId, double newPrice)
+    {
+        try
+        {
+            // Find the drug in the database
+            var drug = _context.Drugs.Find(drugId);
+
+            if (drug == null)
+            {
+                // Drug not found
+                TempData["P_WarningMessage"] = "Drug not found.";
+                return RedirectToAction("PharmacyQueue"); // Redirect to the pharmacy queue or any other appropriate action
+            }
+
+            // Update the drug price
+            drug.Price = newPrice;
+
+            // Save changes to the database
+            _context.SaveChanges();
+
+            TempData["P_ConfirmationMessage"] = "Drug price updated successfully.";
+        }
+        catch (Exception ex)
+        {
+            // Log the exception or handle it as needed
+            TempData["P_WarningMessage"] = "An error occurred while updating drug price.";
+        }
+
+        return RedirectToAction("PharmacyQueue"); // Redirect to the pharmacy queue or any other appropriate action
+    }
+
 
 }
