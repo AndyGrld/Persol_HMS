@@ -168,11 +168,9 @@ table td, table thead{
 .lab_col textarea{
 	border-radius: 0 15px 15px 0;
 }
-.lab_col textarea{
-	border-radius: 15px 0 0 15px;
-}
 .lab_col, .lab_col1{
 	height: 200px;
+	overflow: hidden;
 }
 .lab_col textarea, .lab_col1 textarea{
 	height: 100%;
