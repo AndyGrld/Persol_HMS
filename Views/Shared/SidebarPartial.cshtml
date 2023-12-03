@@ -97,6 +97,32 @@
 		</a>
 	}
 	
+	@if(ViewBag.deptId == 6)
+	{
+		<div class="avatar">
+			<div class="a-overlay"></div>
+			<img src="~/images/pharmacy.jpg"/>
+			<p>@UserManager.GetUserName(User)</p>
+		</div>
+		<a href="@Url.Action("PharmacyQueue")">
+			<img src="~/icons/list-solid.svg"/>
+			<button class="active" type="button">View Queue</button>
+		</a>
+	}
+	
+	@if(ViewBag.deptId == 7)
+	{
+		<div class="avatar">
+			<div class="a-overlay"></div>
+			<img src="~/images/cashier.webp"/>
+			<p>@UserManager.GetUserName(User)</p>
+		</div>
+		<a href="@Url.Action("CashierQueue")">
+			<img src="~/icons/list-solid.svg"/>
+			<button class="active" type="button">View Queue</button>
+		</a>
+	}
+	
     <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
 		<img src="~/icons/right-from-bracket-solid.svg"/>
         <button id="logout" type="submit">Logout</button>
