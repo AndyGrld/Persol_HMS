@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using Lab = Persol_HMS.Models.Lab;
 
-[Authorize]
+// [Authorize]
 public class StaffController : Controller
 {
     private readonly ApplicationDbContext _context;
@@ -17,6 +17,10 @@ public class StaffController : Controller
     private int GetDepartmentId()
     {
         var user = _context.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
+        if(user == null)
+        {
+            return 1;
+        }
         return user.DepartmentId;
     }
 
@@ -29,10 +33,10 @@ public class StaffController : Controller
     public async Task<IActionResult> Doctor(string? patientNo)
     {
         ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 3)
-        {
-            return RedirectToHome();
-        }
+        // if (ViewBag.deptId != 3)
+        // {
+        //     return RedirectToHome();
+        // }
 
         var patientDetails = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(patientNo));
 
@@ -72,10 +76,10 @@ public class StaffController : Controller
     public async Task<IActionResult> SaveMedicalRecords(DoctorQueueModel model)
     {
         ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 3)
-        {
-            return RedirectToHome();
-        }
+        // if (ViewBag.deptId != 3)
+        // {
+        //     return RedirectToHome();
+        // }
 
         if (!string.IsNullOrEmpty(model.CreateMedicalViewModel.PatientNo) &&
             model.CreateMedicalViewModel.Diagnoses != null &&
@@ -188,10 +192,10 @@ public class StaffController : Controller
     public async Task<IActionResult> RecordsClerk()
     {
         ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 1)
-        {
-            return RedirectToHome();
-        }
+        // if (ViewBag.deptId != 1)
+        // {
+        //     return RedirectToHome();
+        // }
         return View(new Patient());
     }
 
@@ -199,10 +203,10 @@ public class StaffController : Controller
     public async Task<IActionResult> CreateOrGetPatient([Bind("PatientNo, FirstName, LastName, DateOfBirth, ContactNo, InsuranceType, InsuranceNo, Gender, EmergencyContactFirstName, EmergencyContactLastName, EmergencyContactNo")] Patient newPatient)
     {
         ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 1)
-        {
-            return RedirectToHome();
-        }
+        // if (ViewBag.deptId != 1)
+        // {
+        //     return RedirectToHome();
+        // }
 
         if (newPatient.PatientNo != null)
         {
@@ -233,18 +237,6 @@ public class StaffController : Controller
 
         _context.Patients.Add(newPatient);
         await _context.SaveChangesAsync();
-
-        //var nurseQueueNo = GetNextQueueNumber("Nurse");
-        //var nurseQueue = new Queue
-        //{
-        //    PatientNo = newPatient.PatientNo,
-        //    QueueNo = nurseQueueNo,
-        //    Status = "Nurse",
-        //    DateCreated = DateTime.Now
-        //};
-        //_context.Queues.Add(nurseQueue);
-
-        //await _context.SaveChangesAsync();
 
         TempData["R_ConfirmationMessage"] = $"Patient created successfully. Patients Id is {newPatient.PatientNo}";
         return RedirectToAction(nameof(RecordsClerk));
@@ -288,10 +280,10 @@ public class StaffController : Controller
     public IActionResult Nurse(string? patientNo)
     {
         ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 2)
-        {
-            return RedirectToHome();
-        }
+        // if (ViewBag.deptId != 2)
+        // {
+        //     return RedirectToHome();
+        // }
         if (patientNo != null)
         {
             var patientDetails = _context.Patients.FirstOrDefault(p => p.PatientNo == patientNo);
@@ -333,10 +325,10 @@ public class StaffController : Controller
     public async Task<IActionResult> Nurse([Bind("PatientNo, Temperature, Height, Weight, BloodPressure")] Vital vital)
     {
         ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 2)
-        {
-            return RedirectToHome();
-        }
+        // if (ViewBag.deptId != 2)
+        // {
+        //     return RedirectToHome();
+        // }
         if (!string.IsNullOrEmpty(vital.PatientNo) &&
             vital.Temperature != null &&
             vital.Height != null &&
@@ -346,13 +338,6 @@ public class StaffController : Controller
             var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo == vital.PatientNo);
             if (patient != null)
             {
-                int? vitalId = await GetVitalIdAsync(v => v.PatientNo == vital.PatientNo && v.Date == DateTime.Now);
-                if (vitalId.HasValue)
-                {
-                    vital.Id = vitalId.Value;
-                }
-                // Handle the case where vitalId is null
-
                 _context.Vitals.Update(vital);
 
                 var doctorQueueNo = GetNextQueueNumber("Doctor");
@@ -377,7 +362,6 @@ public class StaffController : Controller
 
 
     [HttpPost]
-    ////[ValidateAntiForgeryToken]
     public async Task<IActionResult> Lab(LabQueueViewModel labView)
     {
         if (!string.IsNullOrEmpty(labView.Lab.PatientNo))
@@ -387,9 +371,6 @@ public class StaffController : Controller
             if (patient != null)
             {
                 var medical = await _context.Medicals.OrderBy(m => m.ID).LastOrDefaultAsync(m => m.PatientNo == labView.Lab.PatientNo);
-                // Console.WriteLine($"lab result{labView.Lab.Result}");
-                // Console.WriteLine($"lab notes{labView.Lab.Notes}");
-                // Console.ReadLine();
 
                 var lab = new Persol_HMS.Models.Lab
                 {
@@ -404,16 +385,16 @@ public class StaffController : Controller
                 _context.Labs.Add(lab);
                 await _context.SaveChangesAsync();
 
-                //var pharmacyQueueNo = GetNextQueueNumber("Pharmacy");
-                //var pharmacyQueue = new Queue
-                //{
-                //    PatientNo = labView.Lab.PatientNo,
-                //    QueueNo = pharmacyQueueNo,
-                //    Status = "Pharmacy",
-                //    DateCreated = DateTime.Now
-                //};
+                var pharmacyQueueNo = GetNextQueueNumber("Pharmacy");
+                var pharmacyQueue = new Queue
+                {
+                    PatientNo = labView.Lab.PatientNo,
+                    QueueNo = pharmacyQueueNo,
+                    Status = "Pharmacy",
+                    DateCreated = DateTime.Now
+                };
                 RemovePatientFromQueue("Lab", patient.PatientNo);
-                //_context.Queues.Add(pharmacyQueue);
+                _context.Queues.Add(pharmacyQueue);
 
                 await _context.SaveChangesAsync();
 
@@ -464,23 +445,24 @@ public class StaffController : Controller
     public IActionResult NurseQueue(int page = 1, string search = "")
     {
         ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 2)
-        {
-            return RedirectToHome();
-        }
+        // if (ViewBag.deptId != 2)
+        // {
+        //     return RedirectToHome();
+        // }
 
         int pageSize = 10;
-
+        // 0987654321
         var query = _context.Queues
             .Include(q => q.Patient)
             .Where(q => q.Status == "Nurse" &&
-                        (q.PatientNo.Contains(search) ||
-                        q.Patient.FirstName.Contains(search) ||
-                        q.Patient.LastName.Contains(search)))
+                (q.PatientNo.Contains(search) ||
+                q.Patient.FirstName.Contains(search) ||
+                q.Patient.LastName.Contains(search)))
             .OrderBy(q => q.DateCreated)
             .Skip((page - 1) * pageSize)
             .Take(pageSize);
 
+        System.Console.WriteLine($"query : {query.Count()}");
         var patientsInLine = query.ToList();
         var totalPatients = query.Count();
 
@@ -506,10 +488,10 @@ public class StaffController : Controller
     public IActionResult LabQueue(int page = 1, string search = "")
     {
         ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 4)
-        {
-            return RedirectToHome();
-        }
+        // if (ViewBag.deptId != 4)
+        // {
+        //     return RedirectToHome();
+        // }
 
         int pageSize = 10;
 
@@ -522,7 +504,6 @@ public class StaffController : Controller
             .OrderBy(q => q.DateCreated)
             .Skip((page - 1) * pageSize)
             .Take(pageSize);
-
         var patientsInLine = query.ToList();
         var totalPatients = query.Count();
 
@@ -545,14 +526,13 @@ public class StaffController : Controller
         return View(viewModel);
     }
 
-    [HttpGet]
     public IActionResult Lab(string? patientNo)
     {
         ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 4)
-        {
-            return RedirectToHome();
-        }
+        // if (ViewBag.deptId != 4)
+        // {
+        //     return RedirectToHome();
+        // }
         if (patientNo != null)
         {
             var patientDetails = _context.Patients.FirstOrDefault(p => p.PatientNo == patientNo);
@@ -589,10 +569,10 @@ public class StaffController : Controller
     public IActionResult DoctorQueue(int page = 1, string search = "")
     {
         ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 3)
-        {
-            return RedirectToHome();
-        }
+        // if (ViewBag.deptId != 3)
+        // {
+        //     return RedirectToHome();
+        // }
 
         int pageSize = 10;
 
@@ -662,7 +642,7 @@ public class StaffController : Controller
         return maxQueueNumber + 1;
     }
 
-
+    [HttpGet]
     public IActionResult PatientList(int page = 1, string search = "")
     {
 		ViewBag.deptId = GetDepartmentId();
@@ -687,6 +667,7 @@ public class StaffController : Controller
         return View(patients.ToList());
     }
 
+    [HttpGet]
     public IActionResult PatientListOnly(int page = 1, string search = "")
     {
 		ViewBag.deptId = GetDepartmentId();
@@ -711,7 +692,7 @@ public class StaffController : Controller
         return View(patients.ToList());
     }
 
-
+    [HttpGet]
     public IActionResult PatientMedicalRecords(string patientNo)
     {
 		ViewBag.deptId = GetDepartmentId();
@@ -751,43 +732,14 @@ public class StaffController : Controller
         return View(viewModel);
     }
 
-    public async Task<int?> GetIdAsync<T>(Expression<Func<T, bool>> predicate) where T : class
-    {
-        var entity = await _context.Set<T>().FirstOrDefaultAsync(predicate);
-        return (int?)entity?.GetType().GetProperty("ID")?.GetValue(entity);
-    }
-
-    public async Task<int?> GetVitalIdAsync(Expression<Func<Vital, bool>> predicate)
-    {
-        var vital = await _context.Vitals.FirstOrDefaultAsync(predicate);
-        return vital?.Id;
-    }
-
-    public async Task<int?> GetDrugIdAsync(Expression<Func<Drug, bool>> predicate)
-    {
-        var drug = await _context.Drugs.FirstOrDefaultAsync(predicate);
-        return drug?.ID;
-    }
-    public async Task<int?> GetSymptomIdAsync(Expression<Func<Symptom, bool>> predicate)
-    {
-        var symptom = await _context.Symptoms.FirstOrDefaultAsync(predicate);
-        return symptom?.ID;
-    }
-
-    public async Task<int?> GetLabIdAsync(Expression<Func<Lab, bool>> predicate)
-    {
-        var lab = await _context.Labs.FirstOrDefaultAsync(predicate);
-        return lab?.ID;
-    }
-
     [HttpPost]
     public async Task<IActionResult> SavePatientMedicals(CreateMedicalViewModel model)
     {
         ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 3)
-        {
-            return RedirectToHome();
-        }
+        // if (ViewBag.deptId != 3)
+        // {
+        //     return RedirectToHome();
+        // }
         if (!string.IsNullOrEmpty(model.PatientNo) && model.Diagnoses != null &&
             model.DrugNames.Count() > 1 && model.Symptoms != null)
         {
@@ -873,15 +825,18 @@ public class StaffController : Controller
     }
 
 
-
-
+    [HttpGet]
     public IActionResult PharmacyQueue(int page = 1, string search = "")
     {
+        ViewBag.deptId = GetDepartmentId();
+        // if (ViewBag.deptId != 6)
+        // {
+        //     return RedirectToHome();
+        // }
         int pageSize = 10;
 
         var query = _context.Queues
             .Include(q => q.Patient)
-            .Include(q => q.MedicalRecords) // Include MedicalRecords for each Queue
             .Where(q => q.Status == "Pharmacy" &&
                         (q.PatientNo.Contains(search) ||
                         q.Patient.FirstName.Contains(search) ||
@@ -894,55 +849,76 @@ public class StaffController : Controller
         var totalPatients = query.Count();
 
         // Map to PharmacyQueueViewModel
-        var pharmacyQueueViewModel = new PharmacyQueueViewModel
+        var model = new QueueViewModel
         {
             PatientsInLine = patientsInLine,
-            PatientsWithDrugs = patientsInLine
-                .Select(q => new PatientWithDrugs
-                {
-                    PatientQueue = q,
-                    PatientDrugs = q.MedicalRecords?.SelectMany(m => m.Drugs).ToList() ?? new List<Drug>()
-                })
-                .ToList(),
             CurrentPage = page,
             PageSize = pageSize,
             TotalPatients = totalPatients,
             Search = search
         };
 
+        var pharmacyQueueViewModel = new PharmacyQueueViewModel
+        {
+            QueueViewModel = model,
+            PatientsWithDrugs = patientsInLine.Select(patient =>
+                new PatientWithDrugs
+                {
+                    PatientQueue = patient,
+                    PatientDrugs = GetDrugsFromLatestMedicalRecord(patient.PatientNo)
+                }).ToList()
+        };
+
         return View(pharmacyQueueViewModel);
     }
 
-    [HttpPost]
-    public IActionResult UpdateDrugPrice(int drugId, double newPrice)
+    private List<Drug> GetDrugsFromLatestMedicalRecord(string patientId)
     {
-        try
-        {
-            // Find the drug in the database
-            var drug = _context.Drugs.Find(drugId);
+        var latestMedicalRecord = _context.Medicals
+            .Where(m => m.Patient.PatientNo == patientId)
+            .OrderByDescending(m => m.Date)
+            .Include(m => m.Drugs)
+            .FirstOrDefault();
 
-            if (drug == null)
+        return latestMedicalRecord?.Drugs.ToList() ?? new List<Drug>();
+    }
+
+    [HttpPost]
+    public IActionResult UpdateDrugPrice(PharmacyQueueViewModel model)
+    {
+        ViewBag.deptId = GetDepartmentId();
+        // if (ViewBag.deptId != 4)
+        // {
+        //     return RedirectToHome();
+        // }
+        if (model.PatientsWithDrugs != null)
+        {
+            var patientWithDrugs = model.PatientsWithDrugs[0];
+            if (patientWithDrugs != null)
             {
-                // Drug not found
-                TempData["P_WarningMessage"] = "Drug not found.";
-                return RedirectToAction("PharmacyQueue"); // Redirect to the pharmacy queue or any other appropriate action
+                Drug drugToUpdate = new Drug();
+                foreach (var drug in patientWithDrugs.PatientDrugs)
+                {
+                    drugToUpdate = _context.Drugs.FirstOrDefault(d => d.ID == drug.ID);
+                    drugToUpdate.Price = drug.Price;
+                }
+                _context.SaveChanges();
+
+                string PatientNo = patientWithDrugs.PatientQueue.PatientNo;
+                RemovePatientFromQueue("Pharmacy", PatientNo);
+                _context.SaveChanges();
+
+                TempData["P_ConfirmationMessage"] = "Drug prices updated successfully.";
+                return RedirectToAction("PharmacyQueue");
             }
-
-            // Update the drug price
-            drug.Price = newPrice;
-
-            // Save changes to the database
-            _context.SaveChanges();
-
-            TempData["P_ConfirmationMessage"] = "Drug price updated successfully.";
-        }
-        catch (Exception ex)
-        {
-            // Log the exception or handle it as needed
-            TempData["P_WarningMessage"] = "An error occurred while updating drug price.";
+            else
+            {
+                TempData["P_WarningMessage"] = "Patient not found in the queue.";
+            }
         }
 
-        return RedirectToAction("PharmacyQueue"); // Redirect to the pharmacy queue or any other appropriate action
+        TempData["P_WarningMessage"] = "Model state not valid";
+        return RedirectToAction("PharmacyQueue");
     }
 
 

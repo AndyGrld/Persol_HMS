@@ -17,7 +17,6 @@ namespace Persol_HMS.Models
         public string Status { get; set; }
         public DateTime DateCreated { get; set; }
         public virtual Patient Patient { get; set; }
-        public virtual ICollection<Medical> MedicalRecords { get; set; }
 
         public static Queue GetOrCreateQueue(ApplicationDbContext context, string patientNo, DepartmentType department)
         {
@@ -27,7 +26,6 @@ namespace Persol_HMS.Models
                 .FirstOrDefault(q => q.PatientNo == patientNo &&
                                     q.DateCreated.Date == currentDate &&
                                     q.Status == department.ToString());
-
             if (existingQueue != null)
             {
                 return existingQueue;
