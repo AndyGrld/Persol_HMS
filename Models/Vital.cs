@@ -12,7 +12,7 @@ namespace Persol_HMS.Models
         public double Temperature { get; set; }
         public double Height { get; set; }
         public double Weight { get; set; }
-        public double BloodPressure { get; set; }
+        public string BloodPressure { get; set; }
         public DateTime Date { get; set; }
     }
 }

@@ -17,6 +17,7 @@ namespace Persol_HMS.Models
         public string? WardName { get; set; }//
         [DataType(DataType.Currency)]
         public double Bill { get; set; } = 0;
+        public bool isPaid { get; set; } = false;
         public bool IsAdmitted { get; set; }//
         public DateTime? DateAdmitted { get; set; }//
         [ForeignKey(nameof(Patient))]

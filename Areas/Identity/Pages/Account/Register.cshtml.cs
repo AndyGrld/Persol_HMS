@@ -152,6 +152,9 @@ namespace Persol_HMS.Areas.Identity.Pages.Account
                             case 6:
                                 returnUrl = Url.Action("PharmacyQueue", "Staff");
                                 break;
+                            case 7:
+                                returnUrl = Url.Action("CashierQueue", "Staff");
+                                break;
                             default:
                                 returnUrl = Url.Content("~/");
                                 break;

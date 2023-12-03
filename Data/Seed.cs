@@ -23,7 +23,7 @@ public static class SeedData
                 UserName = "Records_01",
                 Email = "Records_01@example.com",
                 FirstName = "John",
-                MiddleName = "l",
+                MiddleName = "L.",
                 LastName = "Doe",
                 DepartmentId = 001,
                 DateOfBirth = DateTime.Parse("1990-01-01"),
@@ -33,9 +33,9 @@ public static class SeedData
             {
                 UserName = "Nurse_01",
                 Email = "Nurse_01@example.com",
-                FirstName = "Ama",
-                MiddleName = "l",
-                LastName = "Sam",
+                FirstName = "Emma",
+                MiddleName = "Rose",
+                LastName = "Brown",
                 DepartmentId = 002,
                 DateOfBirth = DateTime.Parse("1990-01-01"),
                 Password = "Nurse_01"
@@ -44,9 +44,9 @@ public static class SeedData
             {
                 UserName = "Doctor_01",
                 Email = "Doctor_01@example.com",
-                FirstName = "Doc",
-                MiddleName = "d",
-                LastName = "James",
+                FirstName = "Liam",
+                MiddleName = "Alexander",
+                LastName = "Williams",
                 DepartmentId = 003,
                 DateOfBirth = DateTime.Parse("1990-01-01"),
                 Password = "Doctor_01",
@@ -55,9 +55,9 @@ public static class SeedData
             {
                 UserName = "Lab_01",
                 Email = "Lab_01@example.com",
-                FirstName = "Lab",
-                MiddleName = "l",
-                LastName = "Strange",
+                FirstName = "Noah  ",
+                MiddleName = "Benjamin",
+                LastName = "Jones",
                 DepartmentId = 004,
                 DateOfBirth = DateTime.Parse("1990-01-01"),
                 Password = "Lab_01"
@@ -66,12 +66,34 @@ public static class SeedData
             {
                 UserName = "Admin",
                 Email = "admin@example.com",
-                FirstName = "Admin",
-                MiddleName = "l",
-                LastName = "Admin",
+                FirstName = "Ethan",
+                MiddleName = "James",
+                LastName = "Smith",
                 DateOfBirth = DateTime.Parse("1990-01-01"),
                 DepartmentId = 005,
-                Password = "Admin@123"
+                Password = "Admin_01"
+            },
+            new UserSeedData
+            {
+                UserName = "Pharmacy_01",
+                Email = "Pharmacy@example.com",
+                FirstName = "Ava",
+                MiddleName = "Marie",
+                LastName = "Garcia",
+                DateOfBirth = DateTime.Parse("1990-01-01"),
+                DepartmentId = 006,
+                Password = "Pharmacy_01"
+            },
+            new UserSeedData
+            {
+                UserName = "Cashier",
+                Email = "cashier@example.com",
+                FirstName = "Sophia",
+                MiddleName = "Elizabeth",
+                LastName = "Davis",
+                DateOfBirth = DateTime.Parse("1990-01-01"),
+                DepartmentId = 007,
+                Password = "Cashier_01"
             }
 
             // Add more users as needed

@@ -1,46 +1,43 @@
-html {
-  font-size: 14px;
-}
-
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+	html {
+		font-size: 16px;
+	}
 }
 
 html {
-  position: relative;
-  min-height: 100%;
-  overflow-x: hidden;
+	font-size: 14px;
+	position: relative;
+	min-height: 100%;
+	overflow-x: hidden;
 }
 
 .footer{
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  text-align: center;
-  padding: 15px;
-  height: 20px;
-  background-color: white;
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	text-align: center;
+	height: 20px;
+	background-color: white;
 }
 .footer-space{
 	height: 40px;
-  z-index: -10;
+	z-index: -10;
 }
 .alert{
-  position: absolute;
-  width: 100%;
-  top: 10px;
-  z-index: 200;
+	position: absolute;
+	width: 99.5%;
+	top: 2px;
+	left: 0.25%;
+	z-index: 200;
 }
 
 .center-card{
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 800px;
-  transform: translate(-50%, -50%);
-  padding: 10px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 800px;
+	transform: translate(-50%, -50%);
+	padding: 10px;
 }
 
 .title{
@@ -58,19 +55,19 @@ html {
 }
 
 .grid{
-  display: grid;
-  grid-template-columns: 200px auto;
-  padding-right: 10px;
+	display: grid;
+	grid-template-columns: 200px auto;
+	padding-right: 10px;
 }
 .left{
-  border-right: 1px solid #ccc;
-  min-height: 100vh;
-  position: relative;
-  top: 5px;
-  margin-right: 10px;
-  display: flex;
-  flex-direction: column;
-  padding-top: 10px;
+	border-right: 1px solid #ccc;
+	min-height: 100vh;
+	position: relative;
+	top: 5px;
+	margin-right: 10px;
+	display: flex;
+	flex-direction: column;
+	padding-top: 10px;
 }
 .left a img, #logoutForm img{
 	position: absolute;
@@ -125,7 +122,6 @@ html {
 
 table td, table thead{
 	text-align: center;
-	/* border: 1px solid grey; */
 }
 .left button:hover{
 	background-color: #ddd;
@@ -134,10 +130,10 @@ table td, table thead{
 	background-color: #bbb;
 }
 .left-content{
-  margin-bottom: 10px;
+	margin-bottom: 10px;
 }
 .right{
-  padding-top: 10px;
+	padding-top: 10px;
 }
 .drug_input, .lab_row, .diagnose_row{
 	display: grid;

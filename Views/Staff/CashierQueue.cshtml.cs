@@ -6,13 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 
-namespace Auth.Views.Shared
+namespace Persol_HMS.Views.Staff
 {
-    public class Navbar : PageModel
+    public class CashierQueue : PageModel
     {
-        private readonly ILogger<Navbar> _logger;
+        private readonly ILogger<CashierQueue> _logger;
 
-        public Navbar(ILogger<Navbar> logger)
+        public CashierQueue(ILogger<CashierQueue> logger)
         {
             _logger = logger;
         }
