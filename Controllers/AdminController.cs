@@ -23,7 +23,7 @@ public class AdminController : Controller
         var user = _context.Users.FirstOrDefault(u => u.UserName.Equals(User.Identity.Name));
         if(user == null)
         {
-            return 3;
+            return 5;
         }
         return user.DepartmentId;
     }

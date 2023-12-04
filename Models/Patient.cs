@@ -15,19 +15,19 @@ namespace Persol_HMS.Models
         public int Id { get; set; }
 
         [Display(Name = "Patient Number")]
-        [Required(ErrorMessage = "The Patient Number is required.")]
+        [Required(ErrorMessage = "Please enter Patient Number")]
 
         [Key]
         public string? PatientNo { get; set; }
 
-        [Required(ErrorMessage = "The First Name is required.")]
+        [Required(ErrorMessage = "Please enter First Name")]
 
         public string FirstName { get; set; }
 
-        [Required(ErrorMessage = "The Last Name is required.")]
+        [Required(ErrorMessage = "Please enter Last Name")]
         public string LastName { get; set; }
 
-        [Required(ErrorMessage = "The Contact Number is required.")]
+        [Required(ErrorMessage = "Please enter Contact Number")]
         [RegularExpression(@"^\d{10,15}$", ErrorMessage = "Invalid Contact Number.")]
         public string ContactNo { get; set; }
 
@@ -44,33 +44,35 @@ namespace Persol_HMS.Models
             }
         }
 
-        [Required(ErrorMessage = "The Date of Birth is required.")]
-        [Max130YearsOld(ErrorMessage = "The Date of Birth is invalid.")]
+        [Required(ErrorMessage = "Please enter Date of Birth")]
+        [Max130YearsOld(ErrorMessage = "Please enter valid Date of Birth")]
         [DataType(DataType.Date)]
         
         public DateTime DateOfBirth { get; set; }
 
 
         [Display(Name = "Insurance Type")]
+        [Required(ErrorMessage = "Please enter Insurance Provider")]
         public string? InsuranceType { get; set; }
 
         [Display(Name = "Insurance Number")]
+        [Required(ErrorMessage = "Please enter Insurance Number")]
         public string? InsuranceNo { get; set; }
 
-        [Required(ErrorMessage = "The Gender is required.")]
+        [Required(ErrorMessage = "Please enter Gender")]
         [RegularExpression("^[MF]$", ErrorMessage = "Invalid Gender.")]
         public char Gender { get; set; }
 
         [Display(Name = "Emergency Contact First Name")]
-        [Required(ErrorMessage = "The Emergency Contact First Name is required.")]
+        [Required(ErrorMessage = "Please enter Emergency Contact First Name")]
         public string EmergencyContactFirstName { get; set; }
 
         [Display(Name = "Emergency Contact Last Name")]
-        [Required(ErrorMessage = "The Emergency Contact Last Name is required.")]
+        [Required(ErrorMessage = "Please enter Emergency Contact Last Name")]
         public string EmergencyContactLastName { get; set; }
 
         [Display(Name = "Emergency Contact Number")]
-        [Required(ErrorMessage = "The Emergency Contact Number is required.")]
+        [Required(ErrorMessage = "Please enter Emergency Contact Number")]
         [RegularExpression(@"^\d{10,15}$", ErrorMessage = "Invalid Emergency Contact Number.")]
         public string EmergencyContactNo { get; set; }
 

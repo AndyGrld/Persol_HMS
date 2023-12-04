@@ -4,80 +4,78 @@
 
 <div class="grid">
     <partial name="SidebarPartial" />
-
     <div class="right">
-    <div>
-        <h4 class="fs-2">User Details</h4>
-        <hr />
-        <div class="card text-center">
-            <div class="card-header">
-                <p class="fs-5"><b>Username</b>: @Model.UserName</p>
-            </div>
-            <div class="card-body">
-                <div class="fs-5 row">
-                    <div class="col"><b>First Name</b></div>
-                    <div class="col">@Model.FirstName</div>
+        <div class="form-card">
+            <h2 class="text-center py-3">User Details</h2>
+            <div class="card text-center">
+                <div class="card-header">
+                    <p class="fs-5"><b>Username</b>: @Model.UserName</p>
                 </div>
-                <hr/>
-                <div class="fs-5 row">
-                    <div class="col"><b>Last Name</b></div>
-                    <div class="col">@Model.LastName</div>
-                </div>
-                <hr/>
-                <div class="fs-5 row">
-                    <div class="col"><b>Middle Name</b></div>
-                    <div class="col">@Model.MiddleName</div>
-                </div>
-                <hr/>
-                <div class="fs-5 row">
-                    <div class="col"><b>DateOfBirth</b></div>
-                    <div class="col">@Model.DateOfBirth.Date.ToString("dd-MM-yyyy")</div>
-                </div>
-                <hr/>
-                <div class="fs-5 row">
-                    <div class="col"><b>Department</b></div>
-                    <div class="col">@Model.Department.DepartmentName</div>
-                </div>
-                <hr/>
-                <div class="fs-5 row">
-                    <div class="col"><b>Status</b></div>
-                    <div class="col">@Model.Status</div>
-                </div>
-                <hr/>
-                <div class="fs-5 row">
-                    <div class="col"><b>LockEnabled</b></div>
-                    <div class="col">@Model.LockEnabled</div>
-                </div>
-                <hr/>
-                <div class="fs-5 row">
-                    <div class="col"><b>Attempts</b></div>
-                    <div class="col">@Model.Attempts</div>
-                </div>
-                <hr/>
-                <div class="fs-5 row">
-                    <div class="col"><b>LockEnd</b></div>
-                    <div class="col">
-                        @(string.IsNullOrEmpty(Model.LockEnd.ToString()) ? "Not Locked" : Model.LockEnd)
+                <div class="card-body">
+                    <div class="fs-5 row">
+                        <div class="col"><b>First Name</b></div>
+                        <div class="col">@Model.FirstName</div>
+                    </div>
+                    <hr/>
+                    <div class="fs-5 row">
+                        <div class="col"><b>Last Name</b></div>
+                        <div class="col">@Model.LastName</div>
+                    </div>
+                    <hr/>
+                    <div class="fs-5 row">
+                        <div class="col"><b>Middle Name</b></div>
+                        <div class="col">@Model.MiddleName</div>
+                    </div>
+                    <hr/>
+                    <div class="fs-5 row">
+                        <div class="col"><b>DateOfBirth</b></div>
+                        <div class="col">@Model.DateOfBirth.Date.ToString("dd-MM-yyyy")</div>
+                    </div>
+                    <hr/>
+                    <div class="fs-5 row">
+                        <div class="col"><b>Department</b></div>
+                        <div class="col">@Model.Department.DepartmentName</div>
+                    </div>
+                    <hr/>
+                    <div class="fs-5 row">
+                        <div class="col"><b>Status</b></div>
+                        <div class="col">@Model.Status</div>
+                    </div>
+                    <hr/>
+                    <div class="fs-5 row">
+                        <div class="col"><b>LockEnabled</b></div>
+                        <div class="col">@Model.LockEnabled</div>
+                    </div>
+                    <hr/>
+                    <div class="fs-5 row">
+                        <div class="col"><b>Attempts</b></div>
+                        <div class="col">@Model.Attempts</div>
+                    </div>
+                    <hr/>
+                    <div class="fs-5 row">
+                        <div class="col"><b>LockEnd</b></div>
+                        <div class="col">
+                            @(string.IsNullOrEmpty(Model.LockEnd.ToString()) ? "Not Locked" : Model.LockEnd)
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="card-footer text-muted">
-                <div class="row">
-                    <div class="col">
-                        <a href="@Url.Action("Edit", new { id = Model.Id })">
-                            <button type="button" class="w-100 btn btn-warning">Edit</button>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <a href="@Url.Action("Index")">
-                            <button type="button" class="btn w-100 btn-secondary">Back to List</button>
-                        </a>
+                <div class="card-footer text-muted">
+                    <div class="row">
+                        <div class="col">
+                            <a href="@Url.Action("Edit", new { id = Model.Id })">
+                                <button type="button" class="w-100 btn btn-warning">Edit</button>
+                            </a>
+                        </div>
+                        <div class="col">
+                            <a href="@Url.Action("Index")">
+                                <button type="button" class="btn w-100 btn-secondary">Back to List</button>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
     <div>
-        
-    </div>
 </div>
+
+<partial name="FooterPartial" />

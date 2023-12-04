@@ -6,69 +6,75 @@
 @{
     ViewData["Title"] = "Patient List";
 }
+
 <div class="grid">
     <partial name="SidebarPartial" />
     <div class="right">
-        <h2 class="text-center">Patient List</h2>
-        <form method="get" action="@Url.Action("PatientList")">
-            <div class="input-group mb-3">
-                <input type="text" name="search" class="form-control" placeholder="Search by Patient No" aria-describedby="button-addon2">
-                <button class="btn btn-outline-primary" type="submit" id="button-addon2">Search</button>
-            </div>
-        </form>
+        
+        <div class="form-card">
+            <h2 class="text-center py-3">Patient List</h2>
+            <form method="get"class="search" action="@Url.Action("PatientList")">
+                <div class="input-group mb-3 px-3">
+                    <input type="text" name="search" class="form-control" placeholder="Search by Patient_No, Firstname or Lastname" aria-describedby="button-addon2">
+                    <button class="search-button" type="submit" id="button-addon2">Search</button>
+                </div>
+            </form>
 
-        @if (Model.Any())
-        {
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Patient No</th>
-                        <th>Name</th>
-                        <th>Gender</th>
-                        <th>Date of Birth</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var patient in Model)
-                    {
+            @if (Model.Any())
+            {
+                <table class="custom-table">
+                    <thead>
                         <tr>
-                            <td>@patient.PatientNo</td>
-                            <td>@($"{patient.FirstName} {patient.LastName}")</td>
-                            <td>@patient.Gender</td>
-                            <td>@patient.DateOfBirth.ToShortDateString()</td>
-                            <td>
-                                <a href="@Url.Action("PatientMedicalRecords", new {patientNo = patient.PatientNo})">
-                                    <button type="button" class="btn btn-primary">View Medicals</button>
-                                </a>
-                            </td>
+                            <th>Patient No</th>
+                            <th>Name</th>
+                            <th>Gender</th>
+                            <th>Date of Birth</th>
+                            <th>Actions</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (var patient in Model)
+                        {
+                            <tr>
+                                <td>@patient.PatientNo</td>
+                                <td>@($"{patient.FirstName} {patient.LastName}")</td>
+                                <td>@patient.Gender</td>
+                                <td>@patient.DateOfBirth.ToShortDateString()</td>
+                                <td>
+                                    <a href="@Url.Action("PatientMedicalRecords", new {patientNo = patient.PatientNo})">
+                                        <button type="button" class="table-button">View Medicals</button>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
 
-            <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center">
-                    @if (ViewBag.CurrentPage > 1)
-                    {
-                        <li class="page-item"><a class="page-link" href="@Url.Action("PatientList", new { page = ViewBag.CurrentPage - 1, search = ViewBag.Search })">Previous</a></li>
-                    }
+                <nav class="py-3" aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+                        @if (ViewBag.CurrentPage > 1)
+                        {
+                            <li class="page-item"><a class="page-link" href="@Url.Action("PatientList", new { page = ViewBag.CurrentPage - 1, search = ViewBag.Search })">Previous</a></li>
+                        }
 
-                    @for (int i = 1; i <= ViewBag.TotalPatients / ViewBag.PageSize + 1; i++)
-                    {
-                        <li class="page-item"><a href="@Url.Action("PatientList", new { page = i, search = ViewBag.Search })" class="@(i == ViewBag.CurrentPage ? "active page-link" : "page-link")">@i</a></li>
-                    }
+                        @for (int i = 1; i <= ViewBag.TotalPatients / ViewBag.PageSize + 1; i++)
+                        {
+                            <li class="page-item"><a href="@Url.Action("PatientList", new { page = i, search = ViewBag.Search })" class="@(i == ViewBag.CurrentPage ? "active page-link" : "page-link")">@i</a></li>
+                        }
 
-                    @if (ViewBag.CurrentPage < ViewBag.TotalPatients / ViewBag.PageSize + 1)
-                    {
-                        <li class="page-item"><a class="page-link" href="@Url.Action("PatientList", new { page = ViewBag.CurrentPage + 1, search = ViewBag.Search })">Next</a></li>
-                    }
-                </ul>
-            </nav>
-        }
-        else
-        {
-            <p>No patients</p>
-        }
+                        @if (ViewBag.CurrentPage < ViewBag.TotalPatients / ViewBag.PageSize + 1)
+                        {
+                            <li class="page-item"><a class="page-link" href="@Url.Action("PatientList", new { page = ViewBag.CurrentPage + 1, search = ViewBag.Search })">Next</a></li>
+                        }
+                    </ul>
+                </nav>
+            }
+            else
+            {
+                <p class="p-3 no-patinet">No patients in line.</p>
+            }
+        </div>
     </div>
 </div>
+
+<partial name="FooterPartial" />

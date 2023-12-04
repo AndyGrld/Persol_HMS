@@ -3,6 +3,7 @@
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
 
+<div></div>
 <div class="left">
 	@if(ViewBag.deptId == 1)
 	{
@@ -12,16 +13,12 @@
 			<p>@UserManager.GetUserName(User)</p>
 		</div>
 		<a href="@Url.Action("RecordsClerk")">
-			<img src="~/icons/house-solid.svg"/>
 			<button type="button">Home</button>
+			<img src="~/icons/house-solid.svg"/>
 		</a>
 		<a href="@Url.Action("PatientListOnly")">
-			<img src="~/icons/hospital-user-solid.svg"/>
 			<button type="button">Patients List</button>
-		</a>
-		<a>
-			<img src="~/icons/database-solid.svg"/>
-			<button class="form-check-label" id="isNew" onclick="display()" for="isNew">Add to Queue</button>
+			<img src="~/icons/hospital-user-solid.svg"/>
 		</a>
 	}
 	
@@ -33,12 +30,12 @@
 			<p>@UserManager.GetUserName(User)</p>
 		</div>
 		<a href="@Url.Action("Nurse")">
-			<img src="~/icons/heart-pulse-solid.svg"/>
 			<button type="button">Next patient</button>
+			<img src="~/icons/heart-pulse-solid.svg"/>
 		</a>
 		<a href="@Url.Action("NurseQueue")">
-			<img src="~/icons/list-solid.svg"/>
 			<button type="button">View queue</button>
+			<img src="~/icons/list-solid.svg"/>
 		</a>
 	}
 	
@@ -50,12 +47,12 @@
 			<p>@UserManager.GetUserName(User)</p>
 		</div>
 		<a href="@Url.Action("DoctorQueue")">
-			<img src="~/icons/user-doctor-solid.svg"/>
 			<button type="button">View Queue</button>
+			<img src="~/icons/user-doctor-solid.svg"/>
 		</a>
 		<a href="@Url.Action("PatientList")">
-			<img src="~/icons/hospital-user-solid.svg"/>
 			<button type="button">Patients List</button>
+			<img src="~/icons/hospital-user-solid.svg"/>
 		</a>
 	}
 	
@@ -67,16 +64,16 @@
 			<p>@UserManager.GetUserName(User)</p>
 		</div>
 		<a href="@Url.Action("Lab")">
-			<img src="~/icons/syringe-solid.svg"/>
 			<button type="button">Next patient</button>
+			<img src="~/icons/syringe-solid.svg"/>
 		</a>
 		<a href="@Url.Action("LabQueue")">
-			<img src="~/icons/list-solid.svg"/>
 			<button class="active" type="button">View Queue</button>
+			<img src="~/icons/list-solid.svg"/>
 		</a>
 		<a href="@Url.Action("PatientList")">
-			<img src="~/icons/hospital-user-solid.svg"/>
 			<button type="button">Patients List</button>
+			<img src="~/icons/hospital-user-solid.svg"/>
 		</a>
 	}
 	
@@ -88,12 +85,12 @@
 			<p>@UserManager.GetUserName(User)</p>
 		</div>
 		<a href="@Url.Action("PatientList", "Staff")">
-			<img src="~/icons/list-solid.svg"/>
 			<button type="button">Patients List</button>
+			<img src="~/icons/list-solid.svg"/>
 		</a>
 		<a href="@Url.Action("Index", "Admin")">
-			<img src="~/icons/database-solid.svg"/>
 			<button type="button">View Users</button>
+			<img src="~/icons/database-solid.svg"/>
 		</a>
 	}
 	
@@ -105,8 +102,8 @@
 			<p>@UserManager.GetUserName(User)</p>
 		</div>
 		<a href="@Url.Action("PharmacyQueue")">
-			<img src="~/icons/list-solid.svg"/>
 			<button class="active" type="button">View Queue</button>
+			<img src="~/icons/list-solid.svg"/>
 		</a>
 	}
 	
@@ -118,17 +115,15 @@
 			<p>@UserManager.GetUserName(User)</p>
 		</div>
 		<a href="@Url.Action("CashierQueue")">
-			<img src="~/icons/list-solid.svg"/>
 			<button class="active" type="button">View Queue</button>
+			<img src="~/icons/list-solid.svg"/>
 		</a>
 	}
 	
     <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-		<img src="~/icons/right-from-bracket-solid.svg"/>
         <button id="logout" type="submit">Logout</button>
+		<img src="~/icons/right-from-bracket-solid.svg"/>
     </form>
-	
-	
 </div>
 
 
@@ -139,9 +134,7 @@
 	const navigationLinks = document.querySelectorAll('.left a');
 
     navigationLinks.forEach(link => {
-		console.log(link.childNodes);
-		button[index] = link.childNodes[3]
-        button[index].classList.toggle('active', link.href.split("/")[4] === currentUrl.split("/")[2]);
+		link.classList.toggle('active', link.href.split("/")[4] === currentUrl.split("/")[2]);
 		index++
     });
 </script>

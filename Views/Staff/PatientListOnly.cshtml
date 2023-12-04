@@ -8,35 +8,26 @@
 <div class="grid">
     <partial name="SidebarPartial" />
     <div class="right">
-        <h2 id="title" class="text-center">Patient List</h2>
-
-        <form asp-action="CreateOrGetPatient" asp-for-route="PatientNo" method="post" autocomplete="off">
-            <div class="forOldPatient">
-                <div class="mb-3">
-                    <label name="PatientNo" class="form-label">Patient's Id Number</label>
-                    <input name="PatientNo" type="text" class="form-control" id="oldPatientId" aria-describedby="emailHelp" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </div>
-        </form>
         
-        <div class="forPatientList">
-            <form method="get" action="@Url.Action("PatientListOnly")">
-                <div class="input-group mb-3">
-                    <input type="text" name="search" class="form-control" placeholder="Search by Patient No, First Name or Last Name" aria-describedby="button-addon2">
-                    <button class="btn btn-outline-primary" type="submit" id="button-addon2">Search</button>
+        <div class="form-card">
+            <h2 class="text-center py-3">Patient List</h2>
+            <form method="get"class="search" action="@Url.Action("PatientListOnly")">
+                <div class="input-group mb-3 px-3">
+                    <input type="text" name="search" class="form-control" placeholder="Search by Patient_No, Firstname or Lastname" aria-describedby="button-addon2">
+                    <button class="search-button" type="submit" id="button-addon2">Search</button>
                 </div>
             </form>
 
             @if (Model.Any())
             {
-                <table class="table table-hover">
+                <table class="custom-table">
                     <thead>
                         <tr>
                             <th>Patient No</th>
                             <th>Name</th>
                             <th>Gender</th>
                             <th>Date of Birth</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -47,12 +38,35 @@
                                 <td>@($"{patient.FirstName} {patient.LastName}")</td>
                                 <td>@patient.Gender</td>
                                 <td>@patient.DateOfBirth.ToShortDateString()</td>
+                                <td>
+		    						<button type="button" class="table-button" data-bs-toggle="modal" data-bs-target="#exampleModal-@patient.PatientNo">
+		    							Add to Queue
+		    						</button>
+                                </td>
                             </tr>
+                            <div class="modal fade" id="exampleModal-@patient.PatientNo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Add @($"{patient.FirstName} {patient.LastName}") to queue</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form action="@Url.Action("CreateOrGetPatient", new {patientNo = @patient.PatientNo})" method="post" autocomplete="off">
+                                            <div class="container text-center">
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-success">Yes</button>
+                                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">No</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         }
                     </tbody>
                 </table>
 
-                <nav aria-label="Page navigation example">
+                <nav class="py-3" aria-label="Page navigation example">
                     <ul class="pagination justify-content-center">
                         @if (ViewBag.CurrentPage > 1)
                         {
@@ -73,11 +87,14 @@
             }
             else
             {
-                <p>No patients</p>
+                <p class="p-3 no-patinet">No patients in line.</p>
             }
         </div>
     </div>
 </div>
+
+<partial name="FooterPartial" />
+
 
 <script>
     const toggle = document.getElementById("isNew")

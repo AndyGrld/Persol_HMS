@@ -146,14 +146,24 @@ public class StaffController : Controller
                         Dosage = model.CreateMedicalViewModel.DrugNames[i].Dosage,
                         Date = DateTime.Today
                     };
-
                     _context.Drugs.Add(drug);
                     await _context.SaveChangesAsync();
                 }
             }
 
-
-            if (model.CreateMedicalViewModel.NeedsLab && model.CreateMedicalViewModel.SelectedLabNames.Count > 0)
+            if (medicalRecord.IsAdmitted)
+            {
+                var AdmittedQueueNo = GetNextQueueNumber("IsAdmitted");
+                var AdmittedQueue = new Queue
+                {
+                    PatientNo = model.CreateMedicalViewModel.PatientNo,
+                    QueueNo = AdmittedQueueNo,
+                    Status = "IsAdmitted",
+                    DateCreated = DateTime.Now
+                };
+                _context.Queues.Add(AdmittedQueue);
+            }
+            else if (model.CreateMedicalViewModel.NeedsLab && model.CreateMedicalViewModel.SelectedLabNames.Count > 0)
             {
                 foreach (var labName in model.CreateMedicalViewModel.SelectedLabNames)
                 {
@@ -168,11 +178,22 @@ public class StaffController : Controller
                     };
 
                     _context.Queues.Add(labQueue);
-                    await _context.SaveChangesAsync();
                 }
             }
+            else if (model.CreateMedicalViewModel.DrugNames != null)
+            {
+                var PharmacyQueueNo = GetNextQueueNumber("Pharmacy");
+                var PharmacyQueue = new Queue
+                {
+                    PatientNo = model.CreateMedicalViewModel.PatientNo,
+                    QueueNo = PharmacyQueueNo,
+                    Status = "Pharmacy",
+                    DateCreated = DateTime.Now
+                };
+                _context.Queues.Add(PharmacyQueue);
+            }
             RemovePatientFromQueue("Doctor", model.CreateMedicalViewModel.PatientNo);
-
+            await _context.SaveChangesAsync();
 
             TempData["D_ConfirmationMessage"] = $"Patient's medical details added successfully.";
             return RedirectToAction(nameof(DoctorQueue));
@@ -210,10 +231,14 @@ public class StaffController : Controller
                 : await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo == patientNo);
             if (patient != null)
             {
-                bool patientInQueue = await _context.Queues.FirstOrDefaultAsync(q => q.PatientNo == patient.PatientNo) != null ? true : false;
-                if (patientInQueue)
+                var patientInQueue = await _context.Queues.FirstOrDefaultAsync(q => q.PatientNo == patient.PatientNo);
+                if (patientInQueue != null)
                 {
-                    TempData["R_ConfirmationMessage"] = $"Patient already in Queue";
+                    if(patientInQueue.Status.Equals("IsDone")){
+                        TempData["R_ConfirmationMessage"] = $"Patient has been here today";
+                        return RedirectToAction(nameof(RecordsClerk));
+                    }
+                    TempData["R_WarningMessage"] = $"Patient already in queue to visit {patientInQueue.Status}";
                     return RedirectToAction(nameof(RecordsClerk));
                 }
                 var NurseQueueNo = GetNextQueueNumber("Nurse");
@@ -253,7 +278,7 @@ public class StaffController : Controller
     {
         DateTime currentDate = DateTime.Now;
         char[] name = patient.LastName.ToCharArray();
-        string idPrefix = $"HMS-{currentDate.Month}{currentDate.Day}-{currentDate.Year}-" +
+        string idPrefix = $"HMS-{currentDate.Month:D2}{currentDate.Day:D2}-{currentDate.Year:D4}-" +
             $"{name[0].ToString().ToUpper()}";
         string id;
         int newId = 1;
@@ -391,16 +416,16 @@ public class StaffController : Controller
                 _context.Labs.Add(lab);
                 await _context.SaveChangesAsync();
 
-                var pharmacyQueueNo = GetNextQueueNumber("Pharmacy");
-                var pharmacyQueue = new Queue
+                var DoctorQueueNo = GetNextQueueNumber("Doctor");
+                var DoctorQueue = new Queue
                 {
                     PatientNo = labView.Lab.PatientNo,
-                    QueueNo = pharmacyQueueNo,
-                    Status = "Pharmacy",
+                    QueueNo = DoctorQueueNo,
+                    Status = "Doctor",
                     DateCreated = DateTime.Now
                 };
                 RemovePatientFromQueue("Lab", patient.PatientNo);
-                _context.Queues.Add(pharmacyQueue);
+                _context.Queues.Add(DoctorQueue);
 
                 await _context.SaveChangesAsync();
 
@@ -683,7 +708,6 @@ public class StaffController : Controller
         if (!string.IsNullOrEmpty(search))
         {
             patients = patients.Where(p =>
-                                                    // .ToUpper()
                                 p.PatientNo.Contains(search.ToUpper()) ||
                                 p.FirstName.Contains(search.Titleize()) ||
                                 p.LastName.Contains(search.Titleize()))
@@ -1007,7 +1031,17 @@ public class StaffController : Controller
                 var medicalToUpdate = await _context.Medicals.
                     FirstOrDefaultAsync(m => m.ID == patientWithLatestMedical.latestMedical.ID);
                 medicalToUpdate.isPaid = true;
+
+                var isDoneQueueNo = GetNextQueueNumber("IsDone");
+                var isDoneQueue = new Queue
+                {
+                    PatientNo = PatientNo,
+                    QueueNo = isDoneQueueNo,
+                    Status = "IsDone",
+                    DateCreated = DateTime.Now
+                };
                 RemovePatientFromQueue("Cashier", PatientNo);
+                _context.Queues.Add(isDoneQueue);
                 _context.SaveChanges();
 
                 TempData["C_ConfirmationMessage"] = "Data has been saved successfully, patient may leave.";

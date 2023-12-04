@@ -2,51 +2,48 @@
 @model LoginModel
 
 @{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Login to your account";
 }
 
 
-<div>
-    <img src="~/images/background.jpg" class="back"/>
-    <div class="cover"></div>
-    <div class="center-card">
-    <h1 class="text-center title">Welcome to Persol HMS<h1/>
-    <div class="card fs-6">
-        <div class="card-header">
-            <h1  class="fs-3">@ViewData["Title"]</h1>
-        </div>
-        <form id="account" method="post">
-            <div class="m-3">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-floating">
-                    <input asp-for="Input.Username" class="form-control" autocomplete="username" aria-required="true" />
-                    <label asp-for="Input.Username" class="form-label"></label>
-                    <span asp-validation-for="Input.Username" class="text-danger"></span>
-                </div>
-                
-            </div>
-            <div class="m-3">
-                <div class="form-floating">
-                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" />
-                    <label asp-for="Input.Password" class="form-label"></label>
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="container text-center px-3 mb-3">
-                <div class="row">
-                    <div class="col">
-                        <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
-                    </div>
-                    <div class="col">
-                        <a style="text-decoration: none; color: white" asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">
-                            <button type="button" class="w-100 btn btn-lg btn-primary">
-                            Register as a new user</button>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </form>
+<div class="login-page">
+    <div class="login-left">
+        <img src="~/images/background.jpg" class="back"/>
+        @* <div class="cover"></div> *@
     </div>
+    <div class="login-right">
+		<div class="login-card">
+			<h1 class="login-title">Welcome to <span>Persol HMS<span></h1>
+			<div class="">
+				<div class="fs-6">
+					<h1  class="fs-3">@ViewData["Title"]</h1>
+				</div>
+				<form id="account" method="post">
+					<div class="my-2">
+						<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+						<div class="form-floating">
+							<input asp-for="Input.Username" class="form-control" autocomplete="username" aria-required="true" />
+							<label asp-for="Input.Username" class="form-label"></label>
+							<span asp-validation-for="Input.Username" class="text-danger"></span>
+						</div>
+
+					</div>
+					<div class="my-2">
+						<div class="form-floating">
+							<input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" />
+							<label asp-for="Input.Password" class="form-label"></label>
+							<span asp-validation-for="Input.Password" class="text-danger"></span>
+						</div>
+					</div>
+					<button id="login-submit" type="submit" class="btn auth-button">Login</button>	
+					<p class="to-register">Don't have an account?
+						<a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">
+							Create an account
+						</a>
+					</p>
+				</form>
+			</div>
+		</div>
     </div>
 </div>
 

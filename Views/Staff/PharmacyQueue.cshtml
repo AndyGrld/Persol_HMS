@@ -21,100 +21,104 @@
     <partial name="SidebarPartial" />
 
     <div class="right">
-        <h2 class="text-center">Pharmacy Queue</h2>
+        <div class="form-card">
+            <h2 class="text-center py-3">Pharmacy Queue</h2>
+            <form method="get"class="search" action="@Url.Action("PharmacyQueue")">
+                <div class="input-group mb-3 px-3">
+                    <input type="text" name="search" class="form-control" placeholder="Search by Patient_No, Firstname or Lastname" aria-describedby="button-addon2">
+                    <button class="search-button" type="submit" id="button-addon2">Search</button>
+                </div>
+            </form>
 
-        @* <form method="get" action="@Url.Action("PharmacyQueue")">
-            <div class="input-group mb-3">
-                <input class="form-control" name="search" value="@Model.Search" type="text" placeholder="Search by Patient Id Number">
-                <button class="btn btn-outline-primary" type="submit">Search</button>
-            </div>
-        </form> *@
-
-        @if (Model.PatientsWithDrugs.Any())
-        {
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>PatientNo</th>
-                        <th>Patient Name</th>
-                        <th>QueueNo</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var patientWithDrugs in Model.PatientsWithDrugs)
-                    {
+            @if (Model.PatientsWithDrugs.Any())
+            {
+                <table class="custom-table">
+                    <thead>
                         <tr>
-                            <td>@patientWithDrugs.PatientQueue.PatientNo</td>
-                            <td>@patientWithDrugs.PatientQueue.Patient.LastName @patientWithDrugs.PatientQueue.Patient.FirstName</td>
-                            <td>@patientWithDrugs.PatientQueue.QueueNo</td>
-                            <td>
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal-@patientWithDrugs.PatientQueue.PatientNo">
-                                    Give Drugs
-                                </button>
-                            </td>
+                            <th>PatientNo</th>
+                            <th>Patient Name</th>
+                            <th>QueueNo</th>
+                            <th>Action</th>
                         </tr>
-                        <div class="modal fade" id="exampleModal-@patientWithDrugs.PatientQueue.PatientNo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Give Drugs</h1>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form asp-action="UpdateDrugPrice" asp-route-patientNo="@patientWithDrugs.PatientQueue.PatientNo" method="post" autocomplete="off">
-                                            <div class="container">
-                                                @for(int i = 0; i < patientWithDrugs.PatientDrugs.Count(); i++)
-                                                {
-                                                    <div class="row">
-                                                        <div class="col">
-                                                            <label asp-for="@Model.PatientsWithDrugs[0].PatientDrugs[i].Price" class="form-label">Price of @patientWithDrugs.PatientDrugs[i].DrugName</label>
-                                                            <input asp-for="@Model.PatientsWithDrugs[0].PatientDrugs[i].Price" type="number" class="form-control" value="" step=".01" id="drug-@i">
-                                                            <input asp-for="@Model.PatientsWithDrugs[0].PatientDrugs[i].ID" type="hidden" value="@patientWithDrugs.PatientDrugs[i].ID">
+                    </thead>
+                    <tbody>
+                        @foreach (var patientWithDrugs in Model.PatientsWithDrugs)
+                        {
+                            <tr>
+                                <td>@patientWithDrugs.PatientQueue.PatientNo</td>
+                                <td>@patientWithDrugs.PatientQueue.Patient.LastName @patientWithDrugs.PatientQueue.Patient.FirstName</td>
+                                <td>@patientWithDrugs.PatientQueue.QueueNo</td>
+                                <td>
+                                    <button type="button" class="table-button" data-bs-toggle="modal" data-bs-target="#exampleModal-@patientWithDrugs.PatientQueue.PatientNo">
+                                        Give Drugs
+                                    </button>
+                                </td>
+                            </tr>
+                            <div class="modal fade" id="exampleModal-@patientWithDrugs.PatientQueue.PatientNo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Give Drugs</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form asp-action="UpdateDrugPrice" asp-route-patientNo="@patientWithDrugs.PatientQueue.PatientNo" method="post" autocomplete="off">
+                                                <div class="container">
+                                                    @for(int i = 0; i < patientWithDrugs.PatientDrugs.Count(); i++)
+                                                    {
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <label asp-for="@Model.PatientsWithDrugs[0].PatientDrugs[i].Price" class="form-label">Price of @patientWithDrugs.PatientDrugs[i].DrugName</label>
+                                                                <input asp-for="@Model.PatientsWithDrugs[0].PatientDrugs[i].Price" type="number" class="form-control" value="" step=".01" id="drug-@i">
+                                                                <input asp-for="@Model.PatientsWithDrugs[0].PatientDrugs[i].ID" type="hidden" value="@patientWithDrugs.PatientDrugs[i].ID">
+                                                            </div>
                                                         </div>
+                                                    }
+                                                    <input asp-for="@Model.PatientsWithDrugs[0].PatientQueue.PatientNo" value="@patientWithDrugs.PatientQueue.PatientNo" type="hidden" />
+                                                    <p class='my-1'>Bill: Ghc<span id="bill">0.00</span></p>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-primary">Update Drug Prices</button>
                                                     </div>
-                                                }
-                                                <input asp-for="@Model.PatientsWithDrugs[0].PatientQueue.PatientNo" value="@patientWithDrugs.PatientQueue.PatientNo" type="hidden" />
-                                                <p class='my-1'>Bill: Ghc<span id="bill">0.00</span></p>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-primary">Update Drug Prices</button>
                                                 </div>
-                                            </div>
-                                        </form>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    }
-                </tbody>
-            </table>
+                        }
+                    </tbody>
+                </table>
 
-            <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center">
-                    @if (Model.QueueViewModel.CurrentPage > 1)
-                    {
-                        <li class="page-item"><a class="page-link" href="@Url.Action("PharmacyQueue", new { page = Model.QueueViewModel.CurrentPage - 1, search = Model.QueueViewModel.Search })">Previous</a></li>
-                    }
+                <nav class="py-3" aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+                        @if (Model.QueueViewModel.CurrentPage > 1)
+                        {
+                            <li class="page-item"><a class="page-link" href="@Url.Action("PharmacyQueue", new { page = Model.QueueViewModel.CurrentPage - 1, search = Model.QueueViewModel.Search })">Previous</a></li>
+                        }
 
-                    @for (int i = 1; i <= Model.QueueViewModel.TotalPatients / Model.QueueViewModel.PageSize + 1; i++)
-                    {
-                        <li class="page-item"><a href="@Url.Action("PharmacyQueue", new { page = i, search = Model.QueueViewModel.Search })" class="@(i == Model.QueueViewModel.CurrentPage ? "active page-link" : "page-link")">@i</a></li>
-                    }
+                        @for (int i = 1; i <= Model.QueueViewModel.TotalPatients / Model.QueueViewModel.PageSize + 1; i++)
+                        {
+                            <li class="page-item"><a href="@Url.Action("PharmacyQueue", new { page = i, search = Model.QueueViewModel.Search })" class="@(i == Model.QueueViewModel.CurrentPage ? "active page-link" : "page-link")">@i</a></li>
+                        }
 
-                    @if (Model.QueueViewModel.CurrentPage < Model.QueueViewModel.TotalPatients / Model.QueueViewModel.PageSize + 1)
-                    {
-                        <li class="page-item"><a class="page-link" href="@Url.Action("PharmacyQueue", new { page = Model.QueueViewModel.CurrentPage + 1, search = Model.QueueViewModel.Search })">Next</a></li>
-                    }
-                </ul>
-            </nav>
-        }
-        else
-        {
-            <p>No patients in line.</p>
-        }
+                        @if (Model.QueueViewModel.CurrentPage < Model.QueueViewModel.TotalPatients / Model.QueueViewModel.PageSize + 1)
+                        {
+                            <li class="page-item"><a class="page-link" href="@Url.Action("PharmacyQueue", new { page = Model.QueueViewModel.CurrentPage + 1, search = Model.QueueViewModel.Search })">Next</a></li>
+                        }
+                    </ul>
+                </nav>
+            }
+            else
+            {
+                <p class="p-3 no-patinet">No patients in line.</p>
+            }
+        </div>
     </div>
 </div>
+
+<partial name="FooterPartial" />
+
 @section scripts {
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>

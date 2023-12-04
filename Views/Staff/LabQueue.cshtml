@@ -20,106 +20,109 @@
 <div class="grid">
     <partial name="SidebarPartial" />
     <div class="right">
-        <h2 class="text-center">Lab Queue</h2>
-        <form method="get" action="@Url.Action("LabQueue")">
-            <div  class="input-group mb-3">
-                <input  class="form-control" name="search" value="@Model.QueueViewModel.Search" type="text" placeholder="Search by Patient Id Number">
-                <button  class="btn btn-outline-primary" type="submit">Search</button>
-            </div>
-        </form>
-        @if (Model.QueueViewModel.PatientsInLine.Any())
-        {
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>PatientNo</th>
-                        <th>Patient Name</th>
-                        <th>QueueNo</th>
-                        <th>Lab Name</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var patient in Model.QueueViewModel.PatientsInLine)
-                    {
+        
+        <div class="form-card">
+            <h2 class="text-center py-3">Lab Queue</h2>
+            <form method="get"class="search" action="@Url.Action("LabQueue")">
+                <div class="input-group mb-3 px-3">
+                    <input type="text" name="search" class="form-control" placeholder="Search by Patient_No, Firstname or Lastname" aria-describedby="button-addon2">
+                    <button class="search-button" type="submit" id="button-addon2">Search</button>
+                </div>
+            </form>
+            @if (Model.QueueViewModel.PatientsInLine.Any())
+            {
+                <table class="custom-table">
+                    <thead>
                         <tr>
-                            <td>@patient.PatientNo</td>
-                            <td>@patient.Patient.LastName @patient.Patient.FirstName</td>
-                            <td>@patient.QueueNo</td>
-                            <td>@patient.LabName</td>
-                            <td>
-								<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal-@patient.PatientNo">
-									Check Labs
-								</button>
-                            </td>
+                            <th>PatientNo</th>
+                            <th>Patient Name</th>
+                            <th>QueueNo</th>
+                            <th>Lab Name</th>
+                            <th>Action</th>
                         </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var patient in Model.QueueViewModel.PatientsInLine)
+                        {
+                            <tr>
+                                <td>@patient.PatientNo</td>
+                                <td>@patient.Patient.LastName @patient.Patient.FirstName</td>
+                                <td>@patient.QueueNo</td>
+                                <td>@patient.LabName</td>
+                                <td>
+		    						<button type="button" class="table-button" data-bs-toggle="modal" data-bs-target="#exampleModal-@patient.PatientNo">
+		    							Check Labs
+		    						</button>
+                                </td>
+                            </tr>
 
-                        <div class="modal fade" id="exampleModal-@patient.PatientNo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Submit Lab Report</h1>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form asp-controller="Staff" asp-action="Lab" autocomplete="off">
-                                            <div class="container text-center">
-                                                <div id="lab-fields">
-                                                    <h5 class="rounded text-primary fs-4">
-                                                        @patient.LabName for @patient.Patient.LastName @patient.Patient.FirstName
-                                                    </h5>
-                                                    <div class="lab_row p-3 rounded mb-3">
-                                                        <div class="lab_col1">
-                                                            <textarea asp-for="Lab.Result" class="form-control" id="LabResult" placeholder="Lab Result" name="Lab.Result"></textarea>
-                                                        </div>
-                                                        <div class="lab_col">
-                                                            <textarea asp-for="Lab.Notes" class="form-control" id="LabNotes" placeholder="Lab Notes" name="Lab.Notes"></textarea>
+                            <div class="modal fade" id="exampleModal-@patient.PatientNo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Submit Lab Report</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form asp-controller="Staff" asp-action="Lab" autocomplete="off">
+                                                <div class="container text-center">
+                                                    <div id="lab-fields">
+                                                        <h5 class="rounded text-primary fs-4">
+                                                            @patient.LabName for @patient.Patient.LastName @patient.Patient.FirstName
+                                                        </h5>
+                                                        <div class="lab_row p-3 rounded mb-3">
+                                                            <div class="lab_col1">
+                                                                <textarea asp-for="Lab.Result" class="form-control" id="LabResult" placeholder="Lab Result" name="Lab.Result"></textarea>
+                                                            </div>
+                                                            <div class="lab_col">
+                                                                <textarea asp-for="Lab.Notes" class="form-control" id="LabNotes" placeholder="Lab Notes" name="Lab.Notes"></textarea>
+                                                            </div>
                                                         </div>
                                                     </div>
+                                                    <input asp-for="Lab.PatientNo" value="@patient.PatientNo" type="hidden" />
+                                                    <input asp-for="Lab.LabName" value="@patient.LabName" type="hidden" />
                                                 </div>
-                                                <input asp-for="Lab.PatientNo" value="@patient.PatientNo" type="hidden" />
-                                                <input asp-for="Lab.LabName" value="@patient.LabName" type="hidden" />
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary">Save</button>
-                                            </div>
-                                        </form>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">Save</button>
+                                                </div>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                    }
-                </tbody>
-            </table>
-			
-			
-            <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center">
-                    @if (Model.QueueViewModel.CurrentPage > 1)
-                    {
-                        <li class="page-item"><a class="page-link" href="@Url.Action("LabQueue", new { page = Model.QueueViewModel.CurrentPage - 1, search = Model.QueueViewModel.Search })">Previous</a></li>
-                    }
-                    @for (int i = 1; i <= Model.QueueViewModel.TotalPatients / Model.QueueViewModel.PageSize + 1; i++)
-                    {
-                        <li class="page-item"><a href="@Url.Action("LabQueue", new { page = i, search = Model.QueueViewModel.Search })" class="@(i == Model.QueueViewModel.CurrentPage ? "active page-link" : "page-link")">@i</a></li>
-                    }
-                    @if (Model.QueueViewModel.CurrentPage < Model.QueueViewModel.TotalPatients / Model.QueueViewModel.PageSize + 1)
-                    {
-                        <li class="page-item"><a class="page-link" href="@Url.Action("LabQueue", new { page = Model.QueueViewModel.CurrentPage + 1, search = Model.QueueViewModel.Search })">Next</a></li>
-                    }
-                </ul>
-            </nav>
-        }
-        else
-        {
-            <p>No patients in line.</p>
-        }
+                        }
+                    </tbody>
+                </table>
+    
+    
+                <nav class="py-3" aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+                        @if (Model.QueueViewModel.CurrentPage > 1)
+                        {
+                            <li class="page-item"><a class="page-link" href="@Url.Action("LabQueue", new { page = Model.QueueViewModel.CurrentPage - 1, search = Model.QueueViewModel.Search })">Previous</a></li>
+                        }
+                        @for (int i = 1; i <= Model.QueueViewModel.TotalPatients / Model.QueueViewModel.PageSize + 1; i++)
+                        {
+                            <li class="page-item"><a href="@Url.Action("LabQueue", new { page = i, search = Model.QueueViewModel.Search })" class="@(i == Model.QueueViewModel.CurrentPage ? "active page-link" : "page-link")">@i</a></li>
+                        }
+                        @if (Model.QueueViewModel.CurrentPage < Model.QueueViewModel.TotalPatients / Model.QueueViewModel.PageSize + 1)
+                        {
+                            <li class="page-item"><a class="page-link" href="@Url.Action("LabQueue", new { page = Model.QueueViewModel.CurrentPage + 1, search = Model.QueueViewModel.Search })">Next</a></li>
+                        }
+                    </ul>
+                </nav>
+            }
+            else
+            {
+                <p class="p-3 no-patinet">No patients in line.</p>
+            }
+        </div>
     </div>
 </div>
 
-
+<partial name="FooterPartial" />
 
 @section scripts {
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
