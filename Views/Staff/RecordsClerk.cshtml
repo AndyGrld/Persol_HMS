@@ -42,7 +42,7 @@
                         <label asp-for="PatientNo" class="form-label">Patient's Id Number</label>
                         <input asp-for="PatientNo" type="text" class="form-control" id="oldPatientId">
                         <span asp-validation-for="PatientNo" class="text-danger" style="position:absolute"></span>
-                        <button type="submit" class="btn btn-primary form-button mt-4">Submit</button>
+                        <button type="submit" class="btn btn-primary form-button mt-4" id="openConfirmationModalOldPatient">Submit</button>
                     </div>
                 </div>
             </form>
@@ -53,7 +53,7 @@
                 <div style="position:relative;top:15px">
                     <div class="mb-3" style="position:relative">
                         <input name="search" type="text" class="form-control" placeholder="Search by Patient_No, Firstname or Lastname">
-                        <button type="submit" class="btn btn-primary form-button mt-4">Search</button>
+                        <button type="submit" class="btn btn-primary form-button mt-4" id="openConfirmationModalNewPatient">Submit</button>
                     </div>
                 </div>
             </form>
@@ -122,8 +122,51 @@
     </div>
 </div>
 
+@if (ViewBag.IsPatientInQueue)
+{
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Do you want to add this patient to the queue?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <button type="button" class="btn btn-primary" id="confirmAddToQueue">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+}
+
 <partial name="FooterPartial" />
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Check if the patient is in the queue and has the status "IsDone"
+        var isPatientInQueue = @Json.Serialize(TempData["IsPatientInQueue"]);
+
+        console.log("Is Patient In Queue:", isPatientInQueue); // Check in the console
+
+        if (isPatientInQueue) {
+            console.log("Modal shown"); // Check in the console
+            // Show the modal on page load
+            $('#confirmationModal').modal('show');
+        }
+
+        // Handle "Yes" button click
+        $('#confirmAddToQueue').on('click', function () {
+            $('#confirmationModal').modal('hide');
+            $('form#yourFormId').submit();
+        });
+    });
+</script>

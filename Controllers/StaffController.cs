@@ -211,6 +211,11 @@ public class StaffController : Controller
         // {
         //     return RedirectToHome();
         // }
+
+        // Check if patient is in the queue with status "IsDone"
+        var isPatientInQueue = TempData["IsPatientInQueue"] as bool? ?? false;
+        ViewBag.IsPatientInQueue = isPatientInQueue;
+
         return View(new Patient());
     }
 
@@ -224,6 +229,9 @@ public class StaffController : Controller
         //     return RedirectToHome();
         // }
 
+        // Delete old patients with the status "IsDone"
+        await DeleteOldPatients();
+
         if (newPatient.PatientNo != null || !string.IsNullOrEmpty(patientNo))
         {
             var patient = newPatient.PatientNo != null 
@@ -236,6 +244,7 @@ public class StaffController : Controller
                 {
                     if(patientInQueue.Status.Equals("IsDone")){
                         TempData["R_ConfirmationMessage"] = $"Patient has been here today";
+                        TempData["IsPatientInQueue"] = patientInQueue != null && patientInQueue.Status.Equals("IsDone");
                         return RedirectToAction(nameof(RecordsClerk));
                     }
                     TempData["R_WarningMessage"] = $"Patient already in queue to visit {patientInQueue.Status}";
@@ -272,6 +281,19 @@ public class StaffController : Controller
         }
         TempData["R_WarningMessage"] = $"Please enter a value";
         return RedirectToAction(nameof(RecordsClerk));
+    }
+
+    private async Task DeleteOldPatients()
+    {
+        var cutoffDate = DateTime.Now.AddDays(-1);
+        var patientsToDelete = _context.Queues
+            .Where(q => q.Status == "IsDone" && q.DateCreated < cutoffDate)
+            .ToList();
+        foreach (var patient in patientsToDelete)
+        {
+            _context.Queues.Remove(patient);
+        }
+        await _context.SaveChangesAsync();
     }
 
     public string GenerateNewId(Patient patient)
