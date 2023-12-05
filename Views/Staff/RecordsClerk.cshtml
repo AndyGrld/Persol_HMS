@@ -31,19 +31,33 @@
 }
 <div class="grid">
     <partial name="SidebarPartial" />
-    <div class="right">
-        <form class="p-3 form-card" asp-action="CreateOrGetPatient" method="post" autocomplete="off">
-            <h2 id="title" class="text-center">Add existing patient to queue</h2>
-            <hr>
-            <div class="forOldPatient">
-                <div class="mb-3" style="position:relative">
-                    <label asp-for="PatientNo" class="form-label">Patient's Id Number</label>
-                    <input asp-for="PatientNo" type="text" class="form-control" id="oldPatientId" aria-describedby="emailHelp">
-                    <span asp-validation-for="PatientNo" class="text-danger" style="position:absolute"></span>
-                    <button type="submit" class="btn btn-primary form-button mt-4">Submit</button>
+    <div class="right" style="display:grid;grid-template-columns:repeat(2,1fr);gap:20px">
+
+        <div style="display:grid;grid-template-rows:repeat(2,1fr)">
+            <form class="p-3 form-card" style="margin-bottom:10px" asp-action="CreateOrGetPatient" method="post" autocomplete="off">
+                <h2 id="title" class="text-center">Add existing patient to queue</h2>
+                <hr>
+                <div class="forOldPatient" style="position:relative;top:15px">
+                    <div class="mb-3" style="position:relative">
+                        <label asp-for="PatientNo" class="form-label">Patient's Id Number</label>
+                        <input asp-for="PatientNo" type="text" class="form-control" id="oldPatientId">
+                        <span asp-validation-for="PatientNo" class="text-danger" style="position:absolute"></span>
+                        <button type="submit" class="btn btn-primary form-button mt-4">Submit</button>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+
+            <form method="get" style="margin-top:10px" class="p-3 form-card" action="@Url.Action("PatientList")">
+                <h2 id="title" class="text-center">Search for patient by Patient_No, Firstname or Lastname</h2>
+                <hr>
+                <div style="position:relative;top:15px">
+                    <div class="mb-3" style="position:relative">
+                        <input name="search" type="text" class="form-control" placeholder="Search by Patient_No, Firstname or Lastname">
+                        <button type="submit" class="btn btn-primary form-button mt-4">Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
         
         <form class="p-3 form-card" asp-action="CreateOrGetPatient" method="post" autocomplete="off">
             <h2 id="title" class="text-center">Create a new patient</h2>

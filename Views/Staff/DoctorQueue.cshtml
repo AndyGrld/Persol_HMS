@@ -272,28 +272,22 @@
     <script>
         $(document).ready(function () {
             // Function to add drug input fields
+            var maxDrugFields = 5;
             function addDrug() {
-                var maxDrugFields = 5;
-
-                for (var i = 0; i <= maxDrugFields; i++) {
-                    var drugField = $(`.drug_input.field${i}:hidden:first`);
-                    if (drugField.length > 0) {
-                        drugField.show();
-                        break;
-                    }
+                if ($('.drug_input:visible').length < maxDrugFields) {
+                    $('.drug_input:hidden:first').show();
                 }
             }
 
             // Function to remove drug input fields
             function removeDrug(index) {
-                var drugField = $(`.drug_input[data-index="${index}"]:visible`);
-                
-                if (drugField.length > 0) {
-                    drugField.hide();
-                    drugField.find('input').val('');
-                    console.log("Drug removed");
-                }
+            var drugField = $(`.drug_input[data-index="${index}"]:visible`);
+            if (drugField.length > 0) {
+                drugField.hide();
+                drugField.find('input').val('');
+                console.log("Drug removed");
             }
+        }
 
             // Show/hide lab fields based on the radio button selection
             $('input[name="CreateMedicalViewModel.NeedsLab"]').change(function () {
@@ -323,7 +317,7 @@
             });
 
             // Initially hide drug fields
-            $('.drug_input.field1, .drug_input.field2, .drug_input.field3, .drug_input.field4').hide();
+            $('.drug_input.field0, .drug_input.field1, .drug_input.field2, .drug_input.field3, .drug_input.field4').hide();
         });
     </script>
 }
