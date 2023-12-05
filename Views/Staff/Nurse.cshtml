@@ -20,27 +20,31 @@
 
 <div class="grid">
     <partial name="SidebarPartial" />
-    <div class="right">
-		<form asp-controller="Staff" asp-action="Nurse" autocomplete="off">
-			<div class="mb-3">
-				<label asp-for="Temperature" class="form-label">@ViewBag.Name's Temperature</label>
-				<input asp-for="Temperature" type="number" class="form-control" id="temperature">
-			</div>
-			<div class="mb-3">
-				<label asp-for="Height" class="form-label">@ViewBag.Name's Height</label>
-				<input asp-for="Height" type="number" class="form-control">
-			</div>
-			<div class="mb-3">
-				<label asp-for="Weight" class="form-label">@ViewBag.Name's Weight</label>
-				<input asp-for="Weight" type="number" class="form-control">
-			</div>
-			<div class="mb-3">
-				<label asp-for="BloodPressure" class="form-label">@ViewBag.Name's Blood Pressure</label>
-				<input asp-for="BloodPressure" type="text" class="form-control">
-			</div>
-			<input asp-for="PatientNo" type="hidden" />
-			<button type="submit" class="btn btn-primary">Submit</button>
-		</form>
+    <div class="right" style="display:grid;grid-template-columns:repeat(5, 1fr);gap:20px">
+			<form class="p-3 form-card" style="grid-column:2/5" asp-controller="Staff" asp-action="Nurse" autocomplete="off">
+				<h2 id="title" class="text-center">@ViewBag.Name's Vitals</h2>
+            	<hr>
+				<div class="forNewPatient">
+					<div class="mb-3">
+						<label asp-for="Temperature" class="form-label">Temperature (°C)</label>
+						<input asp-for="Temperature" value="" type="number" class="form-control" id="temperature" required>
+					</div>
+					<div class="mb-3">
+						<label asp-for="Height" class="form-label">Height (cm)</label>
+						<input asp-for="Height" value="" type="number" class="form-control" required>
+					</div>
+					<div class="mb-3">
+						<label asp-for="Weight" class="form-label">Weight (kg)</label>
+						<input asp-for="Weight" value="" type="number" class="form-control" required>
+					</div>
+					<div class="mb-3">
+						<label asp-for="BloodPressure" class="form-label">Blood Pressure (mmHg)</label>
+						<input asp-for="BloodPressure" value="" type="text" class="form-control" required>
+					</div>
+				</div>
+				<input asp-for="PatientNo" type="hidden" />
+				<button type="submit" class="table-button">Submit</button>
+			</form>
     </div>
 </div>
 

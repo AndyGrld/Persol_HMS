@@ -47,7 +47,7 @@
                         {
                             <tr>
                                 <td>@patientWithMedical.PatientQueue.PatientNo</td>
-                                <td>@patientWithMedical.PatientQueue.Patient.LastName @patientWithMedical.PatientQueue.Patient.FirstName</td>
+                                <td>@($"{patientWithMedical.PatientQueue.Patient.LastName} {patientWithMedical.PatientQueue.Patient.FirstName}")</td>
                                 <td>@patientWithMedical.PatientQueue.QueueNo</td>
                                 <td>@patientWithMedical.latestMedical.Bill</td>
                                 <td>

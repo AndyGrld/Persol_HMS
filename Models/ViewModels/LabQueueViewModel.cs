@@ -7,8 +7,12 @@ namespace Persol_HMS.Models.ViewModels
 {
     public class LabQueueViewModel
     {
-        public Lab Lab { get; set; }
+        public List<Lab> Labs { get; set; }
         public QueueViewModel QueueViewModel { get; set; }
-
+		
+		public LabQueueViewModel()
+		{
+			Labs = new List<Lab>();
+		}
     }
 }

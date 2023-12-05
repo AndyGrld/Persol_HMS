@@ -46,7 +46,7 @@
                         {
                             <tr>
                                 <td>@patientWithDrugs.PatientQueue.PatientNo</td>
-                                <td>@patientWithDrugs.PatientQueue.Patient.LastName @patientWithDrugs.PatientQueue.Patient.FirstName</td>
+                                <td>@($"{patientWithDrugs.PatientQueue.Patient.LastName} {patientWithDrugs.PatientQueue.Patient.FirstName}")</td>
                                 <td>@patientWithDrugs.PatientQueue.QueueNo</td>
                                 <td>
                                     <button type="button" class="table-button" data-bs-toggle="modal" data-bs-target="#exampleModal-@patientWithDrugs.PatientQueue.PatientNo">
