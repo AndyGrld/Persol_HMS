@@ -37,7 +37,7 @@
                             <th>PatientNo</th>
                             <th>Patient Name</th>
                             <th>QueueNo</th>
-                            <th>Lab Name</th>
+                            <th>Lab Names</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -46,41 +46,58 @@
                         {
                             <tr>
                                 <td>@patient.PatientNo</td>
-                                <td>@patient.Patient.LastName @patient.Patient.FirstName</td>
+                                <td>@($"{patient.Patient.LastName} {patient.Patient.FirstName}")</td>
                                 <td>@patient.QueueNo</td>
-                                <td>@patient.LabName</td>
                                 <td>
+                                    @{
+                                        List<string> labNames = patient.LabName.Split(" ").ToList();
+                                        labNames = labNames.Where(lab => lab != " ").ToList();
+										for(int i = 0; i < labNames.Count(); i++)
+										{
+											@($"{labNames[i]}");
+                                            if(i != labNames.Count() - 1)
+                                            {
+                                                @($", ");
+                                            }
+										}
+                                    }
+                                </td>
+                                <td>
+                                    <a href="@Url.Action("Lab")">
 		    						<button type="button" class="table-button" data-bs-toggle="modal" data-bs-target="#exampleModal-@patient.PatientNo">
 		    							Check Labs
 		    						</button>
+                                    </a>
                                 </td>
                             </tr>
 
-                            <div class="modal fade" id="exampleModal-@patient.PatientNo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            @* <div class="modal fade" id="exampleModal-@patient.PatientNo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Submit Lab Report</h1>
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Submit Lab Report for @patient.Patient.LastName @patient.Patient.FirstName</h1>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
                                             <form asp-controller="Staff" asp-action="Lab" autocomplete="off">
                                                 <div class="container text-center">
-                                                    <div id="lab-fields">
-                                                        <h5 class="rounded text-primary fs-4">
-                                                            @patient.LabName for @patient.Patient.LastName @patient.Patient.FirstName
-                                                        </h5>
-                                                        <div class="lab_row p-3 rounded mb-3">
-                                                            <div class="lab_col1">
-                                                                <textarea asp-for="Lab.Result" class="form-control" id="LabResult" placeholder="Lab Result" name="Lab.Result"></textarea>
-                                                            </div>
-                                                            <div class="lab_col">
-                                                                <textarea asp-for="Lab.Notes" class="form-control" id="LabNotes" placeholder="Lab Notes" name="Lab.Notes"></textarea>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <input asp-for="Lab.PatientNo" value="@patient.PatientNo" type="hidden" />
-                                                    <input asp-for="Lab.LabName" value="@patient.LabName" type="hidden" />
+                                                    @for(int i = 0; i < labNames.Count() && i < Model.Labs.Count; i++){
+													<div id="lab-fields-@i">
+														<h5 class="rounded text-primary fs-4">
+															@labNames[i]
+														</h5>
+														<div class="lab_row p-3 rounded mb-2">
+															<div class="lab_col1">
+                                                                <textarea asp-for="Labs[i].Result" class="form-control" rows="4" placeholder="Lab Result"></textarea>
+															</div>
+															<div class="lab_col">
+																<textarea asp-for="Labs[i].Notes" class="form-control" placeholder="Lab Notes"></textarea>
+															</div>
+														</div>
+														<input asp-for="Labs[i].PatientNo" value="@patient.PatientNo" type="hidden" />
+														<input asp-for="Labs[i].LabName" value="@labNames[i]" type="hidden" />
+													</div>
+													}
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -90,7 +107,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> *@
 
                         }
                     </tbody>

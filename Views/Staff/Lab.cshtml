@@ -19,41 +19,43 @@
 
 <div class="grid">
     <partial name="SidebarPartial" />
-    <div class="right">
-<h2 class="text-center">Lab for Patient: @ViewBag.Name</h2>
-<form asp-controller="Staff" asp-action="PatientLab" autocomplete="off">
-    <div class="container text-center">
-	<div id="lab-fields">
-        <div class="row1 mb-2">
-            <div class="col">
-                <div>
+    <div class="right" style="display:grid;grid-template-columns:repeat(2,1fr);gap:20px">
+        @for(int i = 0; i < Model.Labs.Count(); i++){
+            <form  class="p-3 form-card" asp-controller="Staff" asp-action="PatientLab" autocomplete="off">
+                <h2 class="text-center">Lab for Patient: @ViewBag.Name</h2>
+                <hr>
+                <div class="container text-center">
+                <div id="lab-fields">
+                    <div class="row1 mb-2">
+                        <div class="col">
+                            <div>
                                 <h5>
-                                    @ViewBag.LabName for @ViewBag.PatientNo
+                                    @Model.Labs[i].LabName for @Model.patient.FirstName
                                 </h5>
                             </div>
-            </div>
-            <div class="col">
-                <div>
-                    <textarea asp-for="Lab.Result" style="height: 200px;border-radius: 0;" class="form-control" placeholder="Lab Result" name="Lab.Result"></textarea>
+                        </div>
+                        <div class="col">
+                            <div>
+                                <textarea asp-for="Labs[i].Result" style="height: 200px;border-radius: 0;" class="form-control" placeholder="Lab Result" name="Labs[i].Result"></textarea>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div>
+                                <textarea asp-for="Labs[i].Notes" style="height: 200px;border-radius: 0 10px 10px 0;" class="form-control" placeholder="Lab Notes" name="Labs[i].Notes"></textarea>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col">
-                <div>
-                    <textarea asp-for="Lab.Notes" style="height: 200px;border-radius: 0 10px 10px 0;" class="form-control" placeholder="Lab Notes" name="Lab.Notes"></textarea>
-                </div>
-            </div>
-        </div>
-	</div>
-    <input asp-for="PatientNo" value="@Model.PatientNo" style="display:none" />
-                <input asp-for="Lab.LabName" value="@ViewBag.LabName" style="display:none" />
+                <input asp-for="patient.PatientNo" value="@Model.patient.PatientNo" style="display:none" />
+                <input asp-for="Labs[i].LabName" value="@Model.Labs[i].LabName" style="display:none" />
 
-    </div>
-    <div class="modal-footer">
-        <button type="button" id="addMore"class="btn btn-success">Add More Labs</button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Save</button>
-    </div>
-</form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="addMore"class="btn btn-success">Add More Labs</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        }
     </div>
 </div>
 

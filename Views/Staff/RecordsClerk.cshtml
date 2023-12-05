@@ -29,6 +29,7 @@
         </ul>
     </div>
 }
+
 <div class="grid">
     <partial name="SidebarPartial" />
     <div class="right" style="display:grid;grid-template-columns:repeat(2,1fr);gap:20px">
@@ -47,13 +48,13 @@
                 </div>
             </form>
 
-            <form method="get" style="margin-top:10px" class="p-3 form-card" action="@Url.Action("PatientList")">
+            <form method="get" style="margin-top:10px" class="p-3 form-card" action="@Url.Action("PatientListOnly")">
                 <h2 id="title" class="text-center">Search for patient by Patient_No, Firstname or Lastname</h2>
                 <hr>
                 <div style="position:relative;top:15px">
                     <div class="mb-3" style="position:relative">
                         <input name="search" type="text" class="form-control" placeholder="Search by Patient_No, Firstname or Lastname">
-                        <button type="submit" class="btn btn-primary form-button mt-4" id="openConfirmationModalNewPatient">Submit</button>
+                        <button type="submit" class="btn btn-primary form-button mt-4" id="openConfirmationModalNewPatient">Search</button>
                     </div>
                 </div>
             </form>
@@ -96,6 +97,11 @@
                     <input asp-for="InsuranceNo" type="text" class="form-control">
                     <span asp-validation-for="InsuranceNo" class="text-danger" style="position:absolute"></span>
                 </div>
+                @* <div>
+                    <label class="form-label">Enter Insurance Expiry Date</label>
+                    <input asp-for="InsuranceExpireDate" type="text" class="form-control">
+                    <span asp-validation-for="InsuranceExpireDate" class="text-danger" style="position:absolute"></span>
+                </div> *@
                 <div>
                     <label asp-for="ContactNo" class="form-label">Patient Contact Number</label>
                     <input asp-for="ContactNo" type="text" class="form-control" id="ContactNo">
@@ -131,13 +137,15 @@
                 <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                Do you want to add this patient to the queue?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                <button type="button" class="btn btn-primary" id="confirmAddToQueue">Yes</button>
-            </div>
+            <form method="post" action="@Url.Action("CreateOrGetPatient", new { confirm = "true", patientNo = TempData["PatientNo"] })">
+                <div class="modal-body">
+                    Patient has been here today, do you want to add patient to queue again?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">No</button>
+                    <button type="submit" class="btn btn-success" id="confirmAddToQueue">Yes</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -155,11 +163,10 @@
         // Check if the patient is in the queue and has the status "IsDone"
         var isPatientInQueue = @Json.Serialize(TempData["IsPatientInQueue"]);
 
-        console.log("Is Patient In Queue:", isPatientInQueue); // Check in the console
+        console.log("Is Patient In Queue:", isPatientInQueue);
 
         if (isPatientInQueue) {
-            console.log("Modal shown"); // Check in the console
-            // Show the modal on page load
+            console.log("Modal shown");
             $('#confirmationModal').modal('show');
         }
 

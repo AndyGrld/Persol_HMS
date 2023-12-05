@@ -47,7 +47,7 @@
                         {
                             <tr>
                                 <td>@patient.PatientNo</td>
-                                <td>@patient.Patient.LastName @patient.Patient.FirstName</td>
+                                <td>($"{patient.Patient.LastName} {patient.Patient.FirstName}")</td>
                                 <td>@patient.QueueNo</td>
                                 <td>
                                     <button type="button" class="table-button" data-bs-toggle="modal" data-bs-target="#exampleModal-@patient.PatientNo">
@@ -64,15 +64,17 @@
                                         </div>
                                         <div class="modal-body">
                                             <form asp-action="SaveMedicalRecords" method="post" autocomplete="off">
-                                                <div class="container text-center">
+                                                <div class="container">
                                                     <div class="diagnose_row">
                                                         <div class="diagnose_col">
                                                             <div class="mb-2">
+																<label asp-for="CreateMedicalViewModel.Symptoms" class="form-label">Symptoms</label>
                                                                 <textarea asp-for="CreateMedicalViewModel.Symptoms" class="form-control" rows="4" placeholder="Symptoms"></textarea>
                                                             </div>
                                                         </div>
                                                         <div class="diagnose_col">
                                                             <div class="mb-2">
+																<label asp-for="CreateMedicalViewModel.Diagnoses" class="form-label">Diagnoses</label>
                                                                 <textarea asp-for="CreateMedicalViewModel.Diagnoses" class="form-control" rows="4" placeholder="Diagnoses"></textarea>
                                                             </div>
                                                         </div>
@@ -193,15 +195,13 @@
                                                     <div id="labFieldsContainer" style="display:none;">
                                                         <div class="form-group" id="labFieldsTemplate">
                                                             <label for="LabName">Select Lab Name:</label>
-                                                            <div class="dropdown">
-                                                                <select asp-for="CreateMedicalViewModel.SelectedLabNames" class="form-control lab-dropdown" multiple>
-                                                                    <option value="">Select Lab Name</option>
-                                                                    @foreach (var labName in Model.CreateMedicalViewModel.AvailableLabNames)
-                                                                    {
-                                                                        <option value="@labName">@labName</option>
-                                                                    }
-                                                                </select>
-                                                            </div>
+                                                            <select asp-for="CreateMedicalViewModel.SelectedLabNames" class="form-control lab-dropdown" multiple>
+                                                                <option value="">Select Lab Name</option>
+                                                                @foreach (var labName in Model.CreateMedicalViewModel.AvailableLabNames)
+                                                                {
+                                                                    <option value="@labName">@labName</option>
+                                                                }
+                                                            </select>
                                                         </div>
                                                     </div>
                                                     @if (Model.CreateMedicalViewModel.NeedsLab)
@@ -318,6 +318,14 @@
 
             // Initially hide drug fields
             $('.drug_input.field0, .drug_input.field1, .drug_input.field2, .drug_input.field3, .drug_input.field4').hide();
+        });
+    </script>
+    <script>
+        $( '#multiple-select-field' ).select2({
+            theme: "bootstrap-5",
+            width: $( this ).data( 'width' ) ? $( this ).data( 'width' ) : $( this ).hasClass( 'w-100' ) ? '100%' : 'style',
+            placeholder: $( this ).data( 'placeholder' ),
+            closeOnSelect: false,
         });
     </script>
 }
