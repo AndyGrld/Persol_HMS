@@ -31,19 +31,33 @@
 }
 <div class="grid">
     <partial name="SidebarPartial" />
-    <div class="right">
-        <form class="p-3 form-card" asp-action="CreateOrGetPatient" method="post" autocomplete="off">
-            <h2 id="title" class="text-center">Add existing patient to queue</h2>
-            <hr>
-            <div class="forOldPatient">
-                <div class="mb-3" style="position:relative">
-                    <label asp-for="PatientNo" class="form-label">Patient's Id Number</label>
-                    <input asp-for="PatientNo" type="text" class="form-control" id="oldPatientId" aria-describedby="emailHelp">
-                    <span asp-validation-for="PatientNo" class="text-danger" style="position:absolute"></span>
-                    <button type="submit" class="btn btn-primary form-button mt-4">Submit</button>
+    <div class="right" style="display:grid;grid-template-columns:repeat(2,1fr);gap:20px">
+
+        <div style="display:grid;grid-template-rows:repeat(2,1fr)">
+            <form class="p-3 form-card" style="margin-bottom:10px" asp-action="CreateOrGetPatient" method="post" autocomplete="off">
+                <h2 id="title" class="text-center">Add existing patient to queue</h2>
+                <hr>
+                <div class="forOldPatient" style="position:relative;top:15px">
+                    <div class="mb-3" style="position:relative">
+                        <label asp-for="PatientNo" class="form-label">Patient's Id Number</label>
+                        <input asp-for="PatientNo" type="text" class="form-control" id="oldPatientId">
+                        <span asp-validation-for="PatientNo" class="text-danger" style="position:absolute"></span>
+                        <button type="submit" class="btn btn-primary form-button mt-4" id="openConfirmationModalOldPatient">Submit</button>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+
+            <form method="get" style="margin-top:10px" class="p-3 form-card" action="@Url.Action("PatientList")">
+                <h2 id="title" class="text-center">Search for patient by Patient_No, Firstname or Lastname</h2>
+                <hr>
+                <div style="position:relative;top:15px">
+                    <div class="mb-3" style="position:relative">
+                        <input name="search" type="text" class="form-control" placeholder="Search by Patient_No, Firstname or Lastname">
+                        <button type="submit" class="btn btn-primary form-button mt-4" id="openConfirmationModalNewPatient">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
         
         <form class="p-3 form-card" asp-action="CreateOrGetPatient" method="post" autocomplete="off">
             <h2 id="title" class="text-center">Create a new patient</h2>
@@ -108,8 +122,51 @@
     </div>
 </div>
 
+@if (ViewBag.IsPatientInQueue)
+{
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Do you want to add this patient to the queue?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <button type="button" class="btn btn-primary" id="confirmAddToQueue">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+}
+
 <partial name="FooterPartial" />
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Check if the patient is in the queue and has the status "IsDone"
+        var isPatientInQueue = @Json.Serialize(TempData["IsPatientInQueue"]);
+
+        console.log("Is Patient In Queue:", isPatientInQueue); // Check in the console
+
+        if (isPatientInQueue) {
+            console.log("Modal shown"); // Check in the console
+            // Show the modal on page load
+            $('#confirmationModal').modal('show');
+        }
+
+        // Handle "Yes" button click
+        $('#confirmAddToQueue').on('click', function () {
+            $('#confirmationModal').modal('hide');
+            $('form#yourFormId').submit();
+        });
+    });
+</script>
