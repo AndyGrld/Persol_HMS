@@ -28,6 +28,9 @@ namespace Persol_HMS.Models.ViewModels
 
         // Fields for drug information
         public List<Drug> DrugNames { get; set; }
+        public List<Medical> MedicalRecords { get; set; }
+        public List<Medical> ExistingMedicalRecords { get; set; }
+        public List<Queue> NewPatients { get; set; }
 
         // Fields for lab information
         [Display(Name = "Needs Lab")]

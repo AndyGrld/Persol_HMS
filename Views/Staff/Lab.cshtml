@@ -20,82 +20,77 @@
 <div class="grid">
     <partial name="SidebarPartial" />
     <div class="right" style="display:grid;grid-template-columns:repeat(2,1fr);gap:20px">
-        @for(int i = 0; i < Model.Labs.Count(); i++){
-            <form  class="p-3 form-card" asp-controller="Staff" asp-action="PatientLab" autocomplete="off">
-                <h2 class="text-center">Lab for Patient: @ViewBag.Name</h2>
-                <hr>
-                <div class="container text-center">
-                <div id="lab-fields">
+        <form class="p-3 form-card" asp-controller="Staff" asp-action="PatientLab" autocomplete="off">
+            <h2 class="text-center">Lab for Patient: @($"{Model.patient.FirstName} {Model.patient.LastName}")</h2>
+            <hr>
+            @for (int i = 0; i < Model.Labs.Count; i++)
+            {
+                <div class="container text-center lab-fields">
                     <div class="row1 mb-2">
                         <div class="col">
                             <div>
                                 <h5>
-                                    @Model.Labs[i].LabName for @Model.patient.FirstName
+                                    @Model.Labs[i].LabName
                                 </h5>
                             </div>
                         </div>
                         <div class="col">
                             <div>
-                                <textarea asp-for="Labs[i].Result" style="height: 200px;border-radius: 0;" class="form-control" placeholder="Lab Result" name="Labs[i].Result"></textarea>
+                                <textarea asp-for="Labs[i].Result" class="form-control" placeholder="Lab Result"></textarea>
                             </div>
                         </div>
                         <div class="col">
                             <div>
-                                <textarea asp-for="Labs[i].Notes" style="height: 200px;border-radius: 0 10px 10px 0;" class="form-control" placeholder="Lab Notes" name="Labs[i].Notes"></textarea>
+                                <textarea asp-for="Labs[i].Notes" class="form-control" placeholder="Lab Notes"></textarea>
                             </div>
                         </div>
                     </div>
+                    <input asp-for="patient.PatientNo" hidden />
+                    <input asp-for="Labs[i].LabName" hidden />
                 </div>
-                <input asp-for="patient.PatientNo" value="@Model.patient.PatientNo" style="display:none" />
-                <input asp-for="Labs[i].LabName" value="@Model.Labs[i].LabName" style="display:none" />
+            }
 
-                </div>
-                <div class="modal-footer">
-                    <button type="button" id="addMore"class="btn btn-success">Add More Labs</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
-                </div>
-            </form>
-        }
+                @* <div class="container text-center lab-fields">
+                    <div class="row1 mb-2">
+                        <div class="col">
+                            <div>
+                                <h5>
+                                    @Model.Labs[0].LabName
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div>
+                                <textarea asp-for="Labs[0].Result" class="form-control" placeholder="Lab Result" name="Labs[0].Result"></textarea>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div>
+                                <textarea asp-for="Labs[0].Notes" class="form-control" placeholder="Lab Notes" name="Labs[0].Notes"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <input asp-for="patient.PatientNo" value="@Model.patient.PatientNo" hidden />
+                    <input asp-for="Labs[0].LabName" value="@Model.Labs[0].LabName" hidden />
+                </div>*@
+            <div class="modal-footer">
+                <button type="button" id="addMore" class="btn btn-success">Add More Labs</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </form>
     </div>
 </div>
 
 @section scripts {
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script>
+    @* <script>
         $(document).ready(function () {
-            var index = 1;
-            $('#addMore').click(function () {
-                $('#lab-fields').append(`
-                    <div class="row1 mb-2">
-                        <div class="col">
-                            <div>
-                                <textarea style="height: 200px;border-radius: 10px 0 0 10px;" asp-for="Labs[${index}].LabName" style="height: 200px" class="form-control" placeholder="Lab Name" name="Labs[${index}].LabName"></textarea>
-                            </div>
-                        </div>
-                        <div class="col1">
-                            <div>
-                                <textarea style="height: 200px;border-radius: 0;" asp-for="Labs[${index}].Result" style="height: 200px" class="form-control" placeholder="Lab Result" name="Labs[${index}].Result"></textarea>
-                            </div>
-                        </div>
-                        <div class="col1">
-                            <div>
-                                <textarea style="height: 200px;border-radius: 0 10px 10px 0;" asp-for="Labs[${index}].Notes" style="height: 200px" class="form-control" placeholder="Lab Notes" name="Labs[${index}].Notes"></textarea>
-                            </div>
-                        </div>
-                        <div class="col2">
-                            <button type="button" class="btn-close btn btn-danger remove-lab" aria-label="Close"></button>
-                        </div>
-                    </div>
-                `);
-                index++;
+            $("#addMore").click(function () {
+                // Clone the last lab fields and append them to the container
+                var lastLabFields = $(".lab-fields:last").clone();
+                lastLabFields.find('textarea').val('');  // Clear the values in the cloned lab fields
+                $(".lab-fields").last().after(lastLabFields);
             });
-        $('#lab-fields').on('click', '.remove-lab', function () {
-            var removeIndex = $(this).closest('.row1').index();
-            $(this).closest('.row1').remove();
-            index--;
         });
-    });
-    </script>
-
+    </script> *@
 }
