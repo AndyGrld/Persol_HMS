@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -28,5 +29,6 @@ namespace Persol_HMS.Models
         public virtual Symptom Symptom { get; set; }//
         public virtual List<Lab> Labs { get; set; }
         public virtual Patient Patient { get; set; }//
+        public virtual Queue Queue { get; set; }
     }
 }
