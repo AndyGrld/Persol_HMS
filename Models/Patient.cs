@@ -58,9 +58,9 @@ namespace Persol_HMS.Models
         [Required(ErrorMessage = "Please enter Insurance Number")]
         public string? InsuranceNo { get; set; }
 
-        // [Display(Name = "Insurance Expiry Date")]
-        // [Required(ErrorMessage = "Please enter date Insurance Expires")]
-        // public DateTime InsuranceExpireDate { get; set; }
+        [Display(Name = "Insurance Expiry Date")]
+        [Required(ErrorMessage = "Please enter date Insurance Expires")]
+        public DateTime InsuranceExpireDate { get; set; }
 
         [Required(ErrorMessage = "Please enter Gender")]
         [RegularExpression("^[MF]$", ErrorMessage = "Invalid Gender.")]

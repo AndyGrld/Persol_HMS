@@ -21,8 +21,6 @@ internal class Program
             options.SignIn.RequireConfirmedAccount = false)
             .AddEntityFrameworkStores<ApplicationDbContext>();
 
-
-
         // Add services to the container.
         builder.Services.AddControllersWithViews();
         builder.Services.AddRazorPages();
@@ -31,8 +29,6 @@ internal class Program
         builder.Services.AddScoped<IMedicalRepository, MedicalRepository>();
         builder.Services.AddScoped<IPatientRepository, PatientRepository>();
         builder.Services.AddScoped<IVitalRepository, VitalRepository>();
-
-
 
         builder.Services.Configure<IdentityOptions>(options =>
         {

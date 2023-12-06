@@ -210,6 +210,16 @@
 	background-color: rgb(237, 62, 50);
 	border-radius: 0 0 3px 0;
   }
+
+
+
+
+
+  // lab page
+  .grid_3{
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+  }
   
   .lab_row {
 	gap: 0;
@@ -261,6 +271,43 @@
 	background-color: #4b8ae9;
 	box-shadow: none;
   }
+
+
+
+
+//   doctor page
+.select-options{
+	width:100%;
+	border:1px solid rgba(177, 177, 177, 0.623);
+	border-radius:3px;
+	position:relative;
+	h4{
+		font-weight: 400;
+		width:100%;
+		padding:3px 10px;
+		border-radius:3px;
+	}
+	div{
+		display:grid;
+		position:absolute;
+		width:100%;
+		height:max-content;
+		border:1px solid rgba(177, 177, 177, 0.623);
+		background-color: white;
+		border-radius: 0 0 3px 3px;
+		z-index:5;
+		padding: 10px;
+		grid-template-columns:repeat(3, 1fr);
+		p{
+			padding:2px 2px
+			span{
+				font-size:18px
+			}
+		}
+	}
+}
+
+
   
 
 

@@ -18,7 +18,6 @@ namespace Persol_HMS.Models
         public bool HasVisitedLab { get; set; } = false;
         public DateTime DateCreated { get; set; }
         public virtual Patient Patient { get; set; }
-        public virtual ICollection<Medical> MedicalRecords { get; set; }
 
         public static Queue GetOrCreateQueue(ApplicationDbContext context, string patientNo, DepartmentType department)
         {

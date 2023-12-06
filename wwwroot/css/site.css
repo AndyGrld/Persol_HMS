@@ -205,6 +205,11 @@ table td, table thead {
   border-radius: 0 0 3px 0;
 }
 
+.grid_3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
 .lab_row {
   gap: 0;
 }
@@ -254,6 +259,36 @@ table td, table thead {
 .switch-field input:checked + label {
   background-color: #4b8ae9;
   box-shadow: none;
+}
+
+.select-options {
+  width: 100%;
+  border: 1px solid rgba(177, 177, 177, 0.623);
+  border-radius: 3px;
+  position: relative;
+}
+.select-options h4 {
+  font-weight: 400;
+  width: 100%;
+  padding: 3px 10px;
+  border-radius: 3px;
+}
+.select-options div {
+  display: grid;
+  position: absolute;
+  width: 100%;
+  height: -moz-max-content;
+  height: max-content;
+  border: 1px solid rgba(177, 177, 177, 0.623);
+  background-color: white;
+  border-radius: 0 0 3px 3px;
+  z-index: 5;
+  padding: 10px;
+  grid-template-columns: repeat(3, 1fr);
+}
+.select-options div p {
+  padding: 2px 2px span;
+  padding-font-size: 18px;
 }
 
 /* auth pages */

@@ -28,9 +28,6 @@ namespace Persol_HMS.Models.ViewModels
 
         // Fields for drug information
         public List<Drug> DrugNames { get; set; }
-        public List<Medical> MedicalRecords { get; set; }
-        public List<Medical> ExistingMedicalRecords { get; set; }
-        public List<Queue> NewPatients { get; set; }
 
         // Fields for lab information
         [Display(Name = "Needs Lab")]
@@ -50,33 +47,38 @@ namespace Persol_HMS.Models.ViewModels
         public string LabName { get; set; }
 
         public string Dosage { get; set; }
-
-        // Add the new property for available lab names
+		
         public List<string> AvailableLabNames { get; set; }
+		
+		public class CheckboxViewModel
+		{
+			public int Id { get; set; }
+			public string LabelName { get; set; }
+			public bool IsChecked { get; set; }
+		}
 
         public CreateMedicalViewModel()
         {
             AvailableLabNames = new List<string>
             {
-                "Blood Test",
+                "Blood_Test",
                 "Urinalysis",
-                "X-ray",
+                "X_ray",
                 "MRI",
-                "CT Scan",
-                // Add more lab names as needed
+                "CT_Scan",
             };
             LabNames = new List<string>();
             SelectedLabNames = new List<string>();
 
             AvailableWardNames = new List<string>
             {
-                "Pediatrics Ward",
-                "Medical Ward",
-                "Surgical Ward",
-                "Maternity Ward",
-                "Psychiatric Ward",
-                "Intensive Care Unit",
-                "Isolation Ward"
+                "Pediatrics",
+                "Medical",
+                "Surgical",
+                "Maternity",
+                "Psychiatric",
+                "Intensive_Care_Unit",
+                "Isolation"
             };
             SelectedWardNames = new List<string>();
             WardNames = new List<string>();

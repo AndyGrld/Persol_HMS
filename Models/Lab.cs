@@ -17,5 +17,4 @@ namespace Persol_HMS.Models
         [ForeignKey(nameof(Medical))]
         public int? MedicalID { get; set; }
     }
-
 }
