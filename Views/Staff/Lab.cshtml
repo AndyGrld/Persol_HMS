@@ -20,29 +20,31 @@
 <div class="grid">
     <partial name="SidebarPartial" />
     <div class="right" style="display:grid;grid-template-columns:repeat(1,1fr);gap:20px;">
-        <form class="p-3 form-card" style="margin-bottom: 0;" asp-controller="Staff" asp-action="PatientLab" autocomplete="off">
-            <h2 class="text-center">Lab for Patient: @($"{Model.patient.FirstName} {Model.patient.LastName}")</h2>
-            <hr>
+        <form class="form-card" style="margin-bottom: 0;" asp-controller="Staff" asp-action="PatientLab" autocomplete="off">
+            <h2 class="py-3 text-center">Lab for Patient: @($"{Model.patient.FirstName} {Model.patient.LastName}")</h2>
+            <hr style="margin:0">
             <div class="grid_3">
             @for (int i = 0; i < Model.Labs.Count; i++)
             {
-                <div class="container text-center lab-fields">
+                <div class="pt-3 text-center lab-fields" style="border-right:1px grey dashed">
                     <div class="row1 mb-2">
                         <div class="col">
                             <div>
-                                <h5>
+                                <h4>
                                     @Model.Labs[i].LabName
-                                </h5>
+                                </h4>
                             </div>
                         </div>
-                        <div class="col">
-                            <div>
+                        <div class="col px-3" style="border-bottom:1px grey dashed">
+                            <div style="text-align:left">
+								<label class="px-1 fs-5">Result</label>
                                 <textarea asp-for="Labs[i].Result" style="height: 130px" class="mb-3 form-control" placeholder="Lab Result"></textarea>
                             </div>
                         </div>
-                        <div class="col">
+                        <div class="col mb-3 mt-3 px-3" style="text-align:left">
                             <div>
-                                <textarea asp-for="Labs[i].Notes" style="height: 130px" class="mt-3 form-control" placeholder="Lab Notes"></textarea>
+								<label class="px-1 fs-5">Notes</label>
+                                <textarea asp-for="Labs[i].Notes" style="height: 130px" class="form-control" placeholder="Lab Notes"></textarea>
                             </div>
                         </div>
                     </div>
@@ -51,11 +53,21 @@
                 </div>
             }
             </div>
-            <div class="modal-footer">
-                <button type="submit" class="auth-button">Save</button>
+            <div class="modal-footer px-3" style="diplay:flex;justify-content:left">
+                <button type="submit" style="border-radius:5px;border:none;width:100px" class="auth-button">Save</button>
             </div>
         </form>
-		<div style="display:grid;grid-template-columns:repeat(3, 1fr)">
+		<div style="display:grid;grid-template-columns:auto auto auto;gap:20px">
+			<div class="form-card" style="margin-top: 0;padding-top:10px;background-color:rgba(220,225,220,.4)">
+				<h2 class="text-center fs-3">Patients remaining</h2>
+				<hr>
+				<p class="fs-5 px-3">There are <u>20</u> more including this patient</p>
+			</div>
+			<div class="form-card" style="margin-top: 0;padding-top:10px;background-color:rgba(220,225,220,.4)">
+				<h2 class="text-center fs-3">Patients remaining</h2>
+				<hr>
+				<p class="fs-5 px-3">There are <u>20</u> more including this patient</p>
+			</div>
 			<div class="form-card" style="margin-top: 0;padding-top:10px;background-color:rgba(220,225,220,.4)">
 				<h2 class="text-center fs-3">Patients remaining</h2>
 				<hr>

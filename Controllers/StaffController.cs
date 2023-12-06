@@ -485,7 +485,7 @@ public class StaffController : Controller
 
                 await _context.SaveChangesAsync();
 
-                TempData["L_ConfirmationMessage"] = $"Patient's lab added successfully, patient may visit pharmacist to take drugs.";
+                TempData["L_ConfirmationMessage"] = $"Patient's lab added successfully, patient may go back to doctor for diagnosis.";
                 return RedirectToAction(nameof(Lab));
             }
         }
@@ -498,7 +498,16 @@ public class StaffController : Controller
     //[ValidateAntiForgeryToken]
     public async Task<IActionResult> PatientLab(LabsViewModel labView)
     {
-        if (!string.IsNullOrEmpty(labView.patient.PatientNo) && labView.Labs.Count() > 0)
+        bool error = false;
+        for (int i = 0; i < labView.Labs.Count(); i++)
+        {
+            if (string.IsNullOrEmpty(labView.Labs[i].Result) || string.IsNullOrEmpty(labView.Labs[i].Notes))
+            {
+                error = true;
+                break;
+            }
+        }
+        if (!string.IsNullOrEmpty(labView.patient.PatientNo) && labView.Labs.Count() > 0 && !error)
         {
             var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo == labView.patient.PatientNo);
             if (patient != null)
@@ -535,7 +544,7 @@ public class StaffController : Controller
 
                 await _context.SaveChangesAsync();
 
-                TempData["L_ConfirmationMessage"] = $"Patient's lab added successfully, patient may visit pharmacist to take drugs.";
+                TempData["L_ConfirmationMessage"] = $"Patient's lab added successfully, patient may go back to doctor for diagnosis.";
                 return RedirectToAction(nameof(Lab));
             }
         }

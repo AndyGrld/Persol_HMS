@@ -79,6 +79,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
+                                                        <button id="addMoreDrugs" onclick="addDrug()" type="button" class="auth-button w-100 mb-3" style="border:none;border-radius:5px">Add More Drugs</button>
                                                     <div id="drugFields">
                                                         <div class="drug_input field0" data-index="0">
                                                             <div class="col1">
@@ -191,8 +192,7 @@
 															</div>
 														</div>
                                                     </div>
-                                                    <!-- Dynamic Lab Fields -->
-                                                    @* <div id="labFieldsContainer" style="display:none;">
+                                                    <div id="labFieldsContainer" style="display:none;">
                                                         <div class="select-options" id="labFieldsTemplate" >
 															<h4 id="selector" onClick="showOptions(2)">Select Lab</h4>
 															<div class="options2">
@@ -205,7 +205,7 @@
 																}
 															</div>
 														</div>
-                                                    </div> *@
+                                                    </div>
                                                     @if (Model.CreateMedicalViewModel.NeedsLab)
                                                     {
                                                         <div>
@@ -214,9 +214,8 @@
                                                         </div>
                                                     }
 
-                                                    <div class="modal-footer">
-                                                        <button id="addMoreDrugs" onclick="addDrug()" type="button" class="btn btn-success w-100">Add More Drugs</button>
-                                                        <button type="submit" class="btn btn-primary w-100">Save Medical Records</button>
+                                                    <div class="modal-footer px-0">
+                                                        <button type="submit" style="border:none;border-radius:5px" class="auth-button w-100">Save Medical Records</button>
                                                     </div>
                                                 </div>
                                             </form>
