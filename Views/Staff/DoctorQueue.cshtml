@@ -59,7 +59,9 @@
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Diagnose Patient</h1>
+                                            <h1 id="exampleModalLabel">
+                                                <p>Diagnose @patient.Patient.FirstName</p>
+                                            </h1>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
@@ -67,153 +69,171 @@
                                                 <div class="container">
                                                     <div class="diagnose_row">
                                                         <div class="diagnose_col">
-                                                            <div class="mb-2">
+                                                            <div class="mb-2 doc-flex">
 																<label asp-for="CreateMedicalViewModel.Symptoms" class="form-label">Symptoms</label>
-                                                                <textarea asp-for="CreateMedicalViewModel.Symptoms" class="form-control" rows="4" placeholder="Symptoms"></textarea>
+                                                                <textarea asp-for="CreateMedicalViewModel.Symptoms" class="form-control" rows="3" placeholder="Enter Symptoms Here"></textarea>
                                                             </div>
                                                         </div>
                                                         <div class="diagnose_col">
-                                                            <div class="mb-2">
+                                                            <div class="mb-2 doc-flex">
 																<label asp-for="CreateMedicalViewModel.Diagnoses" class="form-label">Diagnoses</label>
-                                                                <textarea asp-for="CreateMedicalViewModel.Diagnoses" class="form-control" rows="4" placeholder="Diagnoses"></textarea>
+                                                                <textarea asp-for="CreateMedicalViewModel.Diagnoses" class="form-control" rows="3" placeholder="Enter Diagnoses Here"></textarea>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                        <button id="addMoreDrugs" onclick="addDrug()" type="button" class="auth-button w-100 mb-3" style="border:none;border-radius:5px">Add More Drugs</button>
-                                                    <div id="drugFields">
-                                                        <div class="drug_input field0" data-index="0">
-                                                            <div class="col1">
-                                                                <div class="mb-2">
+                                                    <div class="scroll">
+                                                        <div class="drugs-grid" id="drugFields">
+                                                            <div id="drug-title">
+                                                                <label for="addMoreDrugs">Drugs</label>
+                                                            </div>
+                                                            <div>
+                                                                <button id="addMoreDrugs" onclick="addDrug()" type="button" class="add-button">
+                                                                    <p>Add</p>
+                                                                </button>
+                                                            </div>
+                                                            <div class="drug_input field0" data-index="0">
+                                                                <div class="col1">
                                                                     <input asp-for="CreateMedicalViewModel.DrugNames[0].DrugName" class="form-control" placeholder="Drug Name" />
                                                                 </div>
-                                                            </div>
-                                                            <div class="col1">
-                                                                <div class="mb-2">
+                                                                <div class="col1">
                                                                     <input asp-for="CreateMedicalViewModel.DrugNames[0].Dosage" class="form-control" placeholder="Dosage" />
                                                                 </div>
+                                                                <div class="close_button" onclick="removeDrug(0)">
+                                                                    <button type="button" class="btn btn-close btn-danger remove-drug" aria-label="Close"></button>
+                                                                </div>
                                                             </div>
-                                                            <div class="close_button">
-                                                                <button type="button" class="btn btn-close btn-danger remove-drug" aria-label="Close" onclick="removeDrug(0)"></button>
-                                                            </div>
-                                                        </div>
-                                                        <div class="drug_input field1" data-index="1">
-                                                            <div class="col1">
-                                                                <div class="mb-2">
+                                                            <div class="drug_input field1" data-index="1">
+                                                                <div class="col1">
                                                                     <input asp-for="CreateMedicalViewModel.DrugNames[1].DrugName" class="form-control" placeholder="Drug Name" />
                                                                 </div>
-                                                            </div>
-                                                            <div class="col1">
-                                                                <div class="mb-2">
+                                                                <div class="col1">
                                                                     <input asp-for="CreateMedicalViewModel.DrugNames[1].Dosage" class="form-control" placeholder="Dosage" />
                                                                 </div>
+                                                                <div class="close_button" onclick="removeDrug(1)">
+                                                                    <button type="button" class="btn btn-close btn-danger remove-drug" aria-label="Close"></button>
+                                                                </div>
                                                             </div>
-                                                            <div class="close_button">
-                                                                <button type="button" class="btn btn-close btn-danger remove-drug" aria-label="Close" onclick="removeDrug(1)"></button>
-                                                            </div>
-                                                        </div>
-                                                        <div class="drug_input field2" data-index="2">
-                                                            <div class="col1">
-                                                                <div class="mb-2">
+                                                            <div class="drug_input field2" data-index="2">
+                                                                <div class="col1">
                                                                     <input asp-for="CreateMedicalViewModel.DrugNames[2].DrugName" class="form-control" placeholder="Drug Name" />
                                                                 </div>
-                                                            </div>
-                                                            <div class="col1">                                                          <div class="mb-2">
+                                                                <div class="col1">                                                          
                                                                     <input asp-for="CreateMedicalViewModel.DrugNames[2].Dosage" class="form-control" placeholder="Dosage" />
                                                                 </div>
+                                                                <div class="close_button" onclick="removeDrug(2)">
+                                                                    <button type="button" class="btn btn-close btn-danger remove-drug" aria-label="Close"></button>
+                                                                </div>
                                                             </div>
-                                                            <div class="close_button">
-                                                                <button type="button" class="btn btn-close btn-danger remove-drug" aria-label="Close" onclick="removeDrug(2)"></button>
-                                                            </div>
-                                                        </div>
-                                                        <div class="drug_input field3" data-index="3">
-                                                            <div class="col1">
-                                                                <div class="mb-2">
+                                                            <div class="drug_input field3" data-index="3">
+                                                                <div class="col1">
                                                                     <input asp-for="CreateMedicalViewModel.DrugNames[3].DrugName" class="form-control" placeholder="Drug Name" />
                                                                 </div>
-                                                            </div>
-                                                            <div class="col1">
-                                                                <div class="mb-2">
+                                                                <div class="col1">
                                                                     <input asp-for="CreateMedicalViewModel.DrugNames[3].Dosage" class="form-control" placeholder="Dosage" />
                                                                 </div>
+                                                                <div class="close_button" onclick="removeDrug(3)">
+                                                                    <button type="button" class="btn btn-close btn-danger remove-drug" aria-label="Close"></button>
+                                                                </div>
                                                             </div>
-                                                            <div class="close_button">
-                                                                <button type="button" class="btn btn-close btn-danger remove-drug" aria-label="Close" onclick="removeDrug(3)"></button>
-                                                            </div>
-                                                        </div>
-                                                        <div class="drug_input field4" data-index="4">
-                                                            <div class="col1">
-                                                                <div class="mb-2">
+                                                            <div class="drug_input field4" data-index="4">
+                                                                <div class="col1">
                                                                     <input asp-for="CreateMedicalViewModel.DrugNames[4].DrugName" class="form-control" placeholder="Drug Name" />
                                                                 </div>
-                                                            </div>
-                                                            <div class="col1">
-                                                                <div class="mb-2">
+                                                                <div class="col1">
                                                                     <input asp-for="CreateMedicalViewModel.DrugNames[4].Dosage" class="form-control" placeholder="Dosage" />
                                                                 </div>
+                                                                <div class="close_button" onclick="removeDrug(4)">
+                                                                    <button type="button" class="btn btn-close btn-danger remove-drug" aria-label="Close"></button>
+                                                                </div>
                                                             </div>
-                                                            <div class="close_button">
-                                                                <button type="button" class="btn btn-close btn-danger remove-drug" aria-label="Close" onclick="removeDrug(4)"></button>
+                                                            <div class="drug_input field5" data-index="5">
+                                                                <div class="col1">
+                                                                    <input asp-for="CreateMedicalViewModel.DrugNames[5].DrugName" class="form-control" placeholder="Drug Name" />
+                                                                </div>
+                                                                <div class="col1">
+                                                                    <input asp-for="CreateMedicalViewModel.DrugNames[5].Dosage" class="form-control" placeholder="Dosage" />
+                                                                </div>
+                                                                <div class="close_button" onclick="removeDrug(5)">
+                                                                    <button type="button" class="btn btn-close btn-danger remove-drug" aria-label="Close"></button>
+                                                                </div>
+                                                            </div>
+                                                            <div class="drug_input field6" data-index="6">
+                                                                <div class="col1">
+                                                                    <input asp-for="CreateMedicalViewModel.DrugNames[6].DrugName" class="form-control" placeholder="Drug Name" />
+                                                                </div>
+                                                                <div class="col1">
+                                                                    <input asp-for="CreateMedicalViewModel.DrugNames[6].Dosage" class="form-control" placeholder="Dosage" />
+                                                                </div>
+                                                                <div class="close_button" onclick="removeDrug(6)">
+                                                                    <button type="button" class="btn btn-close btn-danger remove-drug" aria-label="Close"></button>
+                                                                </div>
+                                                            </div>
+                                                            <div class="drug_input field7" data-index="7">
+                                                                <div class="col1">
+                                                                    <input asp-for="CreateMedicalViewModel.DrugNames[7].DrugName" class="form-control" placeholder="Drug Name" />
+                                                                </div>
+                                                                <div class="col1">
+                                                                    <input asp-for="CreateMedicalViewModel.DrugNames[7].Dosage" class="form-control" placeholder="Dosage" />
+                                                                </div>
+                                                                <div class="close_button" onclick="removeDrug(7)">
+                                                                    <button type="button" class="btn btn-close btn-danger remove-drug" aria-label="Close"></button>
+                                                                </div>
+                                                            </div>
+                                                            <div class="drug_input field8" data-index="8">
+                                                                <div class="col1">
+                                                                    <input asp-for="CreateMedicalViewModel.DrugNames[8].DrugName" class="form-control" placeholder="Drug Name" />
+                                                                </div>
+                                                                <div class="col1">
+                                                                    <input asp-for="CreateMedicalViewModel.DrugNames[8].Dosage" class="form-control" placeholder="Dosage" />
+                                                                </div>
+                                                                <div class="close_button" onclick="removeDrug(8)">
+                                                                    <button type="button" class="btn btn-close btn-danger remove-drug" aria-label="Close"></button>
+                                                                </div>
+                                                            </div>
+                                                            <div class="drug_input field9" data-index="9">
+                                                                <div class="col1">
+                                                                    <input asp-for="CreateMedicalViewModel.DrugNames[9].DrugName" class="form-control" placeholder="Drug Name" />
+                                                                </div>
+                                                                <div class="col1">
+                                                                    <input asp-for="CreateMedicalViewModel.DrugNames[9].Dosage" class="form-control" placeholder="Dosage" />
+                                                                </div>
+                                                                <div class="close_button" onclick="removeDrug(9)">
+                                                                    <button type="button" class="btn btn-close btn-danger remove-drug" aria-label="Close"></button>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <input asp-for="CreateMedicalViewModel.PatientNo" value="@patient.PatientNo" style="display:none" />
-                                                    <div class="diagnose_row mb-3">
-                                                        <div class="diagnose_col">
-                                                            <div class="form-group">
-                                                                <label class="control-label mb-2">Is the patient to be admitted?</label>
-                                                                <input asp-for="CreateMedicalViewModel.IsAdmitted" type="radio" class="btn-check" id="IsAdmittedTrue" value="true">
-                                                                <label class="btn btn-outline-primary" for="IsAdmittedTrue">Yes</label>
-                                                                <input asp-for="CreateMedicalViewModel.IsAdmitted" type="radio" class="btn-check" id="IsAdmittedFalse" value="false">
-                                                                <label class="btn btn-outline-primary" for="IsAdmittedFalse">No</label>
+                                                    <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap: 10px">
+                                                        <div id="WardContainer" class="col">
+                                                            <div class="select-options mb-3" id="WardsTemplate" >
+                                                                <h4 id="selector" onClick="showOptions('a-@patient.QueueNo')">Select Ward Name</h4>
+                                                                <div style="visibility:hidden;opacity:0;top:0;transition:.3s" class="a-@patient.QueueNo">
+                                                                    @foreach(var wardName in Model.CreateMedicalViewModel.AvailableWardNames)
+                                                                    {
+                                                                        <p>
+                                                                            <input style="cursor:pointer" type="checkbox" id="@wardName" value="@wardName" name="SelectWardNames" />
+                                                                            <label onclick="addOrRemove(@wardName)" for="@wardName">@wardName</label>
+                                                                        </p>
+                                                                    }
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                        <div class="diagnose_col">
-                                                            <!-- Lab related fields -->
-                                                            <div class="form-group">
-                                                                <label class="control-label mb-2">Does the patient need a lab?</label>
-                                                                <input asp-for="CreateMedicalViewModel.NeedsLab" type="radio" class="btn-check" id="NeedsLabTrue" value="true">
-                                                                <label class="btn btn-outline-primary" for="NeedsLabTrue">Yes</label>
-                                                                <input asp-for="CreateMedicalViewModel.NeedsLab" type="radio" class="btn-check" id="NeedsLabFalse" value="false">
-                                                                <label class="btn btn-outline-primary" for="NeedsLabFalse">No</label>
+                                                        <div id="labFieldsContainer" class="col">
+                                                            <div class="select-options" id="labFieldsTemplate" >
+                                                                <h4 id="selector" onClick="showOptions('b-@patient.QueueNo')">Select Lab</h4>
+                                                                <div style="visibility:hidden;opacity:0;top:0;transition:.3s" class="b-@patient.QueueNo">
+                                                                    @foreach(var labName in Model.CreateMedicalViewModel.AvailableLabNames)
+                                                                    {
+                                                                        <p>
+                                                                            <input style="cursor:pointer" type="checkbox" id="@labName" value="@labName" name="SelectLabNames" />
+                                                                            <label onclick="addOrRemove(@labName)" for="@labName">@labName</label>
+                                                                        </p>
+                                                                    }
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div id="WardContainer"style="display:none">
-                                                        <div class="select-options mb-3" id="WardsTemplate" >
-															<h4 id="selector" onClick="showOptions(1)">Select Ward Name</h4>
-															<div class="options1">
-																@foreach(var wardName in Model.CreateMedicalViewModel.AvailableWardNames)
-																{
-																	<p style="margin-right:auto">
-																		<input type="checkbox" id="@wardName" value="@wardName" name="SelectWardNames" />
-																		<label onclick="addOrRemove(@wardName)" for="@wardName">@wardName</label>
-																	</p>
-																}
-															</div>
-														</div>
-                                                    </div>
-                                                    <div id="labFieldsContainer" style="display:none;">
-                                                        <div class="select-options" id="labFieldsTemplate" >
-															<h4 id="selector" onClick="showOptions(2)">Select Lab</h4>
-															<div class="options2">
-																@foreach(var labName in Model.CreateMedicalViewModel.AvailableLabNames)
-																{
-																	<p style="margin-right:auto">
-																		<input type="checkbox" id="@labName" value="@labName" name="SelectLabNames" />
-																		<label onclick="addOrRemove(@labName)" for="@labName">@labName</label>
-																	</p>
-																}
-															</div>
-														</div>
-                                                    </div>
-                                                    @if (Model.CreateMedicalViewModel.NeedsLab)
-                                                    {
-                                                        <div>
-                                                            <label for="LabName">Enter Lab Name:</label>
-                                                            <input asp-for="CreateMedicalViewModel.LabName" class="form-control" placeholder="Lab Name" />
-                                                        </div>
-                                                    }
-
                                                     <div class="modal-footer px-0">
                                                         <button type="submit" style="border:none;border-radius:5px" class="auth-button w-100">Save Medical Records</button>
                                                     </div>
@@ -227,39 +247,7 @@
                     </tbody>
                 </table>
 				
-				<script>
-					console.log("start");
-					var labs = []
-					let options = document.getElementsByClassName("options1")
-					options[0].style.visibility = "hidden"
-					options[0].style.opacity = 0
-					options[0].style.top = 0
-					options[0].style.transition = ".3s"
-                    options = document.getElementsByClassName("options2")
-					options[0].style.visibility = "hidden"
-					options[0].style.opacity = 0
-					options[0].style.top = 0
-					options[0].style.transition = ".3s"
-					
-					function showOptions(i){
-                        if (i === 1){
-                            options = document.getElementsByClassName("options1")
-                        }else{
-                            options = document.getElementsByClassName("options2")
-                        }
-						if(options[0].style.visibility == "hidden"){
-							options[0].style.visibility = "visible"
-							options[0].style.top = "33px"
-							options[0].style.opacity = 1
-						}else{
-							options[0].style.visibility = "hidden"
-							options[0].style.opacity = 0
-							options[0].style.top = 0
-						}
-					}
-				</script>
-                
-                                                            
+				
 
                 <nav class="py-3" aria-label="Page navigation example">
                     <ul class="pagination justify-content-center">
@@ -292,53 +280,31 @@
 
 @section scripts {
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            // Show/hide lab fields based on the radio button selection
-            $('input[name="CreateMedicalViewModel.NeedsLab"]').change(function () {
-                if ($(this).val() === 'true') {
-                    $('#labFieldsContainer').show();
-                } else {
-                    $('#labFieldsContainer').hide();
-                }
-            });
-        });
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script>
         $(document).ready(function () {
             // Function to add drug input fields
-            var maxDrugFields = 5;
+            var maxDrugFields = 10;
             function addDrug() {
                 if ($('.drug_input:visible').length < maxDrugFields) {
-                    $('.drug_input:hidden:first').show();
+                    $('.last-drug').removeClass('last-drug');
+                    let div = $('.drug_input:hidden:first').show();
+                    div.show();
+                    $('.drug_input:visible:last').addClass('last-drug');
                 }
             }
 
             // Function to remove drug input fields
             function removeDrug(index) {
-            var drugField = $(`.drug_input[data-index="${index}"]:visible`);
-            if (drugField.length > 0) {
-                drugField.hide();
-                drugField.find('input').val('');
-                console.log("Drug removed");
-            }
+                $('.drug_input:visible').removeClass('last-drug');
+                var drugField = $(`.drug_input[data-index="${index}"]:visible`);
+                if (drugField.length > 0) {
+                    drugField.removeClass('last-drug');
+                    drugField.hide();
+                    $('.drug_input:visible:last').addClass('last-drug');
+                    drugField.find('input').val('');
+                }
         }
-
-            // Show/hide lab fields based on the radio button selection
-            $('input[name="CreateMedicalViewModel.NeedsLab"]').change(function () {
-                if ($(this).val() === 'true') {
-                    $('#labFieldsContainer').show();
-                } else {
-                    $('#labFieldsContainer').hide();
-                }
-            });
-            $('input[name="CreateMedicalViewModel.IsAdmitted"]').change(function () {
-                if ($(this).val() === 'true') {
-                    $('#WardContainer').show();
-                } else {
-                    $('#WardContainer').hide();
-                }
-            });
 
             // Add More Drugs button click event
             $('#addMoreDrugs').click(function () {
@@ -352,9 +318,23 @@
             });
 
             // Initially hide drug fields
-            $('.drug_input.field0, .drug_input.field1, .drug_input.field2, .drug_input.field3, .drug_input.field4').hide();
+            $(`.drug_input.field0, .drug_input.field1, .drug_input.field2, .drug_input.field3, .drug_input.field4,
+                .drug_input.field5, .drug_input.field6, .drug_input.field7, .drug_input.field8, .drug_input.field9`).hide();
         });
     </script>
+    <script>
+        $(document).ready(function () {
+            // Find the last visible drug_input and apply styles
+            var lastVisibleDrug = $('.drug_input:visible:last');
+            lastVisibleDrug.addClass('last-drug');
+        });
+    </script>
+    <style>
+        .last-visible-drug {
+            /* Add your styles for the last visible drug_input here */
+            background-color: lightblue;
+        }
+    </style>
     <script>
         $( '#multiple-select-field' ).select2({
             theme: "bootstrap-5",
@@ -362,5 +342,19 @@
             placeholder: $( this ).data( 'placeholder' ),
             closeOnSelect: false,
         });
+    </script>
+    <script>
+        function showOptions(className){
+            options = document.getElementsByClassName(className)
+            if(options[0].style.visibility == "hidden"){
+                options[0].style.visibility = "visible"
+                options[0].style.top = "30px"
+                options[0].style.opacity = 1
+            }else{
+                options[0].style.visibility = "hidden"
+                options[0].style.opacity = 0
+                options[0].style.top = 0
+            }
+        }
     </script>
 }

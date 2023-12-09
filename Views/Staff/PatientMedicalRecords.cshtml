@@ -2,22 +2,23 @@
 
 <partial name="Navbar" />
 
-
 @{
     ViewData["Title"] = "Patient Medical Records";
 }
 
 <div class="grid">
     <partial name="SidebarPartial" />
-    <div class="right">
-		<h2>@($"Medical Records for {Model.Patient.FirstName} {Model.Patient.LastName}")</h2>
-		<h2>@($"{Model.Patient.PatientNo}")</h2>
+    <div class="right" style="margin-bottom: 30px;">
+		<div class="form-card p-2">
+			<h2>@($"Medical Records for {Model.Patient.FirstName} {Model.Patient.LastName}")</h2>
+			<h2>@($"{Model.Patient.PatientNo}")</h2>
+		</div>
 
 		@if (Model.MedicalRecords.Any())
 		{
 			@foreach (var medical in Model.MedicalRecords)
 			{
-				<div class="card my-3" style="overflow:hidden">
+				<div class="form-card my-3" style="overflow:hidden">
 					<div class="card-header row">
 						<div class="col">
 							<h5>Medical Record ID: @medical.ID</h5>
@@ -101,10 +102,7 @@
 		}
 		else
 		{
-			<br>
-			<br />
-			<br />
-			<h4 style="text-align:center">No Medical Records Yet</h4>
+			<p class="p-3 no-patinet">No Medical Records Yet</p>
 		}
 	</div>
 </div>

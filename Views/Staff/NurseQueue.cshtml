@@ -58,29 +58,53 @@
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h1 class="modal-title fs-5" id="exampleModalLabel">@patient.Patient.FirstName's Vitals</h1>
+                                            <h1 id="exampleModalLabel">
+                                                <p>@patient.Patient.FirstName's Vitals</p>
+                                            </h1>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
                                             <form asp-controller="Staff" asp-action="Nurse" autocomplete="off">
-                                                <div class="mb-3">
-                                                    <label asp-for="Vital.Temperature" class="form-label">Temperature (°C)</label>
-                                                    <input asp-for="Vital.Temperature" value="" type="number" class="form-control" id="temperature">
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label asp-for="Vital.Height" class="form-label">Height (cm)</label>
-                                                    <input asp-for="Vital.Height" value="" type="number" class="form-control">
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label asp-for="Vital.Weight" class="form-label">Weight (kg)</label>
-                                                    <input asp-for="Vital.Weight" value="" type="number" class="form-control">
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label asp-for="Vital.BloodPressure" class="form-label">Blood Pressure (mmHg)</label>
-                                                    <input asp-for="Vital.BloodPressure" value="" type="text" class="form-control">
+                                                <div class="queue-grid">
+                                                    <div class="mb-3 vital">
+                                                        <div class="line" style="background-color: rgba(252, 86, 86, 0.6)"></div>
+                                                        <div>
+                                                            <label asp-for="Vital.Temperature" class="form-label">Temperature</label>
+                                                            <input style="width: 70%" asp-for="Vital.Temperature" value="" type="number" class="form-control" id="temperature" required>
+                                                            <span>°C</span>
+                                                        </div>
+                                                        <img src="~/icons/vitals/icons8-temperature-64.png"/>
+                                                    </div>
+                                                    <div class="mb-3 vital">
+                                                        <div class="line" style="background-color: rgba(0, 255, 255, 0.6)"></div>
+                                                        <div>
+                                                            <label asp-for="Vital.Height" class="form-label">Height</label>
+                                                            <input style="width: 70%" asp-for="Vital.Height" value="" type="number" class="form-control" required>
+                                                            <span>cm</span>
+                                                        </div>
+                                                        <img src="~/icons/vitals/icons8-height-64.png"/>
+                                                    </div>
+                                                    <div class="mb-3 vital">
+                                                        <div class="line" style="background-color: rgba(128, 128, 128, 0.6)"></div>
+                                                        <div>
+                                                            <label asp-for="Vital.Weight" class="form-label">Weight</label>
+                                                            <input style="width: 70%" asp-for="Vital.Weight" value="" type="number" class="form-control" required>
+                                                            <span>kg</span>
+                                                        </div>
+                                                        <img src="~/icons/vitals/icons8-weight-64.png"/>
+                                                    </div>
+                                                    <div class="mb-3 vital">
+                                                        <div class="line" style="background-color: rgba(128, 238, 128, 0.6)"></div>
+                                                        <div>
+                                                            <label asp-for="Vital.BloodPressure" class="form-label">Blood Pressure</label>
+                                                            <input style="width: 70%" asp-for="Vital.BloodPressure" value="" type="text" class="form-control" required>
+                                                            <span>mmHg</span>
+                                                        </div>
+                                                        <img src="~/icons/vitals/icons8-blood-pressure-64.png"/>
+                                                    </div>
                                                 </div>
                                                 <input asp-for="Vital.PatientNo" value="@patient.PatientNo" type="hidden" />
-                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                                <button type="submit" class="table-button">Submit</button>
                                             </form>
                                         </div>
                                     </div>

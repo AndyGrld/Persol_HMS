@@ -21,25 +21,49 @@
 <div class="grid">
     <partial name="SidebarPartial" />
     <div class="right" style="display:grid;grid-template-columns:repeat(5, 1fr);gap:20px">
-			<form class="p-3 form-card" style="grid-column:2/5" asp-controller="Staff" asp-action="Nurse" autocomplete="off">
-				<h2 id="title" class="text-center">@ViewBag.Name's Vitals</h2>
-            	<hr>
+			<form class="p-3 form-card vitals-card" asp-controller="Staff" asp-action="Nurse" autocomplete="off">
+				<h2 id="title">
+					<p>
+						@ViewBag.Name's Vitals
+					</p>
+				</h2>
+				<hr>
 				<div class="forNewPatient">
-					<div class="mb-3">
-						<label asp-for="Temperature" class="form-label">Temperature (°C)</label>
-						<input asp-for="Temperature" value="" type="number" class="form-control" id="temperature" required>
+					<div class="mb-3 vital">
+						<div class="line" style="background-color: rgba(252, 86, 86, 0.6)"></div>
+						<div>
+							<label asp-for="Temperature" class="form-label">Temperature</label>
+							<input asp-for="Temperature" value="" type="number" class="form-control" id="temperature" required>
+							<span>°C</span>
+						</div>
+						<img src="~/icons/vitals/icons8-temperature-64.png"/>
 					</div>
-					<div class="mb-3">
-						<label asp-for="Height" class="form-label">Height (cm)</label>
-						<input asp-for="Height" value="" type="number" class="form-control" required>
+					<div class="mb-3 vital">
+						<div class="line" style="background-color: rgba(0, 255, 255, 0.6)"></div>
+						<div>
+							<label asp-for="Height" class="form-label">Height</label>
+							<input asp-for="Height" value="" type="number" class="form-control" required>
+							<span>cm</span>
+						</div>
+						<img src="~/icons/vitals/icons8-height-64.png"/>
 					</div>
-					<div class="mb-3">
-						<label asp-for="Weight" class="form-label">Weight (kg)</label>
-						<input asp-for="Weight" value="" type="number" class="form-control" required>
+					<div class="mb-3 vital">
+						<div class="line" style="background-color: rgba(128, 128, 128, 0.6)"></div>
+						<div>
+							<label asp-for="Weight" class="form-label">Weight</label>
+							<input asp-for="Weight" value="" type="number" class="form-control" required>
+							<span>kg</span>
+						</div>
+						<img src="~/icons/vitals/icons8-weight-64.png"/>
 					</div>
-					<div class="mb-3">
-						<label asp-for="BloodPressure" class="form-label">Blood Pressure (mmHg)</label>
-						<input asp-for="BloodPressure" value="" type="text" class="form-control" required>
+					<div class="mb-3 vital">
+						<div class="line" style="background-color: rgba(128, 238, 128, 0.6)"></div>
+						<div>
+							<label asp-for="BloodPressure" class="form-label">Blood Pressure</label>
+							<input asp-for="BloodPressure" value="" type="text" class="form-control" required>
+							<span>mmHg</span>
+						</div>
+						<img src="~/icons/vitals/icons8-blood-pressure-64.png"/>
 					</div>
 				</div>
 				<input asp-for="PatientNo" type="hidden" />

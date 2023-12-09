@@ -11,6 +11,10 @@ a {
     font-size: 16px;
   }
 }
+*::-webkit-scrollbar {
+  display: none;
+}
+
 html {
   font-size: 14px;
   position: relative;
@@ -81,7 +85,7 @@ body {
 .left a, .left form {
   padding: 10px;
   margin: 5px 10px;
-  border-radius: 20px 0px 0px 5px;
+  border-radius: 25px 0px 0px 5px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -113,6 +117,58 @@ table td, table thead {
   background-color: var(--card-bg-color);
   color: var(--text-color);
   box-shadow: 0 0 3px var(--btn-color);
+}
+.right .form-card #title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.right .form-card #title p {
+  position: relative;
+  z-index: 2;
+  margin-bottom: 0;
+}
+.right .form-card #title p::before {
+  content: " ";
+  background-color: rgba(0, 255, 255, 0.288);
+  z-index: -10;
+  width: 100px;
+  height: 13px;
+  position: absolute;
+  bottom: 0;
+  left: -3px;
+  border-radius: 1px;
+  width: calc(100% + 6px);
+}
+.right .form-card #title #Blood_Test {
+  color: rgb(158, 0, 0);
+}
+.right .form-card #title #Blood_Test::before {
+  background-color: rgba(255, 155, 155, 0.6);
+}
+.right .form-card #title #Urinalysis {
+  color: rgb(161, 137, 0);
+}
+.right .form-card #title #Urinalysis::before {
+  background-color: rgba(255, 240, 154, 0.6);
+}
+.right .form-card #title #X_ray {
+  color: rgb(95, 95, 95);
+}
+.right .form-card #title #X_ray::before {
+  background-color: rgba(212, 212, 212, 0.6);
+}
+.right .form-card #title #MRI {
+  color: purple;
+}
+.right .form-card #title #MRI::before {
+  background-color: rgba(255, 152, 255, 0.6);
+}
+.right .form-card #title #CT_Scan {
+  color: green;
+}
+.right .form-card #title #CT_Scan::before {
+  background-color: rgba(155, 255, 176, 0.6);
 }
 .right .form-card .forNewPatient {
   display: grid;
@@ -184,30 +240,180 @@ table td, table thead {
   color: var(--text-color);
 }
 
-.drug_input, .lab_row, .diagnose_row {
-  display: grid;
+.doc-flex {
+  display: flex;
+  justify-content: space-between;
+}
+.doc-flex label {
+  font-size: 1.1em;
+}
+.doc-flex textarea {
+  margin-left: 20px;
+}
+.doc-flex textarea:focus {
+  box-shadow: none;
+}
+
+.scroll {
+  overflow-x: scroll;
+  margin-bottom: 15px;
+}
+.scroll::-webkit-scrollbar-thumb {
+  background: var(--btn-color);
+  border-radius: 10px;
+}
+.scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--btn-text-color);
+  cursor: pointer;
+}
+.scroll::-webkit-scrollbar {
+  width: 12px;
+  display: block;
+}
+.scroll::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 10px;
+}
+
+.drugs-grid {
+  display: flex;
   position: relative;
-  overflow: hidden;
+  margin: 20px 0;
+  margin-bottom: 5px;
+  width: -moz-max-content;
+  width: max-content;
+}
+.drugs-grid #drug-title {
+  position: absolute;
+  top: -25px;
+}
+.drugs-grid #addMoreDrugs {
+  border: 1px solid var(--btn-color);
+  background-color: transparent;
+  height: 80px;
+  width: 50px;
+  font-size: 14px;
+  color: var(--text-color);
+  border-radius: 10px 0 0 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+}
+.drugs-grid #addMoreDrugs p {
+  margin: 0;
+}
+.drugs-grid .drug_input {
+  height: 80px;
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
   padding: 0;
 }
-
-.drug_input, .diagnose_row, .lab_row {
-  grid-template-columns: repeat(2, 1fr);
-  padding: 0 0px;
-  gap: 5px;
+.drugs-grid .drug_input .col1 {
+  overflow: hidden;
+  width: 100px;
+}
+.drugs-grid .drug_input .col1 input {
+  height: 100%;
+  width: 100%;
+  border-radius: 0;
+  padding: 0 5px;
+  border: 1px solid var(--btn-color);
+}
+.drugs-grid .drug_input .close_button {
+  cursor: pointer;
+  width: 100%;
+  border: 1px solid red;
+  text-align: center;
+  overflow: hidden;
+}
+.drugs-grid .drug_input .close_button:hover {
+  background-color: #dc3545;
+}
+.drugs-grid .drug_input .close_button:focus {
+  background-color: red;
+}
+.drugs-grid .drug_input .close_button button {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  padding: 0;
+  border-radius: 0;
+}
+.drugs-grid .drug_input .close_button button:hover {
+  background-color: transparent;
+}
+.drugs-grid .drug_input .close_button button:focus {
+  border: none;
+  box-shadow: none;
+}
+.drugs-grid .last-drug div:nth-child(1) input {
+  border-top-right-radius: 10px;
+}
+.drugs-grid .last-drug div:last-child {
+  border-bottom-right-radius: 10px;
 }
 
-.close_button {
+.select-options {
+  width: 100%;
+  border: 1px solid rgba(177, 177, 177, 0.623);
+  border-radius: 3px;
+  position: relative;
+}
+.select-options h4 {
+  font-weight: 400;
+  width: 100%;
+  padding: 3px 10px;
+  border-radius: 3px;
+  margin-bottom: 0;
+  cursor: pointer;
+}
+.select-options div {
+  display: grid;
   position: absolute;
-  right: 0px;
-  bottom: 7px;
-  background-color: rgb(237, 62, 50);
-  border-radius: 0 0 3px 0;
+  width: 100%;
+  height: -moz-max-content;
+  height: max-content;
+  border: 1px solid rgba(177, 177, 177, 0.623);
+  background-color: white;
+  border-radius: 0 0 3px 3px;
+  z-index: 5;
+  grid-template-columns: repeat(1fr);
+}
+.select-options div input {
+  visibility: hidden;
+  position: absolute;
+}
+.select-options div input:checked + label {
+  background-color: var(--btn-color);
+  font-weight: 700;
+  color: white;
+}
+.select-options div p {
+  cursor: pointer;
+  font-size: 16px;
+  margin: 0;
+  position: relative;
+}
+.select-options div p label {
+  cursor: pointer;
+  width: 100%;
+  transition: 0.2s;
+  padding: 2px 5px;
 }
 
 .grid_3 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+}
+.grid_3 .lab-fields {
+  border-right: 1px var(--btn-color) dashed;
+}
+.grid_3 > *:nth-child(n+4) {
+  border-top: 1px var(--btn-color) dashed;
+}
+.grid_3 > *:nth-child(3n) {
+  border-right: none;
 }
 
 .lab_row {
@@ -261,36 +467,6 @@ table td, table thead {
   box-shadow: none;
 }
 
-.select-options {
-  width: 100%;
-  border: 1px solid rgba(177, 177, 177, 0.623);
-  border-radius: 3px;
-  position: relative;
-}
-.select-options h4 {
-  font-weight: 400;
-  width: 100%;
-  padding: 3px 10px;
-  border-radius: 3px;
-}
-.select-options div {
-  display: grid;
-  position: absolute;
-  width: 100%;
-  height: -moz-max-content;
-  height: max-content;
-  border: 1px solid rgba(177, 177, 177, 0.623);
-  background-color: white;
-  border-radius: 0 0 3px 3px;
-  z-index: 5;
-  padding: 10px;
-  grid-template-columns: repeat(3, 1fr);
-}
-.select-options div p {
-  padding: 2px 2px span;
-  padding-font-size: 18px;
-}
-
 /* auth pages */
 .login-page {
   display: grid;
@@ -299,17 +475,14 @@ table td, table thead {
   overflow: hidden;
   font-family: custom_font;
 }
-
 .login-page .login-left {
   width: 100%;
   overflow: hidden;
 }
-
 .login-page .login-left img {
   width: 150%;
   height: 100%;
 }
-
 .login-page .login-right {
   width: 100%;
   display: flex;
@@ -317,7 +490,6 @@ table td, table thead {
   justify-content: center;
   font-size: 18px;
 }
-
 .login-page .login-right .login-card {
   width: -moz-max-content;
   width: max-content;
@@ -329,7 +501,6 @@ table td, table thead {
   font-size: calc(37px + 20%);
   color: #edad21;
 }
-
 .login-title span, .register-title span {
   color: #42C2FF;
 }
@@ -341,7 +512,6 @@ table td, table thead {
   width: 100%;
   margin-bottom: 5px;
 }
-
 .auth-button:hover {
   color: var(--text-color);
   background-color: var(--btn-color);
@@ -349,4 +519,98 @@ table td, table thead {
 
 .to-register a {
   color: var(--btn-text-color);
+}
+
+.vitals-card, .queue-grid {
+  grid-column: 2/5;
+}
+.vitals-card .vital, .queue-grid .vital {
+  border-radius: 0 0 20px 5px;
+  box-shadow: 3px 3px 3px rgba(189, 189, 189, 0.6);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px;
+  position: relative;
+}
+.vitals-card .vital div:nth-child(2), .queue-grid .vital div:nth-child(2) {
+  grid-column: 1/3;
+}
+.vitals-card .vital .line, .queue-grid .vital .line {
+  height: 5px;
+  width: 50%;
+  position: absolute;
+  top: -3px;
+  right: 0;
+  border-radius: 5px 5px 0 0;
+}
+.vitals-card .vital label, .queue-grid .vital label {
+  display: block;
+  font-size: 1.1em;
+}
+.vitals-card .vital input, .queue-grid .vital input {
+  width: 75%;
+  display: inline;
+  border: none;
+  border-bottom: 1px solid grey;
+  border-right: 1px solid grey;
+  padding: 0;
+  padding-top: 5px;
+}
+.vitals-card .vital input::-webkit-inner-spin-button, .queue-grid .vital input::-webkit-inner-spin-button {
+  opacity: 1;
+}
+.vitals-card .vital span, .queue-grid .vital span {
+  position: relative;
+  top: 3px;
+  font-size: 0.9rem;
+}
+.vitals-card .vital img, .queue-grid .vital img {
+  justify-self: center;
+}
+
+@media screen and (max-width: 850px) {
+  .vitals-card {
+    grid-column: 1/6;
+  }
+  .vitals-card .vital input {
+    width: 70px;
+  }
+  .vitals-card .vital input:focus {
+    border: none;
+    border-bottom: 1px solid grey;
+  }
+}
+.modal-header {
+  display: flex;
+}
+.modal-header h1 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8em;
+}
+.modal-header h1 p {
+  position: relative;
+  z-index: 10;
+  margin-bottom: 0;
+}
+.modal-header h1 p::before {
+  content: " ";
+  background-color: rgba(0, 255, 255, 0.288);
+  z-index: -10;
+  width: 100px;
+  height: 13px;
+  position: absolute;
+  bottom: 0;
+  left: -3px;
+  border-radius: 1px;
+  width: calc(100% + 6px);
+}
+
+.modal-body .queue-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
 }/*# sourceMappingURL=site.css.map */

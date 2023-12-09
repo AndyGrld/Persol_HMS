@@ -162,14 +162,9 @@
     $(document).ready(function () {
         // Check if the patient is in the queue and has the status "IsDone"
         var isPatientInQueue = @Json.Serialize(TempData["IsPatientInQueue"]);
-
-        console.log("Is Patient In Queue:", isPatientInQueue);
-
         if (isPatientInQueue) {
-            console.log("Modal shown");
             $('#confirmationModal').modal('show');
         }
-
         // Handle "Yes" button click
         $('#confirmAddToQueue').on('click', function () {
             $('#confirmationModal').modal('hide');

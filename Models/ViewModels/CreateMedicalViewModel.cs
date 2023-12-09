@@ -28,11 +28,6 @@ namespace Persol_HMS.Models.ViewModels
 
         // Fields for drug information
         public List<Drug> DrugNames { get; set; }
-
-        // Fields for lab information
-        [Display(Name = "Needs Lab")]
-        public bool NeedsLab { get; set; }
-
         public List<string> WardNames { get; set; }
         public List<string> LabNames { get; set; }
 
