@@ -175,17 +175,26 @@ table td, table thead {
 			gap: 20px;
 			color: var(--text-color);
 		}
-		.search input{
-			background-color: transparent;
-			border-color: var(--btn-color);
-		}
-		.search-button{
-			background-color: transparent;
-			border: 1px solid var(--btn-color);
-			border-radius: 0 3px 3px 0;
-			transition: .3s;
-			&:hover{
-				background-color: var(--btn-color);
+		.search{
+			display: flex;
+			align-items: center;
+			flex-direction: column;
+			justify-content: space-around;
+			.input-group{
+				max-width: 700px;
+				input{
+					background-color: transparent;
+					border-color: var(--btn-color);
+				}
+				.search-button{
+					background-color: transparent;
+					border: 1px solid var(--btn-color);
+					border-radius: 0 3px 3px 0;
+					transition: .3s;
+					&:hover{
+						background-color: var(--btn-color);
+					}
+				}
 			}
 		}
 		.form-button{
@@ -379,7 +388,7 @@ table td, table thead {
 		position:absolute;
 		width:100%;
 		height:max-content;
-		border:1px solid rgba(177, 177, 177, 0.623);
+		border: 1px solid rgba(177, 177, 177, 0.6);
 		background-color: white;
 		border-radius: 0 0 3px 3px;
 		z-index:5;
@@ -389,6 +398,7 @@ table td, table thead {
 			position: absolute;
 		}
 		input:checked + label{
+			border-top: 1px solid rgba(177, 177, 177, 0.8);
 			background-color: var(--btn-color);
 			font-weight: 700;
 			color: white;

@@ -176,17 +176,26 @@ table td, table thead {
   gap: 20px;
   color: var(--text-color);
 }
-.right .form-card .search input {
+.right .form-card .search {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-around;
+}
+.right .form-card .search .input-group {
+  max-width: 700px;
+}
+.right .form-card .search .input-group input {
   background-color: transparent;
   border-color: var(--btn-color);
 }
-.right .form-card .search-button {
+.right .form-card .search .input-group .search-button {
   background-color: transparent;
   border: 1px solid var(--btn-color);
   border-radius: 0 3px 3px 0;
   transition: 0.3s;
 }
-.right .form-card .search-button:hover {
+.right .form-card .search .input-group .search-button:hover {
   background-color: var(--btn-color);
 }
 .right .form-card .form-button {
@@ -374,7 +383,7 @@ table td, table thead {
   width: 100%;
   height: -moz-max-content;
   height: max-content;
-  border: 1px solid rgba(177, 177, 177, 0.623);
+  border: 1px solid rgba(177, 177, 177, 0.6);
   background-color: white;
   border-radius: 0 0 3px 3px;
   z-index: 5;
@@ -385,6 +394,7 @@ table td, table thead {
   position: absolute;
 }
 .select-options div input:checked + label {
+  border-top: 1px solid rgba(177, 177, 177, 0.8);
   background-color: var(--btn-color);
   font-weight: 700;
   color: white;
