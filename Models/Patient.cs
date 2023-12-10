@@ -80,6 +80,6 @@ namespace Persol_HMS.Models
         public string EmergencyContactNo { get; set; }
 
         [InverseProperty("Patient")]
-        public ICollection<Medical> Medicals { get; set; }
+        public List<Medical> Medicals { get; set; }
     }
 }

@@ -70,6 +70,89 @@ public class StaffController : Controller
         return RedirectToAction(nameof(DoctorQueue));
     }
 
+    public IActionResult DoctorQueue(int page = 1, string search = "")
+    {
+        ViewBag.deptId = GetDepartmentId();
+        // if (ViewBag.deptId != 3)
+        // {
+        //     return RedirectToHome();
+        // }
+
+        int pageSize = 10;
+
+        var query = _context.Queues.AsQueryable();
+
+        if(!string.IsNullOrEmpty(search))
+        {
+            query = _context.Queues
+            .Include(q => q.Patient)
+            .Where(q => q.Status == "Doctor" &&
+                (q.PatientNo.Contains(search.ToUpper()) ||
+                q.Patient.FirstName.Contains(search.Titleize()) ||
+                q.Patient.LastName.Contains(search.Titleize())))
+            .OrderBy(q => q.QueueNo)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize);
+        }else{
+            query = _context.Queues
+                .Include(q => q.Patient)
+                .Where(q => q.Status == "Doctor")
+                .OrderBy(q => q.QueueNo)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize);
+        }
+
+        var patientsInLine = query.ToList();
+        var totalPatients = query.Count();
+
+        List<CreateMedicalViewModel> createMedicalViews = new List<CreateMedicalViewModel>();
+
+        foreach(var patient in patientsInLine)
+        {
+            CreateMedicalViewModel createMedicalViewModel = new();
+            if(patient.HasVisitedLab)
+            {
+                var latestMedical = _context.Medicals
+                    .Include(m => m.Drugs)
+                    .Include(m => m.Symptom)
+                    .OrderByDescending(m => m.Date)
+                    .FirstOrDefault(m => m.PatientNo == patient.PatientNo);
+
+                var labs = _context.Labs.Where(l => l.MedicalID == latestMedical.ID).ToList();
+
+                // mapping values
+                createMedicalViewModel.Symptoms = latestMedical.Symptom.Symptoms;
+                createMedicalViewModel.Diagnoses = latestMedical.Diagnoses;
+                createMedicalViewModel.DrugNames = _context.Drugs.Where(d  => d.MedicalID == latestMedical.ID).ToList();
+                createMedicalViewModel.visitedLabs = labs;
+                createMedicalViewModel.DateAdmitted = latestMedical.DateAdmitted;
+
+                createMedicalViews.Add(createMedicalViewModel);
+            }
+            else
+            {
+                createMedicalViews.Add(createMedicalViewModel);
+            }
+        }
+
+        var model = new QueueViewModel
+        {
+            PatientsInLine = patientsInLine,
+            CurrentPage = page,
+            PageSize = pageSize,
+            TotalPatients = totalPatients,
+            Search = search
+        };
+
+        var viewModel = new DoctorQueueModel
+        {
+            CreateMedicalViewModel = createMedicalViews,
+            QueueViewModel = model
+        };
+
+        return View(viewModel);
+    }
+
 
     [HttpPost]
     public async Task<IActionResult> SaveMedicalRecords(DoctorQueueModel model, List<string> SelectLabNames, List<string> SelectWardNames)
@@ -80,66 +163,96 @@ public class StaffController : Controller
         //     return RedirectToHome();
         // }
 
-        if (!string.IsNullOrEmpty(model.CreateMedicalViewModel.PatientNo) &&
-            model.CreateMedicalViewModel.Diagnoses != null &&
-            model.CreateMedicalViewModel.DrugNames != null &&
-            model.CreateMedicalViewModel.Symptoms != null)
+        var saveModel = model.CreateMedicalViewModel[0];
+        // Console.WriteLine($"=======> Symptoms: {saveModel.Symptoms} <========");
+
+        if (!string.IsNullOrEmpty(saveModel.PatientNo) &&
+            saveModel.Diagnoses != null &&
+            saveModel.Symptoms != null)
         {
-            var symptoms = new Symptom
-            {
-                ID = _context.Symptoms.Count() == 0 ? 1 : _context.Symptoms.Max(s => s.ID) + 1,
-                PatientNo = model.CreateMedicalViewModel.PatientNo,
-                Symptoms = model.CreateMedicalViewModel.Symptoms,
-                Date = DateTime.Now.Date,
+
+            var patientfromQueue = await _context.Queues.FirstOrDefaultAsync(q => q.PatientNo == saveModel.PatientNo);
+            var symptoms = new Symptom();
+            var medicalRecord = new Medical();
+
+            if(patientfromQueue.HasVisitedLab){
+                medicalRecord = _context.Medicals
+                    .Include(m => m.Drugs)
+                    .Include(m => m.Symptom)
+                    .OrderByDescending(m => m.Date)
+                    .FirstOrDefault(m => m.PatientNo == saveModel.PatientNo);
+                symptoms = await _context.Symptoms.FirstOrDefaultAsync(s => s.ID == medicalRecord.ID);
+                symptoms.Symptoms = saveModel.Symptoms;
+                _context.Symptoms.Update(symptoms);
+                _context.SaveChanges();
+            }
+            else{
+                symptoms.ID = _context.Symptoms.Count() == 0 ? 1 : _context.Symptoms.Max(s => s.ID) + 1;
+                symptoms.PatientNo = saveModel.PatientNo;
+                symptoms.Symptoms = saveModel.Symptoms;
+                symptoms.Date = DateTime.Now.Date;
+                _context.Symptoms.Add(symptoms);
+                _context.SaveChanges();
             };
 
-            _context.Symptoms.Add(symptoms);
+            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(saveModel.PatientNo));
+            var vital = await _context.Vitals.OrderBy(l => l.Id).LastOrDefaultAsync(v => v.PatientNo.Equals(saveModel.PatientNo));
+
+            bool isAdmitted = saveModel.SelectedWardNames.Count() > 0;
+
+            if(!patientfromQueue.HasVisitedLab){
+                medicalRecord.ID = _context.Medicals.Count() == 0 ? 1 : _context.Medicals.Max(s => s.ID) + 1;
+                medicalRecord.PatientNo = saveModel.PatientNo;
+                medicalRecord.Date = DateTime.Today;
+                medicalRecord.Diagnoses = saveModel.Diagnoses;
+                medicalRecord.IsAdmitted = isAdmitted;
+                medicalRecord.DateAdmitted = isAdmitted == true ? DateTime.Now.Date : null;
+
+                if (symptoms != null)
+                {
+                    medicalRecord.SymptomsID = symptoms.ID;
+                    medicalRecord.Symptom = symptoms;
+                }
+                if (patient != null)
+                {
+                    medicalRecord.Patient = patient;
+                }
+                if (vital != null)
+                {
+                    medicalRecord.Vital = vital;
+                    medicalRecord.VitalsID = vital.Id;
+                }
+                _context.Medicals.Add(medicalRecord);
+            }
+            else{
+                medicalRecord = medicalRecord;
+                medicalRecord.Diagnoses = saveModel.Diagnoses;
+                medicalRecord.IsAdmitted = isAdmitted;
+                medicalRecord.DateAdmitted = isAdmitted == true ? DateTime.Now.Date : null;
+                _context.Medicals.Update(medicalRecord);
+            }
             _context.SaveChanges();
-
-            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(model.CreateMedicalViewModel.PatientNo));
-            var vital = await _context.Vitals.OrderBy(l => l.Id).LastOrDefaultAsync(v => v.PatientNo.Equals(model.CreateMedicalViewModel.PatientNo));
-
-            var medicalRecord = new Medical
-            {
-                ID = _context.Medicals.Count() == 0 ? 1 : _context.Medicals.Max(s => s.ID) + 1,
-                PatientNo = model.CreateMedicalViewModel.PatientNo,
-                Date = DateTime.Today,
-                Diagnoses = model.CreateMedicalViewModel.Diagnoses,
-                IsAdmitted = model.CreateMedicalViewModel.IsAdmitted,
-                DateAdmitted = model.CreateMedicalViewModel.IsAdmitted == true ? DateTime.Now.Date : (DateTime?)null
-            };
-
-            if (symptoms != null)
-            {
-                medicalRecord.SymptomsID = symptoms.ID;
-                medicalRecord.Symptom = symptoms;
+            
+            // delete all old drugs
+            var oldDrugs = _context.Drugs.Where(d => d.MedicalID == medicalRecord.ID).ToList();
+            if(oldDrugs.Count() > 0){
+                foreach(var oldDrug in oldDrugs){
+                    _context.Drugs.Remove(oldDrug);
+                }
+                _context.SaveChanges();
             }
 
-            if (patient != null)
+            for (int i = 0; i < saveModel.DrugNames.Count; i++)
             {
-                medicalRecord.Patient = patient;
-            }
-
-            if (vital != null)
-            {
-                medicalRecord.Vital = vital;
-                medicalRecord.VitalsID = vital.Id;
-            }
-
-            _context.Medicals.Add(medicalRecord);
-            _context.SaveChanges();
-
-            for (int i = 0; i < model.CreateMedicalViewModel.DrugNames.Count; i++)
-            {
-                if(!string.IsNullOrEmpty(model.CreateMedicalViewModel.DrugNames[i].DrugName) &&
-                    !string.IsNullOrEmpty(model.CreateMedicalViewModel.DrugNames[i].Dosage)){
+                if(!string.IsNullOrEmpty(saveModel.DrugNames[i].DrugName) &&
+                    !string.IsNullOrEmpty(saveModel.DrugNames[i].Dosage)){
                     var drug = new Drug
                     {
                         MedicalID = medicalRecord.ID,
                         ID = _context.Drugs.Count() == 0 ? 1 : _context.Drugs.Max(d => d.ID) + 1,
-                        PatientNo = model.CreateMedicalViewModel.PatientNo,
-                        DrugName = model.CreateMedicalViewModel.DrugNames[i].DrugName,
-                        Dosage = model.CreateMedicalViewModel.DrugNames[i].Dosage,
+                        PatientNo = saveModel.PatientNo,
+                        DrugName = saveModel.DrugNames[i].DrugName,
+                        Dosage = saveModel.DrugNames[i].Dosage,
                         Date = DateTime.Today
                     };
                     _context.Drugs.Add(drug);
@@ -154,7 +267,7 @@ public class StaffController : Controller
                 var AdmittedQueueNo = GetNextQueueNumber("IsAdmitted");
                 var AdmittedQueue = new Queue
                 {
-                    PatientNo = model.CreateMedicalViewModel.PatientNo,
+                    PatientNo = saveModel.PatientNo,
                     QueueNo = AdmittedQueueNo,
                     Status = "IsAdmitted",
                     DateCreated = DateTime.Now
@@ -174,7 +287,7 @@ public class StaffController : Controller
                 var labQueue = new Queue
                 {
                     LabName = labNames.Trim(),
-                    PatientNo = model.CreateMedicalViewModel.PatientNo,
+                    PatientNo = saveModel.PatientNo,
                     QueueNo = labQueueNo,
                     Status = "Lab",
                     DateCreated = DateTime.Now
@@ -183,12 +296,12 @@ public class StaffController : Controller
                 TempData["D_ConfirmationMessage"] = $"Patient's medical details added successfully, patient is {labQueueNo} in lab queue.";
             }
             // not admitted or labs, but has drugs send to pharmacy to take drugs
-            else if (model.CreateMedicalViewModel.DrugNames.Count() > 0)
+            else if (saveModel.DrugNames.Count() > 0)
             {
                 var PharmacyQueueNo = GetNextQueueNumber("Pharmacy");
                 var PharmacyQueue = new Queue
                 {
-                    PatientNo = model.CreateMedicalViewModel.PatientNo,
+                    PatientNo = saveModel.PatientNo,
                     QueueNo = PharmacyQueueNo,
                     Status = "Pharmacy",
                     DateCreated = DateTime.Now
@@ -201,7 +314,7 @@ public class StaffController : Controller
             {
                 TempData["D_ConfirmationMessage"] = $"Patient's medical details added successfully, patient may exit hospital.";
             }
-            RemovePatientFromQueue("Doctor", model.CreateMedicalViewModel.PatientNo);
+            RemovePatientFromQueue("Doctor", saveModel.PatientNo);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(DoctorQueue));
         }
@@ -593,14 +706,14 @@ public class StaffController : Controller
                 (q.PatientNo.Contains(search.ToUpper()) ||
                 q.Patient.FirstName.Contains(search.Titleize()) ||
                 q.Patient.LastName.Contains(search.Titleize())))
-            .OrderBy(q => q.DateCreated)
+            .OrderBy(q => q.QueueNo)
             .Skip((page - 1) * pageSize)
             .Take(pageSize);
         }else{
             query = _context.Queues
                 .Include(q => q.Patient)
                 .Where(q => q.Status == "Nurse")
-                .OrderBy(q => q.DateCreated)
+                .OrderBy(q => q.QueueNo)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize);
         }
@@ -646,14 +759,14 @@ public class StaffController : Controller
                 (q.PatientNo.Contains(search.ToUpper()) ||
                 q.Patient.FirstName.Contains(search.Titleize()) ||
                 q.Patient.LastName.Contains(search.Titleize())))
-            .OrderBy(q => q.DateCreated)
+            .OrderBy(q => q.QueueNo)
             .Skip((page - 1) * pageSize)
             .Take(pageSize);
         }else{
             query = _context.Queues
                 .Include(q => q.Patient)
                 .Where(q => q.Status == "Lab")
-                .OrderBy(q => q.DateCreated)
+                .OrderBy(q => q.QueueNo)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize);
         }
@@ -740,68 +853,6 @@ public class StaffController : Controller
             return View(labEntry);
         }
         return RedirectToAction(nameof(LabQueue));
-    }
-
-    public IActionResult DoctorQueue(int page = 1, string search = "")
-    {
-        ViewBag.deptId = GetDepartmentId();
-        // if (ViewBag.deptId != 3)
-        // {
-        //     return RedirectToHome();
-        // }
-
-        int pageSize = 10;
-
-        var query = _context.Queues.AsQueryable();
-
-        if(!string.IsNullOrEmpty(search))
-        {
-            query = _context.Queues
-            .Include(q => q.Patient)
-            .Where(q => q.Status == "Doctor" &&
-                (q.PatientNo.Contains(search.ToUpper()) ||
-                q.Patient.FirstName.Contains(search.Titleize()) ||
-                q.Patient.LastName.Contains(search.Titleize())))
-            .OrderBy(q => q.DateCreated)
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize);
-        }else{
-            query = _context.Queues
-                .Include(q => q.Patient)
-                .Where(q => q.Status == "Doctor")
-                .OrderBy(q => q.DateCreated)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize);
-        }
-
-        var patientsInLine = query.ToList();
-        var totalPatients = query.Count();
-
-        // foreach(var patient in patientsInLine)
-        // {
-        //     if(patient.HasVisitedLab)
-        //     {
-        //         var latestMedical = _context.Medicals.OrderByDescending(m => m.Date).FirstOrDefault(m => m.PatientNo == patient.PatientNo);
-        //         patient.Medical = latestMedical;
-        //     }
-        // }
-
-        var model = new QueueViewModel
-        {
-            PatientsInLine = patientsInLine,
-            CurrentPage = page,
-            PageSize = pageSize,
-            TotalPatients = totalPatients,
-            Search = search
-        };
-
-        var viewModel = new DoctorQueueModel
-        {
-            CreateMedicalViewModel = new CreateMedicalViewModel(),
-            QueueViewModel = model
-        };
-
-        return View(viewModel);
     }
 
     private Patient GetNextPatientInLine(string status)
@@ -1042,14 +1093,14 @@ public class StaffController : Controller
                 (q.PatientNo.Contains(search.ToUpper()) ||
                 q.Patient.FirstName.Contains(search.Titleize()) ||
                 q.Patient.LastName.Contains(search.Titleize())))
-            .OrderBy(q => q.DateCreated)
+            .OrderBy(q => q.QueueNo)
             .Skip((page - 1) * pageSize)
             .Take(pageSize);
         }else{
             query = _context.Queues
                 .Include(q => q.Patient)
                 .Where(q => q.Status == "Pharmacy")
-                .OrderBy(q => q.DateCreated)
+                .OrderBy(q => q.QueueNo)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize);
         }
@@ -1171,14 +1222,14 @@ public class StaffController : Controller
                 (q.PatientNo.Contains(search.ToUpper()) ||
                 q.Patient.FirstName.Contains(search.Titleize()) ||
                 q.Patient.LastName.Contains(search.Titleize())))
-            .OrderBy(q => q.DateCreated)
+            .OrderBy(q => q.QueueNo)
             .Skip((page - 1) * pageSize)
             .Take(pageSize);
         }else{
             query = _context.Queues
                 .Include(q => q.Patient)
                 .Where(q => q.Status == "Cashier")
-                .OrderBy(q => q.DateCreated)
+                .OrderBy(q => q.QueueNo)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize);
         }

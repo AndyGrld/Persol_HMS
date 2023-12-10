@@ -16,7 +16,6 @@ namespace Persol_HMS.Models.ViewModels
         [Required(ErrorMessage = "Diagnoses is required.")]
         public string Diagnoses { get; set; }
 
-        [Required(ErrorMessage = "Ward Number is required.")]
         public int? WardNo { get; set; }
 
         [Display(Name = "Admitted")]
@@ -25,6 +24,7 @@ namespace Persol_HMS.Models.ViewModels
         [Display(Name = "Date Admitted")]
         [DataType(DataType.Date)]
         public DateTime? DateAdmitted { get; set; }
+        public List<Lab> visitedLabs { get; set; }
 
         // Fields for drug information
         public List<Drug> DrugNames { get; set; }
