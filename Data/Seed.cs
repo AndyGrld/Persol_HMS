@@ -86,7 +86,7 @@ public static class SeedData
             },
             new UserSeedData
             {
-                UserName = "Cashier",
+                UserName = "Cashier_01",
                 Email = "cashier@example.com",
                 FirstName = "Sophia",
                 MiddleName = "Elizabeth",
