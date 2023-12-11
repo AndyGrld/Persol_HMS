@@ -70,6 +70,63 @@ public class StaffController : Controller
         return RedirectToAction(nameof(DoctorQueue));
     }
 
+    [HttpGet]
+    public IActionResult AdmittedQueue(int page = 1, string search = "")
+    {
+        ViewBag.deptId = GetDepartmentId();
+        // if (ViewBag.deptId != 6)
+        // {
+        //     return RedirectToHome();
+        // }
+        int pageSize = 10;
+
+        var query = _context.Queues.AsQueryable();
+
+        if(!string.IsNullOrEmpty(search))
+        {
+            query = _context.Queues
+            .Include(q => q.Patient)
+            .Where(q => q.Status == "Pharmacy" &&
+                (q.PatientNo.Contains(search.ToUpper()) ||
+                q.Patient.FirstName.Contains(search.Titleize()) ||
+                q.Patient.LastName.Contains(search.Titleize())))
+            .OrderBy(q => q.QueueNo)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize);
+        }else{
+            query = _context.Queues
+                .Include(q => q.Patient)
+                .Where(q => q.Status == "Pharmacy")
+                .OrderBy(q => q.QueueNo)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize);
+        }
+
+        var patientsInLine = query.ToList();
+        var totalPatients = query.Count();
+
+        var model = new QueueViewModel
+        {
+            PatientsInLine = patientsInLine,
+            CurrentPage = page,
+            PageSize = pageSize,
+            TotalPatients = totalPatients,
+            Search = search
+        };
+
+        var viewModel = new PharmacyQueueViewModel
+        {
+            QueueViewModel = model,
+            PatientsWithDrugs = patientsInLine.Select(patient =>
+                new PatientWithDrugs
+                {
+                    PatientQueue = patient,
+                    PatientDrugs = GetDrugsFromLatestMedicalRecord(patient.PatientNo)
+                }).ToList()
+        };
+        return View(viewModel);
+    }
+
     public IActionResult DoctorQueue(int page = 1, string search = "")
     {
         ViewBag.deptId = GetDepartmentId();
@@ -151,6 +208,69 @@ public class StaffController : Controller
         };
 
         return View(viewModel);
+    }
+
+    public IActionResult AdmittedPatients()
+    {
+        var admittedPatients = _context.AdmittedPatients
+            .Include(ap => ap.Medical)
+            .ToList();
+
+        return View(admittedPatients);
+    }
+
+    [HttpPost]
+    public IActionResult Discharge(string patientId, decimal billAmount)
+    {
+        try
+        {
+            // Retrieve the patient's latest medical record
+            var latestMedical = _context.Medicals
+                .Include(m => m.Drugs)
+                .Include(m => m.Symptom)
+                .OrderByDescending(m => m.Date)
+                .FirstOrDefault(m => m.PatientNo == patientId);
+
+            if (latestMedical != null)
+            {
+                // Update the bill amount and mark it as paid
+                latestMedical.Bill = (double)billAmount;
+                latestMedical.isPaid = true;
+
+                // Update the medical record
+                _context.Medicals.Update(latestMedical);
+
+                // Move the patient to the "Cashier" queue
+                var cashierQueueNo = GetNextQueueNumber("Cashier");
+                var cashierQueue = new Queue
+                {
+                    PatientNo = patientId,
+                    QueueNo = cashierQueueNo,
+                    Status = "Cashier",
+                    DateCreated = DateTime.Now
+                };
+                _context.Queues.Add(cashierQueue);
+
+                // Remove the patient from the "Admitted" table
+                var admittedPatient = _context.AdmittedPatients.FirstOrDefault(p => p.PatientNo == latestMedical.PatientNo);
+                if (admittedPatient != null)
+                {
+                    _context.AdmittedPatients.Remove(admittedPatient);
+                }
+
+                // Save changes to the database
+                _context.SaveChanges();
+
+                return Json(new { success = true });
+            }
+
+            return Json(new { success = false, message = "Patient's medical record not found." });
+        }
+        catch (Exception ex)
+        {
+            // Log or handle the exception
+            return Json(new { success = false, message = "An error occurred while discharging the patient." });
+        }
     }
 
 
@@ -264,15 +384,13 @@ public class StaffController : Controller
             if (medicalRecord.IsAdmitted)
             {
                 medicalRecord.WardName = SelectWardNames[0];
-                var AdmittedQueueNo = GetNextQueueNumber("IsAdmitted");
-                var AdmittedQueue = new Queue
-                {
+                var Admitted = new AdmittedPatient(){
                     PatientNo = saveModel.PatientNo,
-                    QueueNo = AdmittedQueueNo,
-                    Status = "IsAdmitted",
-                    DateCreated = DateTime.Now
+                    PatientName = patient.FirstName +" "+ patient.LastName,
+                    DateAdmitted = DateTime.Now,
+                    WardName = SelectWardNames[0],
+                    MedicalID = medicalRecord.ID
                 };
-                _context.Queues.Add(AdmittedQueue);
                 TempData["D_ConfirmationMessage"] = $"Patient's medical details added successfully, patient has been admitted.";
             }
             // if lab, send to labs, will come back later for diagnosis

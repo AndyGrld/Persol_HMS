@@ -75,6 +75,7 @@ public class ApplicationDbContext : IdentityDbContext<User>
     public DbSet<Vital> Vitals { get; set; }
     public DbSet<User> Staff { get; set; }
     public DbSet<Patient> Patients { get; set; }
+    public DbSet<AdmittedPatient> AdmittedPatients { get; set; }
     public DbSet<Drug> Drugs { get; set; }
     public DbSet<Department> Departments { get; set; }
 }

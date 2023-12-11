@@ -32,6 +32,9 @@ html {
 body{
 	background-color: var(--bg-color);
 }
+.page-link:hover{
+	cursor:pointer;
+}
 .alert {
 	position: absolute;
 	width: 99.5%;
@@ -388,9 +391,16 @@ table td, table thead {
 	hr{
 		margin:0;
 	}
+	.close-button{
+		color: grey;
+		transition: .2s;
+		&:hover{
+			color: var(--text-color)
+		}
+	}
 	.form-card{
 		z-index:1010;
-		width:50%;
+		width:500px;
 		height:auto;
 		h2{
 			position:relative;

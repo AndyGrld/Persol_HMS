@@ -32,6 +32,10 @@ body {
   background-color: var(--bg-color);
 }
 
+.page-link:hover {
+  cursor: pointer;
+}
+
 .alert {
   position: absolute;
   width: 99.5%;
@@ -381,9 +385,16 @@ table td, table thead {
 .lab-report hr {
   margin: 0;
 }
+.lab-report .close-button {
+  color: grey;
+  transition: 0.2s;
+}
+.lab-report .close-button:hover {
+  color: var(--text-color);
+}
 .lab-report .form-card {
   z-index: 1010;
-  width: 50%;
+  width: 500px;
   height: auto;
 }
 .lab-report .form-card h2 {

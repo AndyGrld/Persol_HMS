@@ -69,39 +69,71 @@
                             </tr>
                             @if(patient.HasVisitedLab)
                                 {
+                                    int index = 0;
                                     <div class="lab-report" id="lab-report-@patient.PatientNo">
                                         <div class="form-card">
                                             @foreach(var lab in @Model.CreateMedicalViewModel[i].visitedLabs){
-                                                <h2 id="title" class="p-3">
-                                                <p id="@lab.LabName">
-                                                    @lab.LabName
-                                                </p>
-                                                <button onclick="toggleLabReport(0, 'lab-report-@patient.PatientNo', 'exampleModal-@patient.PatientNo')" type="button">
-                                                    X
-                                                </button>
-                                                </h2>
-                                                <hr>
-                                                <div class="lab-details">
-                                                    <h3>Notes</h3>
-                                                    <p>
-                                                        @lab.Notes
-                                                    </p>
-                                                    <hr>
-                                                    <h3>Result</h3>
-                                                    <p>
-                                                        @lab.Result
-                                                    </p>
-                                                    <button type="button">Show Files</button>
-                                                </div>
+                                                if(index == 0){
+                                                    <div id="lab-@patient.PatientNo-@index">
+                                                        <h2 id="title" class="p-3">
+                                                        <p id="@lab.LabName">
+                                                            @lab.LabName
+                                                        </p>
+                                                        <button class="close-button" onclick="toggleLabReport(0, 'lab-report-@patient.PatientNo', 'exampleModal-@patient.PatientNo')" type="button">
+                                                            X
+                                                        </button>
+                                                        </h2>
+                                                        <hr>
+                                                        <div class="lab-details">
+                                                            <h3>Notes</h3>
+                                                            <p>
+                                                                @lab.Notes
+                                                            </p>
+                                                            <hr>
+                                                            <h3>Result</h3>
+                                                            <p>
+                                                                @lab.Result
+                                                            </p>
+                                                            <button type="button">Show Files</button>
+                                                        </div>
+                                                    </div>
+                                                }else{
+                                                    <div id="lab-@patient.PatientNo-@index" style="display:none">
+                                                        <h2 id="title" class="p-3">
+                                                        <p id="@lab.LabName">
+                                                            @lab.LabName
+                                                        </p>
+                                                        <button onclick="toggleLabReport(0, 'lab-report-@patient.PatientNo', 'exampleModal-@patient.PatientNo')" type="button">
+                                                            X
+                                                        </button>
+                                                        </h2>
+                                                        <hr>
+                                                        <div class="lab-details">
+                                                            <h3>Notes</h3>
+                                                            <p>
+                                                                @lab.Notes
+                                                            </p>
+                                                            <hr>
+                                                            <h3>Result</h3>
+                                                            <p>
+                                                                @lab.Result
+                                                            </p>
+                                                            <button type="button">Show Files</button>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                index++;
                                             }
                                             
                                             <hr style="margin-bottom:15px">
                                             <div>
                                                 <ul class="pagination justify-content-center">
-                                                    <li class="page-link">Previous</li>
-                                                    <li class="page-link active">1</li>
-                                                    <li class="page-link">2</li>
-                                                    <li class="page-link">Next</li>
+                                                    @for (int pageIndex = 0; pageIndex < Model.CreateMedicalViewModel[i].visitedLabs.Count; pageIndex++)
+                                                    {
+                                                        <li onclick="togglelabview('@patient.PatientNo', 'lab-@patient.PatientNo-@pageIndex')" class="page-link">
+                                                            @(pageIndex + 1)
+                                                        </li>
+                                                    }
                                                 </ul>
                                             </div>
                                         </div>
@@ -158,106 +190,6 @@
                                                                         </div>
                                                                     </div>
                                                                 }
-                                                                
-                                                                @* <div class="drug_input field-@patient.PatientNo.ToString()" data-patient-id="@patient.PatientNo" data-index="1-@patient.PatientNo" style="display:none">
-                                                                    <div class="col1">
-                                                                        <input asp-for="CreateMedicalViewModel[i].DrugNames[1].DrugName" class="form-control" placeholder="Drug Name" />
-                                                                    </div>
-                                                                    <div class="col1">
-                                                                        <input asp-for="CreateMedicalViewModel[i].DrugNames[1].Dosage" class="form-control" placeholder="Dosage" />
-                                                                    </div>
-                                                                    <div class="close_button" onclick="removeDrug(this)">
-                                                                        <button type="button" class="btn btn-close btn-danger remove-drug" aria-label="Close"></button>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="drug_input field-@patient.PatientNo.ToString()" data-patient-id="@patient.PatientNo" data-index="2-@patient.PatientNo" style="display:none">
-                                                                    <div class="col1">
-                                                                        <input asp-for="CreateMedicalViewModel[i].DrugNames[2].DrugName" class="form-control" placeholder="Drug Name" />
-                                                                    </div>
-                                                                    <div class="col1">                                                          
-                                                                        <input asp-for="CreateMedicalViewModel[i].DrugNames[2].Dosage" class="form-control" placeholder="Dosage" />
-                                                                    </div>
-                                                                    <div class="close_button" onclick="removeDrug(this)">
-                                                                        <button type="button" class="btn btn-close btn-danger remove-drug" aria-label="Close"></button>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="drug_input field-@patient.PatientNo.ToString()" data-patient-id="@patient.PatientNo" data-index="3-@patient.PatientNo" style="display:none">
-                                                                    <div class="col1">
-                                                                        <input asp-for="CreateMedicalViewModel[i].DrugNames[3].DrugName" class="form-control" placeholder="Drug Name" />
-                                                                    </div>
-                                                                    <div class="col1">
-                                                                        <input asp-for="CreateMedicalViewModel[i].DrugNames[3].Dosage" class="form-control" placeholder="Dosage" />
-                                                                    </div>
-                                                                    <div class="close_button" onclick="removeDrug(this)">
-                                                                        <button type="button" class="btn btn-close btn-danger remove-drug" aria-label="Close"></button>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="drug_input field-@patient.PatientNo.ToString()" data-patient-id="@patient.PatientNo" data-index="4-@patient.PatientNo" style="display:none">
-                                                                    <div class="col1">
-                                                                        <input asp-for="CreateMedicalViewModel[i].DrugNames[4].DrugName" class="form-control" placeholder="Drug Name" />
-                                                                    </div>
-                                                                    <div class="col1">
-                                                                        <input asp-for="CreateMedicalViewModel[i].DrugNames[4].Dosage" class="form-control" placeholder="Dosage" />
-                                                                    </div>
-                                                                    <div class="close_button" onclick="removeDrug(this)">
-                                                                        <button type="button" class="btn btn-close btn-danger remove-drug" aria-label="Close"></button>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="drug_input field-@patient.PatientNo.ToString()" data-patient-id="@patient.PatientNo" data-index="5-@patient.PatientNo" style="display:none">
-                                                                    <div class="col1">
-                                                                        <input asp-for="CreateMedicalViewModel[i].DrugNames[5].DrugName" class="form-control" placeholder="Drug Name" />
-                                                                    </div>
-                                                                    <div class="col1">
-                                                                        <input asp-for="CreateMedicalViewModel[i].DrugNames[5].Dosage" class="form-control" placeholder="Dosage" />
-                                                                    </div>
-                                                                    <div class="close_button" onclick="removeDrug(this)">
-                                                                        <button type="button" class="btn btn-close btn-danger remove-drug" aria-label="Close"></button>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="drug_input field-@patient.PatientNo.ToString()" data-patient-id="@patient.PatientNo" data-index="6-@patient.PatientNo" style="display:none">
-                                                                    <div class="col1">
-                                                                        <input asp-for="CreateMedicalViewModel[i].DrugNames[6].DrugName" class="form-control" placeholder="Drug Name" />
-                                                                    </div>
-                                                                    <div class="col1">
-                                                                        <input asp-for="CreateMedicalViewModel[i].DrugNames[6].Dosage" class="form-control" placeholder="Dosage" />
-                                                                    </div>
-                                                                    <div class="close_button" onclick="removeDrug(this)">
-                                                                        <button type="button" class="btn btn-close btn-danger remove-drug" aria-label="Close"></button>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="drug_input field-@patient.PatientNo.ToString()" data-patient-id="@patient.PatientNo" data-index="7-@patient.PatientNo" style="display:none">
-                                                                    <div class="col1">
-                                                                        <input asp-for="CreateMedicalViewModel[i].DrugNames[7].DrugName" class="form-control" placeholder="Drug Name" />
-                                                                    </div>
-                                                                    <div class="col1">
-                                                                        <input asp-for="CreateMedicalViewModel[i].DrugNames[7].Dosage" class="form-control" placeholder="Dosage" />
-                                                                    </div>
-                                                                    <div class="close_button" onclick="removeDrug(this)">
-                                                                        <button type="button" class="btn btn-close btn-danger remove-drug" aria-label="Close"></button>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="drug_input field-@patient.PatientNo.ToString()" data-patient-id="@patient.PatientNo" data-index="8-@patient.PatientNo" style="display:none">
-                                                                    <div class="col1">
-                                                                        <input asp-for="CreateMedicalViewModel[i].DrugNames[8].DrugName" class="form-control" placeholder="Drug Name" />
-                                                                    </div>
-                                                                    <div class="col1">
-                                                                        <input asp-for="CreateMedicalViewModel[i].DrugNames[8].Dosage" class="form-control" placeholder="Dosage" />
-                                                                    </div>
-                                                                    <div class="close_button" onclick="removeDrug(this)">
-                                                                        <button type="button" class="btn btn-close btn-danger remove-drug" aria-label="Close"></button>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="drug_input field-@patient.PatientNo.ToString()" data-patient-id="@patient.PatientNo" data-index="9-@patient.PatientNo" style="display:none">
-                                                                    <div class="col1">
-                                                                        <input asp-for="CreateMedicalViewModel[i].DrugNames[9].DrugName" class="form-control" placeholder="Drug Name" />
-                                                                    </div>
-                                                                    <div class="col1">
-                                                                        <input asp-for="CreateMedicalViewModel[i].DrugNames[9].Dosage" class="form-control" placeholder="Dosage" />
-                                                                    </div>
-                                                                    <div class="close_button" onclick="removeDrug(this)">
-                                                                        <button type="button" class="btn btn-close btn-danger remove-drug" aria-label="Close"></button>
-                                                                    </div>
-                                                                </div> *@
                                                             }
                                                             else{
                                                                 var drugList = new List<Drug>();
@@ -467,6 +399,23 @@
                 modalclass[0].style.display = "none";
                 lab.style.display = "flex";
                 if (backdrop) backdrop.remove();
+            }
+        }
+    </script>
+    <script>
+        console.log("change lab view")
+        function togglelabview(patientNo, nextId) {
+            let elements = document.querySelectorAll(`[id^="lab-${patientNo}"]`);
+            let next = document.getElementById(nextId);
+
+            elements.forEach(element => {
+                element.style.display = 'none';
+            });
+            
+            if (next) {
+                next.style.display = 'block';
+            } else {
+                console.error("Elements not found.");
             }
         }
     </script>
