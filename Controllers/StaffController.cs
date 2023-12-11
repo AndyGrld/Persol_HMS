@@ -78,53 +78,25 @@ public class StaffController : Controller
         // {
         //     return RedirectToHome();
         // }
+        
         int pageSize = 10;
+        var patients = _context.AdmittedPatients.AsQueryable();
 
-        var query = _context.Queues.AsQueryable();
-
-        if(!string.IsNullOrEmpty(search))
+        if (!string.IsNullOrEmpty(search))
         {
-            query = _context.Queues
-            .Include(q => q.Patient)
-            .Where(q => q.Status == "Pharmacy" &&
-                (q.PatientNo.Contains(search.ToUpper()) ||
-                q.Patient.FirstName.Contains(search.Titleize()) ||
-                q.Patient.LastName.Contains(search.Titleize())))
-            .OrderBy(q => q.QueueNo)
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize);
-        }else{
-            query = _context.Queues
-                .Include(q => q.Patient)
-                .Where(q => q.Status == "Pharmacy")
-                .OrderBy(q => q.QueueNo)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize);
+            patients = patients.Where(ap =>
+                                ap.PatientNo.Contains(search.ToUpper()) ||
+                                ap.WardName.Contains(search.ToUpper()))
+                                .OrderBy(q => q.PatientNo)
+                                .Skip((page - 1) * pageSize)
+                                .Take(pageSize);
         }
+        ViewBag.TotalPatients = _context.Patients.Count();
+        ViewBag.PageSize = pageSize;
+        ViewBag.CurrentPage = page;
+        ViewBag.Search = search;
 
-        var patientsInLine = query.ToList();
-        var totalPatients = query.Count();
-
-        var model = new QueueViewModel
-        {
-            PatientsInLine = patientsInLine,
-            CurrentPage = page,
-            PageSize = pageSize,
-            TotalPatients = totalPatients,
-            Search = search
-        };
-
-        var viewModel = new PharmacyQueueViewModel
-        {
-            QueueViewModel = model,
-            PatientsWithDrugs = patientsInLine.Select(patient =>
-                new PatientWithDrugs
-                {
-                    PatientQueue = patient,
-                    PatientDrugs = GetDrugsFromLatestMedicalRecord(patient.PatientNo)
-                }).ToList()
-        };
-        return View(viewModel);
+        return View(patients.ToList());
     }
 
     public IActionResult DoctorQueue(int page = 1, string search = "")
@@ -210,15 +182,6 @@ public class StaffController : Controller
         return View(viewModel);
     }
 
-    public IActionResult AdmittedPatients()
-    {
-        var admittedPatients = _context.AdmittedPatients
-            .Include(ap => ap.Medical)
-            .ToList();
-
-        return View(admittedPatients);
-    }
-
     [HttpPost]
     public IActionResult Discharge(string patientId, decimal billAmount)
     {
@@ -233,23 +196,20 @@ public class StaffController : Controller
 
             if (latestMedical != null)
             {
-                // Update the bill amount and mark it as paid
-                latestMedical.Bill = (double)billAmount;
-                latestMedical.isPaid = true;
+                latestMedical.Bill += (double)billAmount;
 
-                // Update the medical record
                 _context.Medicals.Update(latestMedical);
 
-                // Move the patient to the "Cashier" queue
-                var cashierQueueNo = GetNextQueueNumber("Cashier");
-                var cashierQueue = new Queue
+                var DoctorQueueNo = GetNextQueueNumber("Doctor");
+                var DoctorQueue = new Queue
                 {
                     PatientNo = patientId,
-                    QueueNo = cashierQueueNo,
-                    Status = "Cashier",
-                    DateCreated = DateTime.Now
+                    QueueNo = DoctorQueueNo,
+                    Status = "Doctor",
+                    DateCreated = DateTime.Now,
+                    HasVisitedLab = true
                 };
-                _context.Queues.Add(cashierQueue);
+                _context.Queues.Add(DoctorQueue);
 
                 // Remove the patient from the "Admitted" table
                 var admittedPatient = _context.AdmittedPatients.FirstOrDefault(p => p.PatientNo == latestMedical.PatientNo);
@@ -260,16 +220,17 @@ public class StaffController : Controller
 
                 // Save changes to the database
                 _context.SaveChanges();
-
-                return Json(new { success = true });
+                TempData["A_ConfirmationMessage"] = $"Patient may visit doctor for final treatment.";
+                return RedirectToAction(nameof(AdmittedQueue));
             }
 
-            return Json(new { success = false, message = "Patient's medical record not found." });
+            TempData["A_WarningMessage"] = $"Patient medical record not found.";
+            return RedirectToAction(nameof(AdmittedQueue));
         }
         catch (Exception ex)
         {
-            // Log or handle the exception
-            return Json(new { success = false, message = "An error occurred while discharging the patient." });
+            TempData["A_WarningMessage"] = $"An error occured while discharging patient, please try again.";
+            return RedirectToAction(nameof(AdmittedQueue));
         }
     }
 
@@ -379,22 +340,22 @@ public class StaffController : Controller
                     await _context.SaveChangesAsync();
                 }
             }
-			
-			Console.WriteLine($"=======> SelectLabNames.Count(): {SelectLabNames.Count()} <========");
-			Console.WriteLine($"=======> SelectLabNames: {SelectLabNames[0]} <========");
-			Console.WriteLine($"=======> LabName: {SelectLabNames[0]} <========");
 
             // if admitted save status as IsAdmitted and forget about lab and drugs
-            if (medicalRecord.IsAdmitted)
+            if (SelectWardNames.Count() > 0 && !string.IsNullOrEmpty(SelectWardNames[0]))
             {
+			    Console.WriteLine($"=======> SelectWardNames: {SelectWardNames[0]} <========");
                 medicalRecord.WardName = SelectWardNames[0];
                 var Admitted = new AdmittedPatient(){
+                    ID = _context.AdmittedPatients.Count() == 0 ? 1 : _context.AdmittedPatients.Max(d => d.ID) + 1,
                     PatientNo = saveModel.PatientNo,
                     PatientName = patient.FirstName +" "+ patient.LastName,
                     DateAdmitted = DateTime.Now,
                     WardName = SelectWardNames[0],
                     MedicalID = medicalRecord.ID
                 };
+                _context.AdmittedPatients.Add(Admitted);
+                _context.SaveChanges();
                 TempData["D_ConfirmationMessage"] = $"Patient's medical details added successfully, patient has been admitted.";
             }
             else if (SelectLabNames.Count() > 0 && !string.IsNullOrEmpty(SelectLabNames[0]))
@@ -430,6 +391,18 @@ public class StaffController : Controller
                 _context.Queues.Add(PharmacyQueue);
                 TempData["D_ConfirmationMessage"] = $"Patient's medical details added successfully, patient is {PharmacyQueueNo} in pharmacy queue.";
             }
+			else if(medicalRecord.Bill != 0){
+                var CashierQueueNo = GetNextQueueNumber("Cashier");
+                var CashierQueue = new Queue
+                {
+                    PatientNo = saveModel.PatientNo,
+                    QueueNo = CashierQueueNo,
+                    Status = "Cashier",
+                    DateCreated = DateTime.Now
+                };
+                _context.Queues.Add(CashierQueue);
+                TempData["D_ConfirmationMessage"] = $"Patient's medical details added successfully, patient is {CashierQueueNo} in cashier queue.";
+			}
             // no lab, ward, drugs, can walk out, patinet was fine all along (needs sleep)
             else
             {
@@ -1287,11 +1260,15 @@ public class StaffController : Controller
                 string PatientNo = patientWithDrugs.PatientQueue.PatientNo;
                 var medical = _context.Medicals.FirstOrDefault(d => d.ID == drugToUpdate.MedicalID);
                 var patient = _context.Patients.FirstOrDefault(p => p.PatientNo == PatientNo);
+				if(patient.InsuranceExpireDate.Date > DateTime.Now.Date)
+                {
+                    bill = 0;
+                }
+				
                 medical.Bill += bill;
 
-                if(patient.InsuranceExpireDate.Date > DateTime.Now.Date)
+                if(patient.InsuranceExpireDate.Date > DateTime.Now.Date && medical.Bill == 0)
                 {
-                    medical.Bill = 0;
                     RemovePatientFromQueue("Pharmacy", PatientNo);
                     _context.SaveChanges();
                     TempData["P_ConfirmationMessage"] = "Drug prices updated successfully. Insurance was used, patient may leave hospital.";

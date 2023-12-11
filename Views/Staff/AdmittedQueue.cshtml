@@ -1,0 +1,132 @@
+@model List<Persol_HMS.Models.AdmittedPatient>
+
+<partial name="Navbar" />
+
+@if (TempData.ContainsKey("A_ConfirmationMessage"))
+{
+    <div class="alert alert-success">
+        @TempData["A_ConfirmationMessage"]
+        <button type="button" style="position:absolute;right: 0" data-bs-dismiss="alert" class="btn-close" aria-label="Close"></button>
+    </div>
+}
+@if (TempData.ContainsKey("A_WarningMessage"))
+{
+    <div class="alert alert-danger">
+        @TempData["A_WarningMessage"]
+        <button type="button" style="position:absolute;right: 0" data-bs-dismiss="alert" class="btn-close" aria-label="Close"></button>
+    </div>
+}
+
+<div class="grid">
+    <partial name="SidebarPartial" />
+
+    <div class="right">
+        
+        <div class="form-card">
+            <h2 id="title" class="p-3">
+				<p>
+					Admitted Patients
+				</p>
+			</h2>
+            <form method="get"class="search" action="@Url.Action("AdmittedQueue")">
+                <div class="input-group mb-3 px-3">
+                    <input type="text" name="search" class="form-control" placeholder="Search by Patient_No or Ward name" aria-describedby="button-addon2">
+                    <button class="search-button" type="submit" id="button-addon2">Search</button>
+                </div>
+            </form>
+
+            @if (Model.Any())
+            {
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Patient No</th>
+                            <th>Patient Name</th>
+                            <th>Date Admitted</th>
+                            <th>Ward Name</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var patient in Model)
+                        {
+                            <tr>
+                                <td>@patient.PatientNo</td>
+                                <td>@patient.PatientName</td>
+                                <td>@patient.DateAdmitted.ToString("dddd, dd MMMM yyyy")</td>
+                                <td>@patient.WardName</td>
+                                <td>
+                                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#billModal-@patient.ID">Input Bill</button>
+                                </td>
+                            </tr>
+
+                            <!-- Modal for Inputting Bill -->
+                            <div class="modal fade" id="billModal-@patient.ID" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Input Bill for Patient</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form asp-action="Discharge" method="post" autocomplete="off">
+                                            <div class="modal-body">
+                                                <label for="billAmount">Bill Amount:</label>
+                                                <input type="text" id="billAmount" name="billAmount" class="form-control" />
+                                                <input type="hidden" value="@patient.PatientNo" id="patientId" name="patientId" class="form-control" />
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-primary">Discharge</button>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </tbody>
+                </table>
+
+                <nav class="py-3" aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+                        @if (ViewBag.CurrentPage > 1)
+                        {
+                            <li class="page-item"><a class="page-link" href="@Url.Action("AdmittedQueue", new { page = ViewBag.CurrentPage - 1, search = ViewBag.Search })">Previous</a></li>
+                        }
+
+                        @for (int i = 1; i <= ViewBag.TotalPatients / ViewBag.PageSize + 1; i++)
+                        {
+                            <li class="page-item"><a href="@Url.Action("AdmittedQueue", new { page = i, search = ViewBag.Search })" class="@(i == ViewBag.CurrentPage ? "active page-link" : "page-link")">@i</a></li>
+                        }
+
+                        @if (ViewBag.CurrentPage < ViewBag.TotalPatients / ViewBag.PageSize + 1)
+                        {
+                            <li class="page-item"><a class="page-link" href="@Url.Action("AdmittedQueue", new { page = ViewBag.CurrentPage + 1, search = ViewBag.Search })">Next</a></li>
+                        }
+                    </ul>
+                </nav>
+            }
+            else
+            {
+                <p class="p-3 no-patinet">No patients in ward.</p>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    function submitBill(patientId) {
+        var billAmount = $('#billAmount').val(); // Get the bill amount from the input field
+
+        $.post("/Doctor/Discharge", { patientId: patientId, billAmount: billAmount })
+            .done(function (data) {
+                // Handle success, you can close the modal or perform other actions
+                $('#billModal-' + patientId).modal('hide');
+            })
+            .fail(function (error) {
+                // Handle error
+                console.error(error);
+            });
+    }
+</script>
+
+<partial name="FooterPartial" />

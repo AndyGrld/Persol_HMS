@@ -245,7 +245,7 @@
                                                                     @foreach(var wardName in Model.CreateMedicalViewModel[i].AvailableWardNames)
                                                                     {
                                                                         <p>
-                                                                            <input style="cursor:pointer" type="checkbox" id="@wardName" value="@wardName" name="SelectWardNames" />
+                                                                            <input style="cursor:pointer" type="radio" id="@wardName" value="@wardName" name="SelectWardNames" />
                                                                             <label onclick="addOrRemove(@wardName)" for="@wardName">@wardName</label>
                                                                         </p>
                                                                     }
