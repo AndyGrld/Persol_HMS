@@ -14,99 +14,198 @@
 			<h2>@($"{Model.Patient.PatientNo}")</h2>
 		</div>
 
-		@if (Model.MedicalRecords.Any())
-		{
-			@foreach (var medical in Model.MedicalRecords)
-			{
-				<div class="form-card my-3" style="overflow:hidden">
-					<div class="card-header row">
-						<div class="col">
-							<h5>Medical Record ID: @medical.ID</h5>
+		<div class="form-card p-3">
+            <h2 id="title">
+				<p id="caption">
+					Select Year
+				</p>
+			</h2>
+			<div class="mt-4" style="display:grid;grid-template-columns:repeat(4, 1fr);gap:10px">
+				<div class="card p-1" style="cursor:pointer">Most recent</div>
+				@foreach(var year in Model.YearlyRecords)
+				{
+					<div class="card p-1 year"
+						style="cursor:pointer" onclick="showMonth('@year.YearNo')">
+						@year.YearNo
+					</div>
+					@foreach(var month in year.Months)
+					{
+						<div class="month card p-1 @year.YearNo"
+							style="cursor:pointer;display:none"
+							onclick="showDays('@month.MonthNo@month.Date.Year', '@year.YearNo')">
+							@month.Date.ToString("MMM")
 						</div>
-						<div class="col" style="text-align:right">
-							<h5>@medical.Date.ToString("dddd, dd MMMM yyyy")</h5>
+						@foreach(var day in month.MedicalRecords)
+						{
+							<div class="day card p-1 @month.MonthNo@month.Date.Year"
+							style="cursor:pointer;display:none">
+								@day.Date.ToShortDateString()
+							</div>
+						}
+					}
+				}
+				<div class="card p-1" style="cursor:pointer" onclick="back()">Back</div>
+			</div>
+		</div>
+		
+		@foreach(var year in Model.YearlyRecords){
+			@foreach(var month in year.Months){
+				@if (month.MedicalRecords.Any()){
+					@foreach(var record in month.MedicalRecords){
+					<div class="@year.YearNo-@month.MonthNo-@record.Date.Day">
+						@*<div style="display:flex;justify-content:space-between;flex-direction:row">
+							<h4 class="p-2">Medical Record: @record.ID</h4>
+							<h4 class="p-2">@record.Date.ToString("dddd, dd MMMM yyyy")</h4>
+						</div>
+						<hr style="margin:0">*@
+						<div class="p-3">
+							<div class="m-grid">
+								<div class="m-col">
+									<h4 class="text-center">Vitals</h4>
+									<div class="m-vitals">
+										<div>
+											<h5>Temperature</h5>
+											<p>@record.Vital.Temperature °C</p>
+										</div>
+										<div>
+											<h5>Blood Pressure</h5>
+											<p>@record.Vital.BloodPressure mmHg</p>
+										</div>
+										<div>
+											<h5>Height</h5>
+											<p>@record.Vital.Height cm</p>
+										</div>
+										<div>
+											<h5>Weight</h5>
+											<p>@record.Vital.Weight kg</p>
+										</div>
+									</div>
+								</div>
+								<div class="m-col">
+									<div class="symptoms mb-3">
+										<h4>Symptoms</h4>
+										<div>@record.Symptom?.Symptoms</div>
+									</div>
+									<div class="symptoms">
+										<h4>Diagnoses</h4>
+										<div>@record.Diagnoses</div>
+									</div>
+								</div>
+							</div>
+							<div class="table-grid">
+								@if (record.Drugs.Any())
+								{
+									<table class="custom-table table-bordered">
+										<thead>
+											<tr>
+												<th>Drug Name</th>
+												<th>Dosage</th>
+											</tr>
+										</thead>
+										<tbody>
+											@foreach (var drug in record.Drugs)
+											{
+												<tr>
+													<td>@drug.DrugName</td>
+													<td>@drug.Dosage</td>
+												</tr>
+											}
+										</tbody>
+									</table>
+								}
+								else
+								{
+									<h5>No drugs</h5>
+								}
+								@if (record.Labs.Any())
+								{
+									<table class="custom-table table-bordered">
+										<thead>
+											<tr>
+												<th>Lab Name</th>
+												<th>Notes</th>
+												<th>Result</th>
+											</tr>
+										</thead>
+										<tbody>
+											@foreach (var lab in record.Labs)
+											{
+												<tr>
+													<td>@lab.LabName</td>
+													<td>@lab.Notes</td>
+													<td>@lab.Result</td>
+												</tr>
+											}
+										</tbody>
+									</table>
+								}
+								else
+								{
+									<h5>No Labs</h5>
+								}
+							</div>
 						</div>
 					</div>
-					<div class="card-body">
-						<div class="row mb-2">
-							<div class="col">
-								<p class="card-text"><b>Temperature: </b>@medical.Vital.Temperature °C</p>
-							</div>
-							<div class="col">
-								<p class="card-text"><b>Height: </b>@medical.Vital.Height</p>
-							</div>
-						</div>
-						<div class="row mb-2">
-							<div class="col">
-								<p class="card-text"><b>Weight: </b>@medical.Vital.Weight</p>
-							</div>
-							<div class="col">
-								<p class="card-text"><b>Blood Pressure: </b>@medical.Vital.BloodPressure mmHg</p>
-							</div>
-						</div>
-						<p class="card-text"><b>Diagnoses: </b>@medical.Diagnoses</p>
-						<p class="card-text"><b>Symptoms: </b>@medical.Symptom?.Symptoms</p>
-						<div>
-						@if (medical.Drugs.Any())
-						{
-							<table class="table table-bordered table-hover">
-								<thead>
-									<tr>
-										<th>Drug Name</th>
-										<th>Dosage</th>
-									</tr>
-								</thead>
-								<tbody>
-									@foreach (var drug in medical.Drugs)
-									{
-										<tr>
-											<td>@drug.DrugName</td>
-											<td>@drug.Dosage</td>
-										</tr>
-									}
-								</tbody>
-							</table>
-						}
-						else
-						{
-							<h6>No drugs</h6>
-						}
-						@if (medical.Labs.Any())
-						{
-							<table class="table table-hover table-bordered">
-								<thead>
-									<tr>
-										<th>Lab Name</th>
-										<th>Notes</th>
-										<th>Result</th>
-									</tr>
-								</thead>
-								<tbody>
-									@foreach (var lab in medical.Labs)
-									{
-										<tr>
-											<td>@lab.LabName</td>
-											<td>@lab.Notes</td>
-											<td>@lab.Result</td>
-										</tr>
-									}
-								</tbody>
-							</table>
-						}
-						else
-						{
-							<h6>No Labs</h6>
-						}
-						</div>
-					</div>
-				</div>
+					}
+				}
 			}
-		}
-		else
-		{
-			<p class="p-3 no-patinet">No Medical Records Yet</p>
 		}
 	</div>
 </div>
 
 <partial name="FooterPartial" />
+
+
+		<script>
+			let caption = document.getElementById("caption")
+			let yearDivs = document.querySelectorAll(".year")
+			let monthDivs = document.querySelectorAll('.month')
+			let dayDivs = document.querySelectorAll('.day')
+			let prevPage = ""
+
+			
+			function showMonth(year){
+				let monthDiv = document.getElementsByClassName(year)
+				
+				yearDivs.forEach(element => {
+					element.style.display = "none";
+				});
+				prevPage = ""
+				
+				monthDiv[0].style.display = "block"
+				caption.innerText = "Select Month"
+			}
+			function showDays(month, previous){
+				let dayDiv = document.getElementsByClassName(month)
+				prevPage = previous
+				
+				monthDivs.forEach(element => {
+					element.style.display = "none";
+				});
+				
+				dayDiv[0].style.display = "block"
+				caption.innerText = "Select Day"
+			}
+			function back(){
+				monthDivs.forEach(element => {
+					element.style.display = "none";
+				})
+				dayDivs.forEach(element => {
+					element.style.display = "none";
+				})
+				
+				if(prevPage !== ""){
+					prev = document.getElementsByClassName(prevPage)
+					prev[0].style.display = "block"
+					prevPage = ""
+					caption.innerText = "Select Month"
+				}
+				else
+				{
+					yearDivs.forEach(element => {
+						element.style.display = "block";
+					});
+					caption.innerText = "Select Year"
+				}
+			}
+		</script>

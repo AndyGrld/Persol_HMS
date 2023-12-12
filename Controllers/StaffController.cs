@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using Lab = Persol_HMS.Models.Lab;
 
-[Authorize]
+// [Authorize]
 public class StaffController : Controller
 {
     private readonly ApplicationDbContext _context;
@@ -35,10 +35,10 @@ public class StaffController : Controller
     public async Task<IActionResult> Doctor(string? patientNo)
     {
         ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 3)
-        {
-            return RedirectToHome();
-        }
+        // if (ViewBag.deptId != 3)
+        // {
+        //     return RedirectToHome();
+        // }
 
         var patientDetails = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(patientNo));
 
@@ -98,10 +98,10 @@ public class StaffController : Controller
     public IActionResult DoctorQueue(int page = 1, string search = "")
     {
         ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 3)
-        {
-            return RedirectToHome();
-        }
+        // if (ViewBag.deptId != 3)
+        // {
+        //     return RedirectToHome();
+        // }
 
         int pageSize = 10;
 
@@ -235,10 +235,10 @@ public class StaffController : Controller
     public async Task<IActionResult> SaveMedicalRecords(DoctorQueueModel model, List<string> SelectLabNames, List<string> SelectWardNames)
     {
         ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 3)
-        {
-            return RedirectToHome();
-        }
+        // if (ViewBag.deptId != 3)
+        // {
+        //     return RedirectToHome();
+        // }
 
         var saveModel = model.CreateMedicalViewModel[0];
         // Console.WriteLine($"=======> Symptoms: {saveModel.Symptoms} <========");
@@ -417,10 +417,10 @@ public class StaffController : Controller
     public async Task<IActionResult> RecordsClerk()
     {
         ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 1)
-        {
-            return RedirectToHome();
-        }
+        // if (ViewBag.deptId != 1)
+        // {
+        //     return RedirectToHome();
+        // }
 
         // Delete old patients with the status "IsDone"
         await DeleteOldPatients();
@@ -437,10 +437,10 @@ public class StaffController : Controller
         string patientNo = "", string confirm= "")
     {
         ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 1)
-        {
-            return RedirectToHome();
-        }
+        // if (ViewBag.deptId != 1)
+        // {
+        //     return RedirectToHome();
+        // }
 
         if (!string.IsNullOrEmpty(confirm) && !string.IsNullOrEmpty(patientNo))
         {
@@ -567,10 +567,10 @@ public class StaffController : Controller
     public IActionResult Nurse(string? patientNo)
     {
         ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 2)
-        {
-            return RedirectToHome();
-        }
+        // if (ViewBag.deptId != 2)
+        // {
+        //     return RedirectToHome();
+        // }
         if (patientNo != null)
         {
             var patientDetails = _context.Patients.FirstOrDefault(p => p.PatientNo == patientNo);
@@ -611,10 +611,10 @@ public class StaffController : Controller
     public async Task<IActionResult> Nurse([Bind("PatientNo, Temperature, Height, Weight, BloodPressure")] Vital vital)
     {
         ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 2)
-        {
-            return RedirectToHome();
-        }
+        // if (ViewBag.deptId != 2)
+        // {
+        //     return RedirectToHome();
+        // }
         if (!string.IsNullOrEmpty(vital.PatientNo) &&
             vital.Temperature != null &&
             vital.Height != null &&
@@ -779,10 +779,10 @@ public class StaffController : Controller
     public IActionResult NurseQueue(int page = 1, string search = "")
     {
         ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 2)
-        {
-            return RedirectToHome();
-        }
+        // if (ViewBag.deptId != 2)
+        // {
+        //     return RedirectToHome();
+        // }
 
         int pageSize = 10;
 
@@ -832,10 +832,10 @@ public class StaffController : Controller
     public IActionResult LabQueue(int page = 1, string search = "")
     {
         ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 4)
-        {
-            return RedirectToHome();
-        }
+        // if (ViewBag.deptId != 4)
+        // {
+        //     return RedirectToHome();
+        // }
 
         int pageSize = 10;
 
@@ -884,10 +884,10 @@ public class StaffController : Controller
     public IActionResult Lab(string? patientNo)
     {
         ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 4)
-        {
-            return RedirectToHome();
-        }
+        // if (ViewBag.deptId != 4)
+        // {
+        //     return RedirectToHome();
+        // }
         if (patientNo != null)
         {
             var patientDetails = _context.Patients.FirstOrDefault(p => p.PatientNo == patientNo);
@@ -1050,7 +1050,7 @@ public class StaffController : Controller
             return NotFound();
         }
 
-        var medicalViewModels = patient.Medicals.Select(m => new MedicalViewModel
+        var medicalList = patient.Medicals.Select(m => new MedicalList
         {
             ID = m.ID,
             Date = m.Date,
@@ -1059,12 +1059,64 @@ public class StaffController : Controller
             Symptom = m.Symptom,
             Drugs = m.Drugs,
             Labs = m.Labs
-        }).ToList();
+        }) .OrderBy(m => m.Date).ToList();
+
+
+        var yearlyClass = new Year();
+        var monthlyClass = new Month();
+        List<Year> yearlyRecords = new List<Year>();
+        List<Month> monthlyRecords = new List<Month>();
+        List<MedicalList> medicalLists = new List<MedicalList>();
+        int prevYear = 0;
+		int currentYear = 0;
+        int prevMonth = 0;
+		int currentMonth = 0;
+
+        // loop through all medical records to generate a list of each year
+        foreach (var medical in medicalList)
+        {
+            currentYear = medical.Date.Year;
+			if(currentYear == prevYear){
+				continue;
+			}
+            monthlyRecords = new List<Month>();
+            foreach(var month in medicalList)
+            {
+				medicalLists = new List<MedicalList>();
+				currentMonth = month.Date.Month;
+				if(currentMonth == prevMonth){
+                    continue;
+                }
+				foreach(var dailyRecord in medicalList)
+				{
+					if(dailyRecord.Date.Month == currentMonth && dailyRecord.Date.Year == currentYear)
+					{
+						medicalLists.Add(dailyRecord);
+					}
+				}
+				if(medicalLists.Count() != 0)
+				{
+					monthlyClass = new Month(){
+						MonthNo = currentMonth,
+						Date = month.Date,
+						MedicalRecords = medicalLists
+					};
+					monthlyRecords.Add(monthlyClass);
+				}
+				prevMonth = currentMonth;
+            }
+            yearlyClass = new Year(){
+                YearNo = currentYear,
+                Months = monthlyRecords
+            };
+            yearlyRecords.Add(yearlyClass);
+			prevYear = currentYear;
+        }
 
         var viewModel = new PatientMedicalViewModel
         {
             Patient = patient,
-            MedicalRecords = medicalViewModels
+            YearlyRecords = yearlyRecords
         };
 
         return View(viewModel);
@@ -1074,10 +1126,10 @@ public class StaffController : Controller
     public async Task<IActionResult> SavePatientMedicals(CreateMedicalViewModel model)
     {
         ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 3)
-        {
-            return RedirectToHome();
-        }
+        // if (ViewBag.deptId != 3)
+        // {
+        //     return RedirectToHome();
+        // }
         if (!string.IsNullOrEmpty(model.PatientNo) && model.Diagnoses != null &&
             model.DrugNames.Count() > 1 && model.Symptoms != null)
         {
@@ -1167,10 +1219,10 @@ public class StaffController : Controller
     public IActionResult PharmacyQueue(int page = 1, string search = "")
     {
         ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 6)
-        {
-            return RedirectToHome();
-        }
+        // if (ViewBag.deptId != 6)
+        // {
+        //     return RedirectToHome();
+        // }
         int pageSize = 10;
 
         var query = _context.Queues.AsQueryable();
@@ -1234,10 +1286,10 @@ public class StaffController : Controller
     public IActionResult UpdateDrugPrice(PharmacyQueueViewModel model)
     {
         ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 6)
-        {
-            return RedirectToHome();
-        }
+        // if (ViewBag.deptId != 6)
+        // {
+        //     return RedirectToHome();
+        // }
         if (model.PatientsWithDrugs != null)
         {
             var patientWithDrugs = model.PatientsWithDrugs[0];
@@ -1299,10 +1351,10 @@ public class StaffController : Controller
     public async Task<IActionResult> CashierQueue(int page = 1, string search = "")
     {
         ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 7)
-        {
-            return RedirectToHome();
-        }
+        // if (ViewBag.deptId != 7)
+        // {
+        //     return RedirectToHome();
+        // }
 
         int pageSize = 10;
         
@@ -1364,10 +1416,10 @@ public class StaffController : Controller
     public async Task<IActionResult> ConfirmPayment(CashierQueueViewModel model)
     {
         ViewBag.deptId = GetDepartmentId();
-        if (ViewBag.deptId != 7)
-        {
-            return RedirectToHome();
-        }
+        // if (ViewBag.deptId != 7)
+        // {
+        //     return RedirectToHome();
+        // }
         if (model.PatientsWithLatestMedical != null)
         {
             var patientWithLatestMedical = model.PatientsWithLatestMedical[0];

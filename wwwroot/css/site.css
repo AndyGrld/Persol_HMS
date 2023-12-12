@@ -688,4 +688,45 @@ table td, table thead {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
+}
+
+.m-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 5px;
+}
+
+.m-col {
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+}
+.m-col .m-vitals {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  flex-direction: column;
+}
+.m-col .m-vitals div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 5px;
+  border-radius: 10px;
+  width: 100%;
+  height: 120px;
+  background: linear-gradient(150deg, rgba(100, 200, 150, 0.5), transparent);
+}
+.m-col .m-vitals div h5, .m-col .m-vitals div p {
+  font-weight: 400;
+}
+.m-col .symptoms {
+  height: 100%;
+}
+.m-col .symptoms div {
+  height: 100px;
+  border-radius: 10px;
+  background: linear-gradient(300deg, rgba(66, 84, 250, 0.5), rgba(130, 222, 250, 0.5));
 }/*# sourceMappingURL=site.css.map */

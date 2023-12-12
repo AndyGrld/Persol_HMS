@@ -8,10 +8,10 @@ namespace Persol_HMS.Models.ViewModels
     public class PatientMedicalViewModel
     {
         public Patient Patient { get; set; }
-        public List<MedicalViewModel> MedicalRecords { get; set; }
+        public List<Year> YearlyRecords { get; set; }
     }
 
-    public class MedicalViewModel
+    public class MedicalList
     {
         public int ID { get; set; }
         public DateTime Date { get; set; }
@@ -20,5 +20,18 @@ namespace Persol_HMS.Models.ViewModels
         public Symptom Symptom { get; set; }
         public List<Drug> Drugs { get; set; }
         public List<Lab> Labs { get; set; }
+    }
+
+    public class Year
+    {
+        public int YearNo { get; set; }
+        public List<Month> Months { get; set; }
+    }
+
+    public class Month
+    {
+        public int MonthNo { get; set; }
+		public DateTime Date { get; set; }
+        public List<MedicalList> MedicalRecords { get; set; }
     }
 }
