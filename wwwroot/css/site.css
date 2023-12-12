@@ -219,10 +219,10 @@ table td, table thead {
 }
 .right .form-card .custom-table {
   width: 100%;
+  overflow: hidden;
 }
 .right .form-card .custom-table thead {
   font-weight: 400;
-  background-color: var(--btn-color);
   font-size: 17px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.39);
 }
@@ -231,6 +231,10 @@ table td, table thead {
 }
 .right .form-card .custom-table tbody tr {
   border-bottom: 1px solid rgba(0, 0, 0, 0.39);
+  overflow: hidden;
+}
+.right .form-card .custom-table tbody tr:hover {
+  background-color: var(--bg-color);
 }
 .right .form-card .custom-table tbody tr td {
   padding: 8px;

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Persol_HMS.Data;
 using Persol_HMS.Models;
 
-// [Authorize]
+[Authorize]
 public class AdminController : Controller
 {
     private readonly ApplicationDbContext _context;
@@ -36,21 +36,43 @@ public class AdminController : Controller
     public IActionResult Index()
     {
         ViewBag.deptId = GetDepartmentId();
-        // if (ViewBag.deptId != 5)
-        // {
-        //     return RedirectToHome();
-        // }
+        if (ViewBag.deptId != 5)
+        {
+            return RedirectToHome();
+        }
         var users = _context.Users.Include(u => u.Department).ToList();
         return View(users);
+    }
+
+    public IActionResult Dashboard()
+    {
+        ViewBag.deptId = GetDepartmentId();
+        if (ViewBag.deptId != 5)
+        {
+            return RedirectToHome();
+        }
+
+        var viewModel = new AdminDashboardViewModel(){
+            Revenues = _context.Revenues.Where(r => r.Period.Month == DateTime.Now.Month).ToList(),
+            Records = _context.Users.Include(u => u.Department).Where(u => u.Department.DepartmentName == "Records").ToList(),
+            Nurses = _context.Users.Include(u => u.Department).Where(u => u.Department.DepartmentName == "Nursing").ToList(),
+            Doctors = _context.Users.Include(u => u.Department).Where(u => u.Department.DepartmentName == "Doctor").ToList(),
+            LabPersonnels = _context.Users.Include(u => u.Department).Where(u => u.Department.DepartmentName == "Lab").ToList(),
+            Pharmacists = _context.Users.Include(u => u.Department).Where(u => u.Department.DepartmentName == "Pharmacy").ToList(),
+            Cashiers = _context.Users.Include(u => u.Department).Where(u => u.Department.DepartmentName == "Cashier").ToList(),
+            Admins = _context.Users.Include(u => u.Department).Where(u => u.Department.DepartmentName == "Admin").ToList()
+        };
+
+        return View(viewModel);
     }
 
     public IActionResult Details(string id)
     {
         ViewBag.deptId = GetDepartmentId();
-        // if (ViewBag.deptId != 5)
-        // {
-        //     return RedirectToHome();
-        // }
+        if (ViewBag.deptId != 5)
+        {
+            return RedirectToHome();
+        }
         if (id == null)
         {
             return NotFound();
@@ -71,10 +93,10 @@ public class AdminController : Controller
     public IActionResult Edit(string id)
     {
         ViewBag.deptId = GetDepartmentId();
-        // if (ViewBag.deptId != 5)
-        // {
-        //     return RedirectToHome();
-        // }
+        if (ViewBag.deptId != 5)
+        {
+            return RedirectToHome();
+        }
         if (id == null)
         {
             return NotFound();
@@ -96,10 +118,10 @@ public class AdminController : Controller
     public IActionResult Edit(string id, User editedUser)
     {
         ViewBag.deptId = GetDepartmentId();
-        // if (ViewBag.deptId != 5)
-        // {
-        //     return RedirectToHome();
-        // }
+        if (ViewBag.deptId != 5)
+        {
+            return RedirectToHome();
+        }
         if (id != editedUser.Id)
         {
             return NotFound();
@@ -158,10 +180,10 @@ public class AdminController : Controller
     public IActionResult Delete(string id)
     {
         ViewBag.deptId = GetDepartmentId();
-        // if (ViewBag.deptId != 5)
-        // {
-        //     return RedirectToHome();
-        // }
+        if (ViewBag.deptId != 5)
+        {
+            return RedirectToHome();
+        }
         var user = _context.Users.Find(id);
         _context.Users.Remove(user);
         _context.SaveChanges();

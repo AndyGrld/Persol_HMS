@@ -1,60 +1,81 @@
 @model User
 
+<style>
+    .edit-card{
+        grid-column:2/5;
+    }
+</style>
+
 <partial name="Navbar" />
 
 <div class="grid">
     <partial name="SidebarPartial" />
-    <div class="right">
-        <div class="form-card">
-            <h2 class="text-center py-3">Edit User</h2>
-            <form asp-action="Edit">
+
+    <div class="right" style="display:grid;grid-template-columns:repeat(5, 1fr);gap:20px">
+        
+        <div class="form-card vitals-card">
+            <h2 id="title" class="p-3">
+				<p id="Urinalysis">
+					Edit User
+				</p>
+			</h2>
+
+            <form asp-action="Edit" class="p-3">
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <input type="hidden" asp-for="Id" />
-                <div class="mb-3">
-                    <label asp-for="UserName" class="form-label"></label>
-                    <input asp-for="UserName" class="form-control" disabled />
+                <div class="row mb-4">
+                    <div class="col">
+                        <label asp-for="UserName" class="form-label"></label>
+                        <input asp-for="UserName" class="form-control" disabled />
+                    </div>
+                    <div class="col">
+                        <label asp-for="FirstName" class="form-label"></label>
+                        <input asp-for="FirstName" class="form-control" />
+                        <span asp-validation-for="FirstName" class="text-danger"></span> <!-- Display validation error -->
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label asp-for="FirstName" class="form-label"></label>
-                    <input asp-for="FirstName" class="form-control" />
-                    <span asp-validation-for="FirstName" class="text-danger"></span> <!-- Display validation error -->
+                <div class="row mb-4">
+                    <div class="col">
+                        <label asp-for="MiddleName" class="form-label"></label>
+                        <input asp-for="MiddleName" class="form-control" autocomplete="middlename" aria-required="true" />
+                        <span asp-validation-for="MiddleName" class="text-danger"></span> <!-- Display validation error -->
+                    </div>
+                    <div class="col">
+                        <label asp-for="LastName" class="form-label"></label>
+                        <input asp-for="LastName" class="form-control" />
+                        <span asp-validation-for="LastName" class="text-danger"></span> <!-- Display validation error -->
+                    </div>
                 </div>
-                <div class="my-3">
-                    <label asp-for="MiddleName"></label>
-                    <input asp-for="MiddleName" class="form-control" autocomplete="middlename" aria-required="true" />
-                    <span asp-validation-for="MiddleName" class="text-danger"></span> <!-- Display validation error -->
+                <div class="row mb-4">
+                    <div class="col">
+                        <label asp-for="DateOfBirth" class="form-label"></label>
+                        <input asp-for="DateOfBirth" class="form-control" type="date" aria-required="true" />
+                        <span asp-validation-for="DateOfBirth" class="text-danger"></span> <!-- Display validation error -->
+                    </div>
+                    <div class="col">
+                        <label asp-for="DepartmentId" class="form-label"></label>
+                        <select asp-for="DepartmentId" class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                            <option selected>Select Department</option>
+                            <option value="1">Records</option>
+                            <option value="2">Nursing</option>
+                            <option value="3">Doctor</option>
+                            <option value="4">Lab</option>
+                            <option value="5">Admin</option>
+                        </select>
+                        <span asp-validation-for="DepartmentId" class="text-danger"></span> <!-- Display validation error -->
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label asp-for="LastName" class="form-label"></label>
-                    <input asp-for="LastName" class="form-control" />
-                    <span asp-validation-for="LastName" class="text-danger"></span> <!-- Display validation error -->
-                </div>
-                <div class="my-3">
-                    <label asp-for="DateOfBirth"></label>
-                    <input asp-for="DateOfBirth" class="form-control" type="date" aria-required="true" />
-                    <span asp-validation-for="DateOfBirth" class="text-danger"></span> <!-- Display validation error -->
-                </div>
-                <label>Department</label>
-                <div class="form-floating my-2">
-                    <select asp-for="DepartmentId" class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                        <option selected>Select Department</option>
-                        <option value="1">Records</option>
-                        <option value="2">Nursing</option>
-                        <option value="3">Doctor</option>
-                        <option value="4">Lab</option>
-                        <option value="5">Admin</option>
-                    </select>
-                    <span asp-validation-for="DepartmentId" class="text-danger"></span> <!-- Display validation error -->
-                </div>
-                <div class="my-3">
-                    <label asp-for="Status"></label>
-                    <input asp-for="Status" class="form-control" type="text" aria-required="true" />
-                    <span asp-validation-for="Status" class="text-danger"></span> <!-- Display validation error -->
-                </div>
-                <div class="my-3">
-                    <label asp-for="LockEnd"></label>
-                    <input asp-for="LockEnd" class="form-control" type="date" aria-required="true" />
-                    <span asp-validation-for="LockEnd" class="text-danger"></span> <!-- Display validation error -->
+                <div class="row mb-4">
+                    <div class="col">
+                        <label asp-for="Status" class="form-label"></label>
+                        <input asp-for="Status" class="form-control" type="text" aria-required="true" />
+                        <span asp-validation-for="Status" class="text-danger"></span> <!-- Display validation error -->
+                    </div>
+                    <div class="col">
+                        <label asp-for="LockEnd" class="form-label"></label>
+                        <input asp-for="LockEnd" class="form-control" type="date" aria-required="true" />
+                        <span asp-validation-for="LockEnd" class="text-danger"></span> <!-- Display validation error -->
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col">

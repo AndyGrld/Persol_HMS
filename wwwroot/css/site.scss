@@ -217,9 +217,9 @@ table td, table thead {
 		}
 		.custom-table{
 			width: 100%;
+			overflow: hidden;
 			thead{
 				font-weight: 400;
-				background-color: var(--btn-color);
 				font-size: 17px;
 				border-bottom: 1px solid rgba(0, 0, 0, 0.39);
 				th{
@@ -229,6 +229,10 @@ table td, table thead {
 			tbody{
 				tr{
 					border-bottom: 1px solid rgba(0, 0, 0, 0.39);
+					overflow: hidden;
+					&:hover{
+						background-color: var(--bg-color);
+					}
 					td{
 						padding: 8px;
 					}

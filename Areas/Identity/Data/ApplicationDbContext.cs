@@ -16,8 +16,6 @@ public class ApplicationDbContext : IdentityDbContext<User>
     {
         base.OnModelCreating(builder);
 
-
-
         builder.Entity<Patient>()
             .HasMany(p => p.Medicals)
             .WithOne(m => m.Patient)
@@ -78,4 +76,5 @@ public class ApplicationDbContext : IdentityDbContext<User>
     public DbSet<AdmittedPatient> AdmittedPatients { get; set; }
     public DbSet<Drug> Drugs { get; set; }
     public DbSet<Department> Departments { get; set; }
+    public DbSet<Revenue> Revenues { get; set; }
 }
