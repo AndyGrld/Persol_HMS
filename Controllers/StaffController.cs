@@ -244,7 +244,6 @@ public class StaffController : Controller
         }
 
         var saveModel = model.CreateMedicalViewModel[0];
-        // Console.WriteLine($"=======> Symptoms: {saveModel.Symptoms} <========");
 
         if (!string.IsNullOrEmpty(saveModel.PatientNo) &&
             saveModel.Diagnoses != null &&
@@ -343,7 +342,6 @@ public class StaffController : Controller
             // if admitted save status as IsAdmitted and forget about lab and drugs
             if (SelectWardNames.Count() > 0 && !string.IsNullOrEmpty(SelectWardNames[0]))
             {
-			    Console.WriteLine($"=======> SelectWardNames: {SelectWardNames[0]} <========");
                 medicalRecord.WardName = SelectWardNames[0];
                 var Admitted = new AdmittedPatient(){
                     ID = _context.AdmittedPatients.Count() == 0 ? 1 : _context.AdmittedPatients.Max(d => d.ID) + 1,
@@ -619,9 +617,9 @@ public class StaffController : Controller
             return RedirectToHome();
         }
         if (!string.IsNullOrEmpty(vital.PatientNo) &&
-            vital.Temperature != null &&
-            vital.Height != null &&
-            vital.Weight != null &&
+            vital.Temperature != 0 &&
+            vital.Height != 0 &&
+            vital.Weight != 0 &&
             vital.BloodPressure != null)
         {
             var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo == vital.PatientNo);
