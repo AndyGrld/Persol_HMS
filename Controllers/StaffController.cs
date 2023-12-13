@@ -1060,6 +1060,9 @@ public class StaffController : Controller
             Drugs = m.Drugs,
             Labs = m.Labs
         }) .OrderBy(m => m.Date).ToList();
+		
+		var mostRecent = medicalList.OrderByDescending(m => m.Date).FirstOrDefault();
+		ViewBag.mostRecent = $"{mostRecent.Date.Year}-{mostRecent.Date.Month}-{mostRecent.Date.Day}";
 
 
         var yearlyClass = new Year();

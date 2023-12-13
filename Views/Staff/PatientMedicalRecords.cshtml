@@ -20,8 +20,13 @@
 					Select Year
 				</p>
 			</h2>
+			@{
+				string mostRecent = "";
+			}
 			<div class="mt-4" style="display:grid;grid-template-columns:repeat(4, 1fr);gap:10px">
-				<div class="card p-1" style="cursor:pointer">Most recent</div>
+				<div class="card p-1" style="cursor:pointer" onclick="showRecord('@ViewBag.mostRecent')">
+					Most recent
+				</div>
 				@foreach(var year in Model.YearlyRecords)
 				{
 					<div class="card p-1 year"
@@ -38,7 +43,8 @@
 						@foreach(var day in month.MedicalRecords)
 						{
 							<div class="day card p-1 @month.MonthNo@month.Date.Year"
-							style="cursor:pointer;display:none">
+							style="cursor:pointer;display:none"
+							onclick="showRecord('@year.YearNo-@month.MonthNo-@day.Date.Day')">
 								@day.Date.ToShortDateString()
 							</div>
 						}
@@ -52,12 +58,11 @@
 			@foreach(var month in year.Months){
 				@if (month.MedicalRecords.Any()){
 					@foreach(var record in month.MedicalRecords){
-					<div class="@year.YearNo-@month.MonthNo-@record.Date.Day">
-						@*<div style="display:flex;justify-content:space-between;flex-direction:row">
+					<div class="@year.YearNo-@month.MonthNo-@record.Date.Day record">
+						<div class="m-title">
 							<h4 class="p-2">Medical Record: @record.ID</h4>
 							<h4 class="p-2">@record.Date.ToString("dddd, dd MMMM yyyy")</h4>
 						</div>
-						<hr style="margin:0">*@
 						<div class="p-3">
 							<div class="m-grid">
 								<div class="m-col">
@@ -67,15 +72,15 @@
 											<h5>Temperature</h5>
 											<p>@record.Vital.Temperature °C</p>
 										</div>
-										<div>
+										<div style="background: linear-gradient(225deg,rgba(100, 200, 150, 0.5), transparent)">
 											<h5>Blood Pressure</h5>
 											<p>@record.Vital.BloodPressure mmHg</p>
 										</div>
-										<div>
+										<div style="background: linear-gradient(45deg,rgba(100, 200, 150, 0.5), transparent)">
 											<h5>Height</h5>
 											<p>@record.Vital.Height cm</p>
 										</div>
-										<div>
+										<div style="background: linear-gradient(315deg,rgba(100, 200, 150, 0.5), transparent)">
 											<h5>Weight</h5>
 											<p>@record.Vital.Weight kg</p>
 										</div>
@@ -92,26 +97,22 @@
 									</div>
 								</div>
 							</div>
-							<div class="table-grid">
+							<div class="m-grid">
 								@if (record.Drugs.Any())
 								{
-									<table class="custom-table table-bordered">
-										<thead>
-											<tr>
-												<th>Drug Name</th>
-												<th>Dosage</th>
-											</tr>
-										</thead>
-										<tbody>
+									<div class="m-table">
+											<ul class="t-row ul-head">
+												<li>Drug Name</li>
+												<li>Dosage</li>
+											</ul>
 											@foreach (var drug in record.Drugs)
 											{
-												<tr>
-													<td>@drug.DrugName</td>
-													<td>@drug.Dosage</td>
-												</tr>
+												<ul class="t-row">
+													<li>@drug.DrugName</li>
+													<li>@drug.Dosage</li>
+												</ul>
 											}
-										</tbody>
-									</table>
+									</div>
 								}
 								else
 								{
@@ -119,25 +120,21 @@
 								}
 								@if (record.Labs.Any())
 								{
-									<table class="custom-table table-bordered">
-										<thead>
-											<tr>
-												<th>Lab Name</th>
-												<th>Notes</th>
-												<th>Result</th>
-											</tr>
-										</thead>
-										<tbody>
+									<div class="m-table">
+											<ul class="t-row t-row0 ul-head">
+												<li>Lab Name</li>
+												<li>Notes</li>
+												<li>Result</li>
+											</ul>
 											@foreach (var lab in record.Labs)
 											{
-												<tr>
-													<td>@lab.LabName</td>
-													<td>@lab.Notes</td>
-													<td>@lab.Result</td>
-												</tr>
+												<ul class="t-row t-row0">
+													<li>@lab.LabName</li>
+													<li>@lab.Notes</li>
+													<li>@lab.Result</li>
+												</ul>
 											}
-										</tbody>
-									</table>
+									</div>
 								}
 								else
 								{
@@ -161,6 +158,7 @@
 			let yearDivs = document.querySelectorAll(".year")
 			let monthDivs = document.querySelectorAll('.month')
 			let dayDivs = document.querySelectorAll('.day')
+			let allRecords = document.querySelectorAll('.record')
 			let prevPage = ""
 
 			
@@ -207,5 +205,14 @@
 					});
 					caption.innerText = "Select Year"
 				}
+			}
+			function showRecord(recordID){
+				let singleRecord = document.getElementsByClassName(recordID)
+				
+				allRecords.forEach(element => {
+					element.style.display = "none";
+				});
+				
+				singleRecord[0].style.display = "block"
 			}
 		</script>

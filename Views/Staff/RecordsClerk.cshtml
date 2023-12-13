@@ -76,7 +76,7 @@
                 </div>
                 <div>
                     <label asp-for="DateOfBirth" class="form-label">Patient's Date of Birth</label>
-                    <input asp-for="DateOfBirth" type="date" class="form-control">
+                    <input asp-for="DateOfBirth" type="date" value="2000-01-01" min="1920-01-01" max="2022-01-01" class="form-control">
                     <span asp-validation-for="DateOfBirth" class="text-danger" style="position:absolute"></span>
                 </div>
                 <div>
@@ -100,7 +100,7 @@
                 <div>
                     <label class="form-label">Enter Insurance Expiry Date</label>
                     <input asp-for="InsuranceExpireDate" type="date" class="form-control">
-                    <span asp-validation-for="InsuranceExpireDate" class="text-danger" style="position:absolute"></span>
+                    <span asp-validation-for="InsuranceExpireDate" value="2000-01-01" min="2000-01-01" class="text-danger" style="position:absolute"></span>
                 </div>
                 <div>
                     <label asp-for="ContactNo" class="form-label">Patient Contact Number</label>

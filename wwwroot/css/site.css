@@ -690,26 +690,37 @@ table td, table thead {
   gap: 20px;
 }
 
-.m-grid {
+.record {
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 10px;
+  box-shadow: 0 0 3px var(--btn-color);
+}
+.record .m-title {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  background: linear-gradient(90deg, rgba(189, 255, 255, 0.377), transparent, rgba(189, 255, 255, 0.377));
+}
+.record .m-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
   padding: 5px;
 }
-
-.m-col {
+.record .m-grid .m-col {
   height: 100%;
   display: flex;
   justify-content: space-between;
   flex-direction: column;
 }
-.m-col .m-vitals {
+.record .m-grid .m-col .m-vitals {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
   flex-direction: column;
 }
-.m-col .m-vitals div {
+.record .m-grid .m-col .m-vitals div {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -717,16 +728,48 @@ table td, table thead {
   border-radius: 10px;
   width: 100%;
   height: 120px;
-  background: linear-gradient(150deg, rgba(100, 200, 150, 0.5), transparent);
+  background: linear-gradient(135deg, rgba(100, 200, 150, 0.5), transparent);
 }
-.m-col .m-vitals div h5, .m-col .m-vitals div p {
+.record .m-grid .m-col .m-vitals div h5, .record .m-grid .m-col .m-vitals div p {
   font-weight: 400;
 }
-.m-col .symptoms {
+.record .m-grid .m-col .symptoms {
   height: 100%;
 }
-.m-col .symptoms div {
+.record .m-grid .m-col .symptoms div {
   height: 100px;
+  padding: 10px;
+  font-size: 15px;
   border-radius: 10px;
   background: linear-gradient(300deg, rgba(66, 84, 250, 0.5), rgba(130, 222, 250, 0.5));
+}
+
+.m-table {
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid green;
+}
+.m-table .t-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  flex-direction: row;
+  margin: 0;
+  padding: 0;
+}
+.m-table .t-row:hover {
+  background-color: rgba(0, 255, 255, 0.1);
+}
+.m-table .t-row li {
+  list-style-type: none;
+  margin: 0;
+  padding: 5px;
+  border: 1px solid green;
+}
+.m-table .ul-head:hover {
+  background-color: transparent;
+}
+.m-table .t-row0 {
+  grid-template-columns: repeat(3, 1fr);
 }/*# sourceMappingURL=site.css.map */
