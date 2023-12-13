@@ -13,6 +13,8 @@
 			<h2>@($"Medical Records for {Model.Patient.FirstName} {Model.Patient.LastName}")</h2>
 			<h2>@($"{Model.Patient.PatientNo}")</h2>
 		</div>
+		@if(Model.YearlyRecords.Any())
+		{
 
 		<div class="form-card p-3">
             <h2 id="title">
@@ -34,7 +36,7 @@
 					{
 						<div class="month text-center card p-1 @year.YearNo"
 							style="cursor:pointer;display:none"
-							onclick="showDays('@month.MonthNo@month.Date.Year', '@year.YearNo')">
+							onclick="showDays('@month.MonthNo@month.Date.Year', '@year.YearNo', '@month.Date.ToString("MMM")')">
 							@month.Date.ToString("MMM")
 						</div>
 						@foreach(var day in month.MedicalRecords)
@@ -42,7 +44,7 @@
 							<div class="day text-center card p-1 @month.MonthNo@month.Date.Year"
 							style="cursor:pointer;display:none"
 							onclick="showRecord('@year.YearNo-@month.MonthNo-@day.Date.Day')">
-								@day.Date.ToShortDateString()
+								@day.Date.ToString("dddd, dd")
 							</div>
 						}
 					}
@@ -50,6 +52,9 @@
 				<div class="card p-1 text-center" style="cursor:pointer" onclick="back()">Back</div>
 			</div>
 		</div>
+		}else{
+			<p class="no-patinet m-0">@Model.Patient.FirstName has no medical records.</p>
+		}
 		
 		@foreach(var year in Model.YearlyRecords){
 			@foreach(var month in year.Months){
@@ -167,6 +172,7 @@
 			let dayDivs = document.querySelectorAll('.day')
 			let allRecords = document.querySelectorAll('.record')
 			let prevPage = ""
+			let prevMonth = ""
 
 			
 			function showMonth(year){
@@ -178,18 +184,19 @@
 				prevPage = ""
 				
 				monthDiv[0].style.display = "block"
-				caption.innerText = "Select Month"
+				caption.innerText = `Select Month in ${year}`
 			}
-			function showDays(month, previous){
+			function showDays(month, previous, monthString){
 				let dayDiv = document.getElementsByClassName(month)
 				prevPage = previous
+				prevMonth = monthString
 				
 				monthDivs.forEach(element => {
 					element.style.display = "none";
 				});
 				
 				dayDiv[0].style.display = "block"
-				caption.innerText = "Select Day"
+				caption.innerText = `Select Day in ${monthString}`
 			}
 			function back(){
 				monthDivs.forEach(element => {
@@ -203,7 +210,7 @@
 					prev = document.getElementsByClassName(prevPage)
 					prev[0].style.display = "block"
 					prevPage = ""
-					caption.innerText = "Select Month"
+					caption.innerText = `Select Day in ${monthString}`
 				}
 				else
 				{

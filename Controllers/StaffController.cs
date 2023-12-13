@@ -1074,8 +1074,10 @@ public class StaffController : Controller
         }) .OrderByDescending(m => m.Date).ToList();
 		
 		var Recent = medicalList.OrderByDescending(m => m.Date).FirstOrDefault();
-		string mostRecent = $"{Recent.Date.Year}-{Recent.Date.Month}-{Recent.Date.Day}";
-
+		string mostRecent = "";
+		if (Recent != null){
+			mostRecent = $"{Recent.Date.Year}-{Recent.Date.Month}-{Recent.Date.Day}";
+		}
 
         var yearlyClass = new Year();
         var monthlyClass = new Month();
@@ -1331,7 +1333,7 @@ public class StaffController : Controller
 				
                 medical.Bill += bill;
 
-                if(patient.InsuranceExpireDate.Date > DateTime.Now.Date && medical.Bill == 0)
+                if(!patient.InsuranceType.ToUpper().Contains("NONE") && patient.InsuranceExpireDate.Date > DateTime.Now.Date && medical.Bill == 0)
                 {
                     RemovePatientFromQueue("Pharmacy", PatientNo);
                     _context.SaveChanges();
@@ -1350,6 +1352,12 @@ public class StaffController : Controller
                 RemovePatientFromQueue("Pharmacy", PatientNo);
                 _context.Queues.Add(cashierQueue);
                 _context.SaveChanges();
+				
+				if(bill == 0)
+                {
+                    TempData["P_ConfirmationMessage"] = "Insurance was used for the drugs, patient may visit cashier to pay remaining bill.";
+                    return RedirectToAction("PharmacyQueue");
+                }
 
                 TempData["P_ConfirmationMessage"] = "Drug prices updated successfully. Patient may visit cashier to pay bills.";
                 return RedirectToAction("PharmacyQueue");
