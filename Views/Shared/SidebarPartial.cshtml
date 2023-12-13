@@ -8,9 +8,8 @@
 	@if(ViewBag.deptId == 1)
 	{
 		<div class="avatar">
-			<div class="a-overlay"></div>
+			<div class="a-overlay"><p>@UserManager.GetUserName(User)</p></div>
 			<img src="~/images/records.webp"/>
-			<p>@UserManager.GetUserName(User)</p>
 		</div>
 		<a href="@Url.Action("RecordsClerk")">
 			<button type="button">Home</button>
@@ -25,9 +24,8 @@
 	@if(ViewBag.deptId == 2)
 	{
 		<div class="avatar">
-			<div class="a-overlay"></div>
+			<div class="a-overlay"><p>@UserManager.GetUserName(User)</p></div>
 			<img src="~/images/nurse.webp"/>
-			<p>@UserManager.GetUserName(User)</p>
 		</div>
 		<a href="@Url.Action("Nurse")">
 			<button type="button">Next patient</button>
@@ -42,9 +40,8 @@
 	@if(ViewBag.deptId == 3)
 	{
 		<div class="avatar">
-			<div class="a-overlay"></div>
+			<div class="a-overlay"><p>@UserManager.GetUserName(User)</p></div>
 			<img src="~/images/doctor.jpg"/>
-			<p>@UserManager.GetUserName(User)</p>
 		</div>
 		<a href="@Url.Action("DoctorQueue")">
 			<button type="button">View Queue</button>
@@ -52,7 +49,7 @@
 		</a>
 		<a href="@Url.Action("AdmittedQueue")">
 			<button type="button">Admitted List</button>
-			<img style="width:20px;height:20px" src="~/icons/bed.png"/>
+			<img style="width:20px;height:20px" src="~/icons/bed-svgrepo-com.svg"/>
 		</a>
 		<a href="@Url.Action("PatientList")">
 			<button type="button">Patients List</button>
@@ -63,9 +60,8 @@
 	@if(ViewBag.deptId == 4)
 	{
 		<div class="avatar">
-			<div class="a-overlay"></div>
+			<div class="a-overlay"><p>@UserManager.GetUserName(User)</p></div>
 			<img src="~/images/lab.webp"/>
-			<p>@UserManager.GetUserName(User)</p>
 		</div>
 		<a href="@Url.Action("Lab")">
 			<button type="button">Next patient</button>
@@ -84,9 +80,8 @@
 	@if(ViewBag.deptId == 5)
 	{
 		<div class="avatar">
-			<div class="a-overlay"></div>
+			<div class="a-overlay"><p>@UserManager.GetUserName(User)</p></div>
 			<img src="~/images/admin.jpg"/>
-			<p>@UserManager.GetUserName(User)</p>
 		</div>
 		<a href="@Url.Action("PatientList", "Staff")">
 			<button type="button">Patients List</button>
@@ -101,9 +96,8 @@
 	@if(ViewBag.deptId == 6)
 	{
 		<div class="avatar">
-			<div class="a-overlay"></div>
+			<div class="a-overlay"><p>@UserManager.GetUserName(User)</p></div>
 			<img src="~/images/pharmacy.jpg"/>
-			<p>@UserManager.GetUserName(User)</p>
 		</div>
 		<a href="@Url.Action("PharmacyQueue")">
 			<button type="button">View Queue</button>
@@ -114,9 +108,8 @@
 	@if(ViewBag.deptId == 7)
 	{
 		<div class="avatar">
-			<div class="a-overlay"></div>
+			<div class="a-overlay"><p>@UserManager.GetUserName(User)</p></div>
 			<img src="~/images/cashier.webp"/>
-			<p>@UserManager.GetUserName(User)</p>
 		</div>
 		<a href="@Url.Action("CashierQueue")">
 			<button type="button">View Queue</button>

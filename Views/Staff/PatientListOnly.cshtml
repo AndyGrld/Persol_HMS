@@ -1,4 +1,4 @@
-@model List<Patient>
+@model PatientListView
 
 <partial name="Navbar" />
 
@@ -10,7 +10,11 @@
     <div class="right">
         
         <div class="form-card">
-            <h2 class="text-center py-3">Patient List</h2>
+            <h2 id="title" class="p-3">
+				<p>
+					Patient List
+				</p>
+			</h2>
             <form method="get"class="search" action="@Url.Action("PatientListOnly")">
                 <div class="input-group mb-3 px-3">
                     <input type="text" name="search" class="form-control" placeholder="Search by Patient_No, Firstname or Lastname" aria-describedby="button-addon2">
@@ -18,7 +22,7 @@
                 </div>
             </form>
 
-            @if (Model.Any())
+            @if (Model.Patients.Count > 0)
             {
                 <table class="custom-table">
                     <thead>
@@ -31,7 +35,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var patient in Model)
+                        @foreach (var patient in Model.Patients)
                         {
                             <tr>
                                 <td>@patient.PatientNo</td>
@@ -68,19 +72,19 @@
 
                 <nav class="py-3" aria-label="Page navigation example">
                     <ul class="pagination justify-content-center">
-                        @if (ViewBag.CurrentPage > 1)
+                        @if (Model.CurrentPage > 1)
                         {
-                            <li class="page-item"><a class="page-link" href="@Url.Action("PatientList", new { page = ViewBag.CurrentPage - 1, search = ViewBag.Search })">Previous</a></li>
+                            <li class="page-item"><a class="page-link" href="@Url.Action("PatientList", new { page = Model.CurrentPage - 1, search = Model.Search })">Previous</a></li>
                         }
 
-                        @for (int i = 1; i <= ViewBag.TotalPatients / ViewBag.PageSize + 1; i++)
+                        @for (int i = 1; i <= Model.TotalPatients / Model.PageSize + 1; i++)
                         {
-                            <li class="page-item"><a href="@Url.Action("PatientList", new { page = i, search = ViewBag.Search })" class="@(i == ViewBag.CurrentPage ? "active page-link" : "page-link")">@i</a></li>
+                            <li class="page-item"><a href="@Url.Action("PatientList", new { page = i, search = Model.Search })" class="@(i == Model.CurrentPage ? "active page-link" : "page-link")">@i</a></li>
                         }
 
-                        @if (ViewBag.CurrentPage < ViewBag.TotalPatients / ViewBag.PageSize + 1)
+                        @if (Model.CurrentPage < Model.TotalPatients / Model.PageSize + 1)
                         {
-                            <li class="page-item"><a class="page-link" href="@Url.Action("PatientList", new { page = ViewBag.CurrentPage + 1, search = ViewBag.Search })">Next</a></li>
+                            <li class="page-item"><a class="page-link" href="@Url.Action("PatientList", new { page = Model.CurrentPage + 1, search = Model.Search })">Next</a></li>
                         }
                     </ul>
                 </nav>

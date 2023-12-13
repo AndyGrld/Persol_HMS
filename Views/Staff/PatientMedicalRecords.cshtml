@@ -20,29 +20,26 @@
 					Select Year
 				</p>
 			</h2>
-			@{
-				string mostRecent = "";
-			}
-			<div class="mt-4" style="display:grid;grid-template-columns:repeat(4, 1fr);gap:10px">
-				<div class="card p-1" style="cursor:pointer" onclick="showRecord('@ViewBag.mostRecent')">
+			<div class="mt-4" style="display:grid;grid-template-columns:repeat(5, 1fr);gap:10px">
+				<div class="card p-1 text-center" style="cursor:pointer" onclick="showRecord('@Model.MostRecent')">
 					Most recent
 				</div>
 				@foreach(var year in Model.YearlyRecords)
 				{
-					<div class="card p-1 year"
+					<div class="card text-center p-1 year"
 						style="cursor:pointer" onclick="showMonth('@year.YearNo')">
 						@year.YearNo
 					</div>
 					@foreach(var month in year.Months)
 					{
-						<div class="month card p-1 @year.YearNo"
+						<div class="month text-center card p-1 @year.YearNo"
 							style="cursor:pointer;display:none"
 							onclick="showDays('@month.MonthNo@month.Date.Year', '@year.YearNo')">
 							@month.Date.ToString("MMM")
 						</div>
 						@foreach(var day in month.MedicalRecords)
 						{
-							<div class="day card p-1 @month.MonthNo@month.Date.Year"
+							<div class="day text-center card p-1 @month.MonthNo@month.Date.Year"
 							style="cursor:pointer;display:none"
 							onclick="showRecord('@year.YearNo-@month.MonthNo-@day.Date.Day')">
 								@day.Date.ToShortDateString()
@@ -50,7 +47,7 @@
 						}
 					}
 				}
-				<div class="card p-1" style="cursor:pointer" onclick="back()">Back</div>
+				<div class="card p-1 text-center" style="cursor:pointer" onclick="back()">Back</div>
 			</div>
 		</div>
 		
@@ -58,7 +55,7 @@
 			@foreach(var month in year.Months){
 				@if (month.MedicalRecords.Any()){
 					@foreach(var record in month.MedicalRecords){
-					<div class="@year.YearNo-@month.MonthNo-@record.Date.Day record">
+					<div class="@year.YearNo-@month.MonthNo-@record.Date.Day record" >
 						<div class="m-title">
 							<h4 class="p-2">Medical Record: @record.ID</h4>
 							<h4 class="p-2">@record.Date.ToString("dddd, dd MMMM yyyy")</h4>
@@ -69,18 +66,22 @@
 									<h4 class="text-center">Vitals</h4>
 									<div class="m-vitals">
 										<div>
+											<img style="width:20px;heigth:20px" src="~/icons/medical/thermometer-max-svgrepo-com.svg"/>
 											<h5>Temperature</h5>
 											<p>@record.Vital.Temperature °C</p>
 										</div>
-										<div style="background: linear-gradient(225deg,rgba(100, 200, 150, 0.5), transparent)">
+										<div style="background: linear-gradient(225deg,rgba(128, 238, 128, 0.5), transparent)">
+											<img style="width:20px;heigth:20px" src="~/icons/medical/blood-pressure-monitor-svgrepo-com.svg"/>
 											<h5>Blood Pressure</h5>
 											<p>@record.Vital.BloodPressure mmHg</p>
 										</div>
-										<div style="background: linear-gradient(45deg,rgba(100, 200, 150, 0.5), transparent)">
+										<div style="background: linear-gradient(45deg,rgba(0, 255, 255, 0.5), transparent)">
+											<img style="width:20px;heigth:20px" src="~/icons/medical/height-line-svgrepo-com.svg"/>
 											<h5>Height</h5>
 											<p>@record.Vital.Height cm</p>
 										</div>
-										<div style="background: linear-gradient(315deg,rgba(100, 200, 150, 0.5), transparent)">
+										<div style="background: linear-gradient(315deg,rgba(128, 128, 128, 0.5), transparent)">
+											<img style="width:20px;heigth:20px" src="~/icons/medical/weight-svgrepo-com.svg"/>
 											<h5>Weight</h5>
 											<p>@record.Vital.Weight kg</p>
 										</div>
@@ -88,12 +89,18 @@
 								</div>
 								<div class="m-col">
 									<div class="symptoms mb-3">
-										<h4>Symptoms</h4>
-										<div>@record.Symptom?.Symptoms</div>
+										<div style="display:flex;flex-direction:row">
+											<img style="width:20px;heigth:20px;margin-right:10px;position:relative;bottom:3px" src="~/icons/medical/sick-svgrepo-com.svg"/>
+											<h4>Symptoms</h4>
+										</div>
+										<div class="s">@record.Symptom?.Symptoms</div>
 									</div>
 									<div class="symptoms">
-										<h4>Diagnoses</h4>
-										<div>@record.Diagnoses</div>
+										<div style="display:flex;flex-direction:row">
+											<img style="width:20px;heigth:20px;margin-right:10px;position:relative;bottom:3px" src="~/icons/medical/health-medical-medical-report-svgrepo-com.svg"/>
+											<h4>Diagnoses</h4>
+										</div>
+										<div class="s">@record.Diagnoses</div>
 									</div>
 								</div>
 							</div>

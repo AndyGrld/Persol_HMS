@@ -9,6 +9,7 @@ namespace Persol_HMS.Models.ViewModels
     {
         public Patient Patient { get; set; }
         public List<Year> YearlyRecords { get; set; }
+        public string? MostRecent { get; set; }
     }
 
     public class MedicalList

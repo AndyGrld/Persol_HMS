@@ -104,6 +104,23 @@ body {
   background: linear-gradient(to right, white, var(--btn-color) 95%, var(--text-color));
   margin: 5px 0 5px 10px;
 }
+.left .avatar {
+  position: relative;
+}
+.left .avatar .a-overlay {
+  position: absolute;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.5);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 18px;
+}
 .left .avatar img {
   width: 100%;
   height: 170px;
@@ -728,7 +745,7 @@ table td, table thead {
   border-radius: 10px;
   width: 100%;
   height: 120px;
-  background: linear-gradient(135deg, rgba(100, 200, 150, 0.5), transparent);
+  background: linear-gradient(135deg, rgba(252, 86, 86, 0.5), transparent);
 }
 .record .m-grid .m-col .m-vitals div h5, .record .m-grid .m-col .m-vitals div p {
   font-weight: 400;
@@ -736,7 +753,7 @@ table td, table thead {
 .record .m-grid .m-col .symptoms {
   height: 100%;
 }
-.record .m-grid .m-col .symptoms div {
+.record .m-grid .m-col .symptoms .s {
   height: 100px;
   padding: 10px;
   font-size: 15px;

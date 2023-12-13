@@ -41,7 +41,7 @@
                 <div class="forOldPatient" style="position:relative;top:15px">
                     <div class="mb-3" style="position:relative">
                         <label asp-for="PatientNo" class="form-label">Patient's Id Number</label>
-                        <input asp-for="PatientNo" type="text" class="form-control" id="oldPatientId">
+                        <input style="max-width:400px" asp-for="PatientNo" type="text" class="form-control" id="oldPatientId">
                         <span asp-validation-for="PatientNo" class="text-danger" style="position:absolute"></span>
                         <button type="submit" class="btn btn-primary form-button mt-4" id="openConfirmationModalOldPatient">Submit</button>
                     </div>
@@ -53,7 +53,7 @@
                 <hr>
                 <div style="position:relative;top:15px">
                     <div class="mb-3" style="position:relative">
-                        <input name="search" type="text" class="form-control" placeholder="Search by Patient_No, Firstname or Lastname">
+                        <input style="max-width:400px" name="search" type="text" class="form-control" placeholder="Search by Patient_No, Firstname or Lastname">
                         <button type="submit" class="btn btn-primary form-button mt-4" id="openConfirmationModalNewPatient">Search</button>
                     </div>
                 </div>
@@ -99,8 +99,8 @@
                 </div>
                 <div>
                     <label class="form-label">Enter Insurance Expiry Date</label>
-                    <input asp-for="InsuranceExpireDate" type="date" class="form-control">
-                    <span asp-validation-for="InsuranceExpireDate" value="2000-01-01" min="2000-01-01" class="text-danger" style="position:absolute"></span>
+                    <input asp-for="InsuranceExpireDate" type="date"  value="2000-01-01" min="2000-01-01" class="form-control">
+                    <span asp-validation-for="InsuranceExpireDate" class="text-danger" style="position:absolute"></span>
                 </div>
                 <div>
                     <label asp-for="ContactNo" class="form-label">Patient Contact Number</label>
