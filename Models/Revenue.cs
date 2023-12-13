@@ -10,7 +10,6 @@ namespace Persol_HMS.Models
     {
         [Key]
         public int ID { get; set; }
-        public double Amount { get; set; }
         public DateTime Period { get; set; }
     }
 }

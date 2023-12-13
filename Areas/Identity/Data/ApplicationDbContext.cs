@@ -76,5 +76,5 @@ public class ApplicationDbContext : IdentityDbContext<User>
     public DbSet<AdmittedPatient> AdmittedPatients { get; set; }
     public DbSet<Drug> Drugs { get; set; }
     public DbSet<Department> Departments { get; set; }
-    public DbSet<Revenue> Revenues { get; set; }
+    public DbSet<DailyData> DailyDatas { get; set; }
 }

@@ -53,14 +53,16 @@ public class AdminController : Controller
         }
 
         var viewModel = new AdminDashboardViewModel(){
-            Revenues = _context.Revenues.Where(r => r.Period.Month == DateTime.Now.Month).ToList(),
+            DailyDatas = _context.DailyDatas.Where(dd => dd.Date.Month == DateTime.Now.Month).ToList(),
             Records = _context.Users.Include(u => u.Department).Where(u => u.Department.DepartmentName == "Records").ToList(),
             Nurses = _context.Users.Include(u => u.Department).Where(u => u.Department.DepartmentName == "Nursing").ToList(),
             Doctors = _context.Users.Include(u => u.Department).Where(u => u.Department.DepartmentName == "Doctor").ToList(),
             LabPersonnels = _context.Users.Include(u => u.Department).Where(u => u.Department.DepartmentName == "Lab").ToList(),
             Pharmacists = _context.Users.Include(u => u.Department).Where(u => u.Department.DepartmentName == "Pharmacy").ToList(),
             Cashiers = _context.Users.Include(u => u.Department).Where(u => u.Department.DepartmentName == "Cashier").ToList(),
-            Admins = _context.Users.Include(u => u.Department).Where(u => u.Department.DepartmentName == "Admin").ToList()
+            Admins = _context.Users.Include(u => u.Department).Where(u => u.Department.DepartmentName == "Admin").ToList(),
+            Patients = _context.Patients.ToList(),
+            TotalUsers = _context.Users.ToList().Count
         };
 
         return View(viewModel);

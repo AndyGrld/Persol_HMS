@@ -10,8 +10,10 @@ namespace Persol_HMS.Models
     {
         [Key]
         public int ID { get; set; }
-        public int PatientsToday { get; set; }
-        public int AdmittedToday { get; set; }
-        public int DischargedToday { get; set; }
+        public int TotalPatients { get; set; }
+        public int TotalAdmitted { get; set; }
+        public int TotalDischarged { get; set; }
+        public double Amount { get; set; }
+        public DateTime Date { get; set; }
     }
 }
