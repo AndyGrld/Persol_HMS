@@ -133,6 +133,7 @@ table td, table thead {
 .right{
 	padding: 0 30px;
 	.form-card{
+		position: relative;
 		border-radius: 10px;
 		margin: 30px 0;
 		background-color: var(--card-bg-color);
@@ -259,6 +260,18 @@ table td, table thead {
 		}
 		.no-patinet{
 			font-size: 18px;
+		}
+		nav{
+			position: absolute;
+			bottom: 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 100%;
+			ul{
+				position: relative;
+				top:10px;
+			}
 		}
 	}
 }

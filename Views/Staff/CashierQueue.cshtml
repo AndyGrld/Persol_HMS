@@ -21,7 +21,7 @@
     <partial name="SidebarPartial" />
 
     <div class="right">
-        <div class="form-card">
+        <div class="form-card" style="@(Model.QueueViewModel.TotalPatients > 8 ? "height:950px" : "height:800px")">
             <h2 class="text-center py-3">Cashier Queue</h2>
             <form method="get"class="search" action="@Url.Action("CashierQueue")">
                 <div class="input-group mb-3 px-3">

@@ -21,8 +21,90 @@
     <partial name="SidebarPartial" />
 
     <div class="right">
+
+
+        @for (int i = 0; i < Model.QueueViewModel.PatientsInLine.Count(); i++)
+        {
+            int index = 0;
+            var patient = Model.QueueViewModel.PatientsInLine[i];
+            @if(patient.HasVisitedLab)
+            {
+                <div class="lab-report" id="lab-report-@patient.PatientNo">
+                    <div class="form-card">
+                        @foreach(var lab in @Model.CreateMedicalViewModel[i].visitedLabs){
+                            @if(index == 0){
+                                <div id="lab-@patient.PatientNo-@index">
+                                    <h2 id="title" class="p-3">
+                                    <p id="@lab.LabName">
+                                        @lab.LabName
+                                    </p>
+                                    <button class="close-button" onclick="toggleLabReport(0, 'lab-report-@patient.PatientNo', 'exampleModal-@patient.PatientNo')" type="button">
+                                        X
+                                    </button>
+                                    </h2>
+                                    <hr>
+                                    <div class="lab-details">
+                                        <h3>Notes</h3>
+                                        <p>
+                                            @lab.Notes
+                                        </p>
+                                        <hr>
+                                        <h3>Result</h3>
+                                        <p>
+                                            @lab.Result
+                                        </p>
+                                    </div>
+                                </div>
+                            }else{
+                                <div id="lab-@patient.PatientNo-@index" style="display:none">
+                                    <h2 id="title" class="p-3">
+                                    <p id="@lab.LabName">
+                                        @lab.LabName
+                                    </p>
+                                    <button class="close-button" onclick="toggleLabReport(0, 'lab-report-@patient.PatientNo', 'exampleModal-@patient.PatientNo')" type="button">
+                                        X
+                                    </button>
+                                    </h2>
+                                    <hr>
+                                    <div class="lab-details">
+                                        <h3>Notes</h3>
+                                        <p>
+                                            @lab.Notes
+                                        </p>
+                                        <hr>
+                                        <h3>Result</h3>
+                                        <p>
+                                            @lab.Result
+                                        </p>
+                                        <button type="button">Show Files</button>
+                                    </div>
+                                </div>
+                            }
+                            index++;
+                        }
+                        
+                        <hr style="margin-bottom:15px">
+                        <div>
+                            <ul class="pagination justify-content-center">
+                                @for (int pageIndex = 0; pageIndex < Model.CreateMedicalViewModel[i].visitedLabs.Count; pageIndex++)
+                                {
+                                    <li onclick="togglelabview('@patient.PatientNo', 'lab-@patient.PatientNo-@pageIndex')" class="page-link">
+                                        @(pageIndex + 1)
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+
+
+
+
+
         
-        <div class="form-card">
+        <div class="form-card" style="@(Model.QueueViewModel.TotalPatients > 8 ? "height:950px" : "height:800px")">
             <h2 id="title" class="p-3">
 				<p>
 					Doctor Queue
@@ -67,78 +149,7 @@
                                     </button>
                                 </td>
                             </tr>
-                            @if(patient.HasVisitedLab)
-                                {
-                                    int index = 0;
-                                    <div class="lab-report" id="lab-report-@patient.PatientNo">
-                                        <div class="form-card">
-                                            @foreach(var lab in @Model.CreateMedicalViewModel[i].visitedLabs){
-                                                if(index == 0){
-                                                    <div id="lab-@patient.PatientNo-@index">
-                                                        <h2 id="title" class="p-3">
-                                                        <p id="@lab.LabName">
-                                                            @lab.LabName
-                                                        </p>
-                                                        <button class="close-button" onclick="toggleLabReport(0, 'lab-report-@patient.PatientNo', 'exampleModal-@patient.PatientNo')" type="button">
-                                                            X
-                                                        </button>
-                                                        </h2>
-                                                        <hr>
-                                                        <div class="lab-details">
-                                                            <h3>Notes</h3>
-                                                            <p>
-                                                                @lab.Notes
-                                                            </p>
-                                                            <hr>
-                                                            <h3>Result</h3>
-                                                            <p>
-                                                                @lab.Result
-                                                            </p>
-                                                            <button type="button">Show Files</button>
-                                                        </div>
-                                                    </div>
-                                                }else{
-                                                    <div id="lab-@patient.PatientNo-@index" style="display:none">
-                                                        <h2 id="title" class="p-3">
-                                                        <p id="@lab.LabName">
-                                                            @lab.LabName
-                                                        </p>
-                                                        <button onclick="toggleLabReport(0, 'lab-report-@patient.PatientNo', 'exampleModal-@patient.PatientNo')" type="button">
-                                                            X
-                                                        </button>
-                                                        </h2>
-                                                        <hr>
-                                                        <div class="lab-details">
-                                                            <h3>Notes</h3>
-                                                            <p>
-                                                                @lab.Notes
-                                                            </p>
-                                                            <hr>
-                                                            <h3>Result</h3>
-                                                            <p>
-                                                                @lab.Result
-                                                            </p>
-                                                            <button type="button">Show Files</button>
-                                                        </div>
-                                                    </div>
-                                                }
-                                                index++;
-                                            }
-                                            
-                                            <hr style="margin-bottom:15px">
-                                            <div>
-                                                <ul class="pagination justify-content-center">
-                                                    @for (int pageIndex = 0; pageIndex < Model.CreateMedicalViewModel[i].visitedLabs.Count; pageIndex++)
-                                                    {
-                                                        <li onclick="togglelabview('@patient.PatientNo', 'lab-@patient.PatientNo-@pageIndex')" class="page-link">
-                                                            @(pageIndex + 1)
-                                                        </li>
-                                                    }
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
+                            
 
                             <div class="modal fade exampleModal-@patient.PatientNo" id="exampleModal-@patient.PatientNo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
@@ -245,8 +256,8 @@
                                                                     @foreach(var wardName in Model.CreateMedicalViewModel[i].AvailableWardNames)
                                                                     {
                                                                         <p>
-                                                                            <input style="cursor:pointer" type="radio" id="@wardName" value="@wardName" name="SelectWardNames" />
-                                                                            <label onclick="addOrRemove(@wardName)" for="@wardName">@wardName</label>
+                                                                            <input style="cursor:pointer" type="radio" id="w-@i-@wardName" value="@wardName" name="SelectWardNames" />
+                                                                            <label onclick="addOrRemove(@wardName)" for="w-@i-@wardName">@wardName</label>
                                                                         </p>
                                                                     }
                                                                 </div>
@@ -259,8 +270,8 @@
                                                                     @foreach(var labName in Model.CreateMedicalViewModel[i].AvailableLabNames)
                                                                     {
                                                                         <p>
-                                                                            <input style="cursor:pointer" type="checkbox" id="@labName" value="@labName" name="SelectLabNames" />
-                                                                            <label onclick="addOrRemove(@labName)" for="@labName">@labName</label>
+                                                                            <input style="cursor:pointer" type="checkbox" id="l-@i-@labName" value="@labName" name="SelectLabNames" />
+                                                                            <label onclick="addOrRemove(@labName)" for="l-@i-@labName">@labName</label>
                                                                         </p>
                                                                     }
                                                                 </div>
@@ -283,8 +294,6 @@
                         }
                     </tbody>
                 </table>
-                    
-                
 
                 <nav class="py-3" aria-label="Page navigation example">
                     <ul class="pagination justify-content-center">

@@ -9,7 +9,7 @@
     <partial name="SidebarPartial" />
     <div class="right">
         
-        <div class="form-card">
+        <div class="form-card" style="height:740px">
             <h2 id="title" class="p-3">
 				<p>
 					Patient List
@@ -74,17 +74,17 @@
                     <ul class="pagination justify-content-center">
                         @if (Model.CurrentPage > 1)
                         {
-                            <li class="page-item"><a class="page-link" href="@Url.Action("PatientList", new { page = Model.CurrentPage - 1, search = Model.Search })">Previous</a></li>
+                            <li class="page-item"><a class="page-link" href="@Url.Action("PatientListOnly", new { page = Model.CurrentPage - 1, search = Model.Search })">Previous</a></li>
                         }
 
                         @for (int i = 1; i <= Model.TotalPatients / Model.PageSize + 1; i++)
                         {
-                            <li class="page-item"><a href="@Url.Action("PatientList", new { page = i, search = Model.Search })" class="@(i == Model.CurrentPage ? "active page-link" : "page-link")">@i</a></li>
+                            <li class="page-item"><a href="@Url.Action("PatientListOnly", new { page = i, search = Model.Search })" class="@(i == Model.CurrentPage ? "active page-link" : "page-link")">@i</a></li>
                         }
 
                         @if (Model.CurrentPage < Model.TotalPatients / Model.PageSize + 1)
                         {
-                            <li class="page-item"><a class="page-link" href="@Url.Action("PatientList", new { page = Model.CurrentPage + 1, search = Model.Search })">Next</a></li>
+                            <li class="page-item"><a class="page-link" href="@Url.Action("PatientListOnly", new { page = Model.CurrentPage + 1, search = Model.Search })">Next</a></li>
                         }
                     </ul>
                 </nav>
