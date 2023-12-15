@@ -780,9 +780,8 @@ table td, table thead {
 .m-table {
   display: flex;
   flex-direction: column;
-  border-radius: 10px;
   overflow: hidden;
-  border: 1px solid green;
+  border: 1px solid black;
 }
 .m-table .t-row {
   display: grid;
@@ -798,11 +797,17 @@ table td, table thead {
   list-style-type: none;
   margin: 0;
   padding: 5px;
-  border: 1px solid green;
+  border: 1px solid black;
 }
 .m-table .ul-head:hover {
   background-color: transparent;
 }
 .m-table .t-row0 {
   grid-template-columns: repeat(3, 1fr);
+}
+
+input[type=number] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+  -webkit-appearance: textfield;
 }/*# sourceMappingURL=site.css.map */

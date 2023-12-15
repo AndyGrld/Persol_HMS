@@ -82,6 +82,7 @@
                 <div>
                     <label class="form-label">Patient's Gender</label>
                     <select  asp-for="Gender" class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                        <option value="">Select Gender</option>
                         <option value="M">Male</option>
                         <option value="F">Female</option>
                     </select>
@@ -119,7 +120,7 @@
                 </div>
                 <div>
                     <label asp-for="EmergencyContactNo" class="form-label">Patient's Emergency Contact Number</label>
-                    <input asp-for="EmergencyContactNo" type="number" class="form-control">
+                    <input asp-for="EmergencyContactNo" type="text" class="form-control">
                     <span asp-validation-for="EmergencyContactNo" class="text-danger" style="position:absolute"></span>
                 </div>
             </div>

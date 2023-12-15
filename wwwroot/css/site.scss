@@ -797,9 +797,8 @@ table td, table thead {
 .m-table{
 	display: flex;
 	flex-direction: column;
-	border-radius: 10px;
 	overflow: hidden;
-	border: 1px solid green;
+	border: 1px solid black;
 		.t-row{
 			display: grid;
 			grid-template-columns: repeat(2, 1fr);
@@ -813,7 +812,7 @@ table td, table thead {
 					list-style-type: none;
 					margin: 0;
 					padding: 5px;
-					border: 1px solid green;
+					border: 1px solid black;
 				}
 		}
 		.ul-head{
@@ -825,3 +824,10 @@ table td, table thead {
 			grid-template-columns: repeat(3, 1fr);
 		}
 }
+
+
+input[type="number"] {
+	appearance: textfield;
+	-moz-appearance: textfield;
+	-webkit-appearance: textfield;
+ }
