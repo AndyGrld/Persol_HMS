@@ -76,7 +76,7 @@
                                         <p>
                                             @lab.Result
                                         </p>
-                                        <button type="button">Show Files</button>
+                                        @* <button type="button">Show Files</button> *@
                                     </div>
                                 </div>
                             }
@@ -116,9 +116,6 @@
                     <button class="search-button" type="submit" id="button-addon2">Search</button>
                 </div>
             </form>
-
-            @if (Model.QueueViewModel.PatientsInLine.Any())
-            {
                 <table class="custom-table">
                     <thead>
                         <tr>
@@ -138,7 +135,6 @@
                                 <td>@($"{patient.Patient.LastName} {patient.Patient.FirstName}")</td>
                                 <td>@patient.QueueNo</td>
                                 <td>
-                                    @if(i == 0){
                                     <button type="button" class="table-button" data-bs-toggle="modal" data-bs-target="#exampleModal-@patient.PatientNo">
                                         @if(patient.HasVisitedLab)
                                         {
@@ -148,20 +144,6 @@
                                             @($"Diagnose Patient")
                                         }
                                     </button>
-                                    }
-                                    else{
-                                        <a href="@Url.Action("Doctor", new { patientNo = patient.PatientNo })">
-                                            <button type="button" class="table-button">
-                                                @if(patient.HasVisitedLab)
-                                                {
-                                                    @($"Continue Diagnosis")
-                                                }
-                                                else{
-                                                    @($"Diagnose Patient")
-                                                }
-                                            </button>
-                                        </a>
-                                    }
                                 </td>
                             </tr>
                             
@@ -309,30 +291,6 @@
                         }
                     </tbody>
                 </table>
-
-                <nav class="py-3" aria-label="Page navigation example">
-                    <ul class="pagination justify-content-center">
-                        @if (Model.QueueViewModel.CurrentPage > 1)
-                        {
-                            <li class="page-item"><a class="page-link" href="@Url.Action("DoctorQueue", new { page = Model.QueueViewModel.CurrentPage - 1, search = Model.QueueViewModel.Search })">Previous</a></li>
-                        }
-
-                        @for (int i = 1; i <= Model.QueueViewModel.TotalPatients / Model.QueueViewModel.PageSize + 1; i++)
-                        {
-                            <li class="page-item"><a href="@Url.Action("DoctorQueue", new { page = i, search = Model.QueueViewModel.Search })" class="@(i == Model.QueueViewModel.CurrentPage ? "active page-link" : "page-link")">@i</a></li>
-                        }
-
-                        @if (Model.QueueViewModel.CurrentPage < Model.QueueViewModel.TotalPatients / Model.QueueViewModel.PageSize + 1)
-                        {
-                            <li class="page-item"><a class="page-link" href="@Url.Action("DoctorQueue", new { page = Model.QueueViewModel.CurrentPage + 1, search = Model.QueueViewModel.Search })">Next</a></li>
-                        }
-                    </ul>
-                </nav>
-            }
-            else
-            {
-                <p class="p-3 no-patinet">No patients in line.</p>
-            }
         </div>
     </div>
 </div>
