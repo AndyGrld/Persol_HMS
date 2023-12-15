@@ -51,11 +51,11 @@ namespace Persol_HMS.Models
 
 
         [Display(Name = "Insurance Type")]
-        [Required(ErrorMessage = "Please enter Insurance Provider")]
+        [Required(ErrorMessage = "Please enter Insurance Provider else enter None")]
         public string? InsuranceType { get; set; }
 
         [Display(Name = "Insurance Number")]
-        [Required(ErrorMessage = "Please enter Insurance Number")]
+        [Required(ErrorMessage = "Please enter Insurance Number else enter None")]
         public string? InsuranceNo { get; set; }
 
         [Display(Name = "Insurance Expiry Date")]

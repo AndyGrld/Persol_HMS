@@ -75,7 +75,7 @@
                     <span asp-validation-for="LastName" class="text-danger" style="position:absolute"></span>
                 </div>
                 <div>
-                    <label asp-for="DateOfBirth" class="form-label">Patient's Date of Birth</label>
+                    <label asp-for="DateOfBirth" class="form-label">Patient's Date of Birth (MM/DD/YYYY)</label>
                     <input asp-for="DateOfBirth" type="date" value="2000-01-01" min="1920-01-01" max="2022-01-01" class="form-control">
                     <span asp-validation-for="DateOfBirth" class="text-danger" style="position:absolute"></span>
                 </div>
@@ -99,7 +99,7 @@
                     <span asp-validation-for="InsuranceNo" class="text-danger" style="position:absolute"></span>
                 </div>
                 <div>
-                    <label class="form-label">Enter Insurance Expiry Date</label>
+                    <label class="form-label">Enter Insurance Expiry Date (MM/DD/YYYY)</label>
                     <input asp-for="InsuranceExpireDate" type="date"  value="2000-01-01" min="2000-01-01" class="form-control">
                     <span asp-validation-for="InsuranceExpireDate" class="text-danger" style="position:absolute"></span>
                 </div>
