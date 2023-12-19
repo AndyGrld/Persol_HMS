@@ -6,6 +6,12 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using Lab = Persol_HMS.Models.Lab;
 
+public class SillyData
+{
+    public int Abc { get; set; }
+    public string Def { get; set; }
+}
+
 [Authorize]
 public class StaffController : Controller
 {
@@ -14,6 +20,18 @@ public class StaffController : Controller
     public StaffController(ApplicationDbContext context)
     {
         _context = context;
+    }
+
+
+
+    public JsonResult MyJson()
+    {
+        SillyData mySillyData = new SillyData()
+        {
+            Abc = 99,
+            Def = "my testing string!"
+        };
+        return Json(mySillyData);
     }
 
     private int GetDepartmentId()

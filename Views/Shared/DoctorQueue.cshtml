@@ -1,0 +1,779 @@
+@model DoctorQueueModel
+
+<partial name="Navbar" />
+
+@if (TempData.ContainsKey("D_ConfirmationMessage"))
+{
+<div class="alert alert-success">
+    @TempData["D_ConfirmationMessage"]
+    <button type="button" style="position:absolute;right: 0" data-bs-dismiss="alert" class="btn-close" aria-label="Close"></button>
+</div>
+}
+@if (TempData.ContainsKey("D_WarningMessage"))
+{
+<div class="alert alert-danger">
+    @TempData["D_WarningMessage"]
+    <button type="button" style="position:absolute;right: 0" data-bs-dismiss="alert" class="btn-close" aria-label="Close"></button>
+</div>
+}
+
+<div class="grid">
+    <partial name="SidebarPartial" />
+
+    <div class="right">
+
+        @for (int i = 0; i < Model.QueueViewModel.PatientsInLine.Count(); i++)
+        {
+            int index = 0;
+            var patient = Model.QueueViewModel.PatientsInLine[i];
+
+        }
+
+
+        @*diagnose modal*@
+        @for (int i = 0; i < Model.QueueViewModel.PatientsInLine.Count(); i++)
+        {
+            int index = 0;
+            var patient = Model.QueueViewModel.PatientsInLine[i];
+
+        @if(patient.HasVisitedLab)
+            {
+        <div class="lab-report" id="lab-report-@patient.PatientNo">
+            <div class="form-card" style="border-radius:5px">
+                @foreach(var lab in @Model.CreateMedicalViewModel[i].visitedLabs){
+                @if(index == 0){
+                <div id="lab-@patient.PatientNo-@index">
+                    <h2 id="title" class="p-3" style="padding: 0 !important">
+                        <p id="@lab.LabName">
+                            @lab.LabName
+                        </p>
+                        <button class="close-button" onclick="toggleLabReport(0, 'lab-report-@patient.PatientNo', 'exampleModal-@patient.PatientNo')" type="button">
+                            X
+                        </button>
+                    </h2>
+                    <hr>
+                    <div class="lab-details">
+                        <h3>Notes</h3>
+                        <p>
+                            @lab.Notes
+                        </p>
+                        <hr>
+                        <h3>Result</h3>
+                        <p>
+                            @lab.Result
+                        </p>
+                    </div>
+                </div>
+                            }else{
+                <div id="lab-@patient.PatientNo-@index" style="display:none">
+                    <h2 id="title" class="p-3" style="padding: 0 !important">
+                        <p id="@lab.LabName">
+                            @lab.LabName
+                        </p>
+                        <button class="close-button" onclick="toggleLabReport(0, 'lab-report-@patient.PatientNo', 'exampleModal-@patient.PatientNo')" type="button">
+                            X
+                        </button>
+                    </h2>
+                    <hr>
+                    <div class="lab-details">
+                        <h3>Notes</h3>
+                        <p>
+                            @lab.Notes
+                        </p>
+                        <hr>
+                        <h3>Result</h3>
+                        <p>
+                            @lab.Result
+                        </p>
+                        <button type="button">Show Files</button>
+                    </div>
+                </div>
+                            }
+                            index++;
+                        }
+
+                <hr style="margin-bottom:15px">
+                <div>
+                    <ul class="pagination justify-content-center">
+                        @for (int pageIndex = 0; pageIndex < Model.CreateMedicalViewModel[i].visitedLabs.Count; pageIndex++)
+                                {
+                        <li onclick="togglelabview('@patient.PatientNo', 'lab-@patient.PatientNo-@pageIndex')" class="page-link">
+                            @(pageIndex + 1)
+                        </li>
+                                }
+                    </ul>
+                </div>
+            </div>
+        </div>
+            }
+
+
+        @*Drugs modal*@
+        <div style="display:none;position:absolute;width:100vw;height:100vh;top:0;left:0;background-color:rgba(0, 0, 0,.5);display:none;align-items:center;justify-content:center;z-index:15" id="diagnose-@patient.PatientNo">
+            <div class="form-card" style="border-radius:5px">
+                <div style="padding: 10px calc(1rem + 10px); display: flex; justify-content: space-between">
+                    <h2 id="title" class="p-3" style="padding: 0 !important">
+                        <p>
+                            Drugs
+                        </p>
+                    </h2>
+                    <h2 style="cursor:pointer" onclick="toggleView('diagnose', 'exampleModal', '@patient.PatientNo')">X</h2>
+                </div>
+                <hr style="margin:2px 0" />
+                <div style="padding: 10px calc(1rem + 10px)">
+                    <div style="position:relative;height:40px">
+                        <button type="button" style="position: absolute; right: 0" onclick="toggleView('diagnose', 'give-drugs', '@patient.PatientNo')" class="btn btn-success">Add</button>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 3fr;border:1px solid black;font-size:18px">
+                        <div style="padding: 3px; border-right: 1px solid black; border-bottom: 1px solid black">Name</div>
+                        <div style="padding: 3px;border-bottom: 1px solid black">Dosage</div>
+                        <div style="padding:3px;border-right:1px solid black">Tylenol</div>
+                        <div style="padding:3px">500 mg to 1000 mg every 4-6 hours</div>
+                        <div style="padding:3px;border-right:1px solid black">Advil</div>
+                        <div style="padding:3px">200 mg to 800 mg every 4-6 hours</div>
+                        <div style="padding:3px;border-right:1px solid black">Amoxicillin</div>
+                        <div style="padding:3px">250 mg to 500 mg every 8 hours</div>
+                        <div style="padding:3px;border-right:1px solid black">Aspirin</div>
+                        <div style="padding:3px">325 mg to 1000 mg every 4-6 hours</div>
+                    </div>
+                    <div style="position:relative;height:40px">
+                        <button style="top:10px;position:absolute;right:0" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        @* give drugs *@
+        <div style="position: absolute; width: 100vw; height: 100vh; top: 0; left: 0; background-color: rgba(0, 0, 0,.5); display:none; align-items: center; justify-content: center; z-index: 20" id="give-drugs-@patient.PatientNo">
+            <div class="form-card" style="width:500px;border-radius:5px">
+                <div style="padding: 10px calc(1rem + 10px); display: flex; justify-content: space-between">
+                    <h2 id="title" class="p-3" style="padding: 0 !important">
+                        <p>
+                            Add Drugs
+                        </p>
+                    </h2>
+                    <div>
+                        <h2 style="cursor:pointer" onclick="toggleView('give-drugs', 'diagnose', '@patient.PatientNo')">X</h2>
+                    </div>
+                </div>
+                <hr style="margin:2px 0" />
+                <div style="padding: 10px calc(1rem + 10px);">
+                    <div style="position:relative">
+                        <h4 style="margin-bottom:5px;padding:0">Name</h4>
+                        <input placeholder="Enter name here" autocomplete="off" id="input-box" onkeyup="search()" />
+                        <div class="result-box">
+                        </div>
+                    </div>
+                    <div style="margin:10px 0;">
+                        <h4>Dosage</h4>
+                        <select class="dosage-select" style="width:100%">
+                            <option>1 tab</option>
+                            <option>2 tab</option>
+                            <option>3 tab</option>
+                        </select>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom:5px;padding:0">Time of Day</h4>
+                        <select style="width:100%">
+                            <option>Morning, Afternoon, Evening</option>
+                            <option>Morning, Afternoon</option>
+                            <option>Morning, Evening</option>
+                            <option>Afternoon, Evening</option>
+                            <option>Morning</option>
+                            <option>Afternoon</option>
+                            <option>Evening</option>
+                        </select>
+                    </div>
+                    <div style="margin:10px 0;">
+                        <h4 style="padding:0">Time to Take</h4>
+                        <input style="width:100%;" placeholder="Before/After meal" type="text" />
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom:5px;padding:0">Note</h4>
+                        <textarea rows="4" style="width:100%">Extra notes</textarea>
+                    </div>
+                    <div style="position:relative;height:35px;">
+                        <button type="button" style="position:absolute;right:0;top:5px" onclick="toggleView('give-drugs', 'diagnose', '@patient.PatientNo')" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        @*Lab modal*@
+        <div style="position:absolute;width:100vw;height:100vh;top:0;left:0;background-color:rgba(0, 0, 0,.5);display:none;align-items:center;justify-content:center;z-index:15" id="lab-request-@patient.PatientNo">
+            <div class="form-card" style="border-radius:5px">
+                <div style="padding: 10px calc(1rem + 10px); display: flex; justify-content: space-between">
+                    <h2 id="title" class="p-3" style="padding: 0 !important">
+                        <p>
+                            Lab Request
+                        </p>
+                    </h2>
+                    <h2 style="cursor:pointer" onclick="toggleView('lab-request', 'exampleModal', '@patient.PatientNo')">X</h2>
+                </div>
+                <hr style="margin:2px 0" />
+                <div style="padding: 10px calc(1rem + 10px)">
+                    <div style="position:relative;height:40px">
+                        <button type="button" style="position: absolute; right: 0" onclick="toggleView('lab-request', 'give-labs', '@patient.PatientNo')" class="btn btn-success">Add</button>
+                    </div>
+                    <div style="display:grid;grid-template-columns:auto auto auto;border:1px solid black;font-size:18px">
+                        <div style="padding: 3px; border-right: 1px solid black; border-bottom: 1px solid black">Type</div>
+                        <div style="padding: 3px; border-right: 1px solid black; border-bottom: 1px solid black">Result</div>
+                        <div style="padding: 3px; border-bottom: 1px solid black">Status</div>
+                        <div style="padding: 3px; border-right: 1px solid black;">X-ray</div>
+                        <div style="padding: 3px; border-right: 1px solid black;">Some result</div>
+                        <div style="padding: 3px;">Some kind of progress</div>
+                    </div>
+                    <div style="position:relative;height:40px">
+                        <button style="top:10px;position:absolute;right:0" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        @* add labs *@
+        <div style="position: absolute; width: 100vw; height: 100vh; top: 0; left: 0; background-color: rgba(0, 0, 0,.5); display:none; align-items: center; justify-content: center; z-index: 20" id="give-labs-@patient.PatientNo">
+            <div class="form-card" style="width:500px;border-radius:5px">
+                <div style="padding: 10px calc(1rem + 10px); display: flex; justify-content: space-between">
+                    <h2 id="title" class="p-3" style="padding: 0 !important">
+                        <p>
+                            Add Lab
+                        </p>
+                    </h2>
+                    <h2 style="cursor:pointer" onclick="toggleView('give-labs', 'lab-request', '@patient.PatientNo')">X</h2>
+                </div>
+                <hr style="margin:2px 0" />
+                <div style="padding: 10px calc(1rem + 10px)">
+                    <div class="select-options" id="labFieldsTemplate">
+                        <h4 id="selector" onClick="showOptions('b-@patient.QueueNo')">Select Lab</h4>
+                        <div style="visibility:hidden;opacity:0;top:0;transition:.3s" class="b-@patient.QueueNo">
+                            @foreach(var labName in Model.CreateMedicalViewModel[i].AvailableLabNames)
+                            {
+                            <p>
+                                <input style="cursor:pointer" type="checkbox" id="l-@i-@labName" value="@labName" name="SelectLabNames" />
+                                <label onclick="addOrRemove(@labName)" for="l-@i-@labName">@labName</label>
+                            </p>
+                            }
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="margin:10px 0;padding:0">Diagnosis</h4>
+                        <textarea rows="4" style="width:100%">Diagnosis for lab</textarea>
+                    </div>
+                    <div style="position:relative;height:35px;">
+                        <button type="button" style="position:absolute;right:0;top:5px" onclick="toggleView('give-labs', 'lab-request', '@patient.PatientNo')" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        @*Ward modal*@
+        <div style="position:absolute;width:100vw;height:100vh;top:0;left:0;background-color:rgba(0, 0, 0,.5);display:none;align-items:center;justify-content:center;z-index:15" id="ward-request-@patient.PatientNo">
+            <div class="form-card" style="width:400px;border-radius:5px">
+                <div style="padding: 10px calc(1rem + 10px); display: flex; justify-content: space-between">
+                    <h2 id="title" class="p-3" style="padding: 0 !important">
+                        <p style="margin:0;padding:0">
+                            Admit Patient
+                        </p>
+                    </h2>
+                    <h2 style="cursor:pointer" onclick="toggleView('ward-request', 'exampleModal', '@patient.PatientNo')">X</h2>
+                </div>
+                <hr style="margin:2px 0" />
+                <div style="padding: 10px calc(1rem + 10px)">
+                    <div class="select-options mb-3" id="WardsTemplate">
+                        <h4 id="selector" onClick="showOptions('a-@patient.QueueNo')">Select Ward Name</h4>
+                        <div style="visibility:hidden;opacity:0;top:0;transition:.3s" class="a-@patient.QueueNo">
+                            @foreach(var wardName in Model.CreateMedicalViewModel[i].AvailableWardNames)
+                                                                    {
+                            <p>
+                                <input style="cursor:pointer" type="radio" id="w-@i-@wardName" value="@wardName" name="SelectWardNames" />
+                                <label onclick="addOrRemove(@wardName)" for="w-@i-@wardName">@wardName</label>
+                            </p>
+                                                                    }
+                        </div>
+                    </div>
+                    <div style="position:relative;height:40px">
+                        <button style="top:10px;position:absolute;right:0" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
+
+
+
+        @*Add wards*@
+        <div class="form-card" style="@(Model.QueueViewModel.TotalPatients > 8 ? "height:950px" : "height:800px")">
+            <h2 id="title" class="p-3">
+                <p>
+                    Doctor Queue
+                </p>
+            </h2>
+            <form method="get" class="search" action="@Url.Action("DoctorQueue")">
+                <div class="input-group mb-3 px-3">
+                    <input type="text" name="search" class="form-control" placeholder="Search by Patient_No, Firstname or Lastname" aria-describedby="button-addon2">
+                    <button class="search-button" type="submit" id="button-addon2">Search</button>
+                </div>
+            </form>
+
+            @if (Model.QueueViewModel.PatientsInLine.Any())
+            {
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>PatientNo</th>
+                        <th>Patient Name</th>
+                        <th>QueueNo</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @* @foreach (var patient in Model.QueueViewModel.PatientsInLine) *@
+                    @for (int i = 0; i < Model.QueueViewModel.PatientsInLine.Count(); i++)
+                        {
+                            var patient = Model.QueueViewModel.PatientsInLine[i];
+                    <tr>
+                        <td>@patient.PatientNo</td>
+                        <td>@($"{patient.Patient.LastName} {patient.Patient.FirstName}")</td>
+                        <td>@patient.QueueNo</td>
+                        <td>
+                            @if(i == 0){
+                            <button type="button" class="table-button" data-bs-toggle="modal" data-bs-target="#exampleModal-@patient.PatientNo">
+                                @if(patient.HasVisitedLab)
+                                    {
+                                @($"Continue Diagnosis")
+                                    }
+                                    else{
+                                @($"Diagnose Patient")
+                                    }
+                            </button>
+                             }
+                             else{
+                            <a href="@Url.Action("Doctor", new { patientNo = patient.PatientNo })">
+                                <button type="button" class="table-button">
+                                    @if(patient.HasVisitedLab)
+                                        {
+                                    @($"Continue Diagnosis")
+                                        }
+                                        else{
+                                    @($"Diagnose Patient")
+                                        }
+                                </button>
+                            </a>
+                             }
+                        </td>
+                    </tr>
+
+                    <div class="modal fade exampleModal-@patient.PatientNo" id="exampleModal-@patient.PatientNo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 id="exampleModalLabel">
+                                        <p>Diagnose @patient.Patient.FirstName</p>
+                                    </h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form asp-action="SaveMedicalRecords" method="post" autocomplete="off">
+                                        <div class="container">
+                                            <div class="diagnose_row">
+                                                <div class="diagnose_col">
+                                                    <div class="mb-2 doc-flex">
+                                                        <label asp-for="CreateMedicalViewModel[i].Symptoms" class="form-label">Symptoms</label>
+                                                        <textarea asp-for="CreateMedicalViewModel[i].Symptoms" class="form-control" rows="3" placeholder="Enter Symptoms Here"></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="diagnose_col">
+                                                    <div class="mb-2 doc-flex">
+                                                        <label asp-for="CreateMedicalViewModel[i].Diagnoses" class="form-label">Diagnoses</label>
+                                                        <textarea asp-for="CreateMedicalViewModel[i].Diagnoses" class="form-control" rows="3" placeholder="Enter Diagnoses Here"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            @*
+                                                <div class="scroll">
+                                                    <div class="drugs-grid" id="drugFields-@patient.PatientNo">
+                                                        <div id="drug-title">
+                                                            <label for="addMoreDrugs">Drugs</label>
+                                                        </div>
+                                                        <div class="button-here">
+                                                            <button id="addMoreDrugs-@patient.PatientNo" type="button" class="add-button" data-patient-id="@patient.PatientNo">
+                                                                <p>Add</p>
+                                                            </button>
+                                                        </div>
+                                                        @if(!patient.HasVisitedLab){
+                                                        @for(int s = 0; s < 10; s++){
+                                                        <div class="drug_input field-@patient.PatientNo.ToString()" data-patient-id="@patient.PatientNo" data-index="@s-@patient.PatientNo" style="display:none">
+                                                            <div class="col1">
+                                                                <input asp-for="CreateMedicalViewModel[i].DrugNames[s].DrugName" class="form-control" placeholder="Drug Name" />
+                                                            </div>
+                                                            <div class="col1">
+                                                                <input asp-for="CreateMedicalViewModel[i].DrugNames[s].Dosage" class="form-control" placeholder="Dosage" />
+                                                            </div>
+                                                            <div class="close_button" onclick="removeDrug(this)">
+                                                                <button type="button" class="btn btn-close btn-danger remove-drug" aria-label="Close"></button>
+                                                            </div>
+                                                        </div>
+                                                            }
+                                                        }
+                                                        else{
+                                                        var drugList = new List<Drug>();
+                                                        @for (int d = 0; d < 10; d++)
+                                                        {
+                                                            var newDrug = new Drug();
+                                                        @if(Model.CreateMedicalViewModel[i].DrugNames.Count() > d)
+                                                            {
+                                                                newDrug = Model.CreateMedicalViewModel[i].DrugNames[d];
+                                                            }
+                                                            drugList.Add(newDrug);
+                                                        }
+                                                        Model.CreateMedicalViewModel[i].DrugNames = drugList;
+                                                        @for (int j = 0; j < Model.CreateMedicalViewModel[i].DrugNames.Count(); j++){
+                                                        @if(!string.IsNullOrEmpty(Model.CreateMedicalViewModel[i].DrugNames[j].DrugName))
+                                                        {
+                                                        <div class="drug_input field-@patient.PatientNo.ToString()" data-patient-id="@patient.PatientNo" data-index="@j-@patient.PatientNo">
+                                                            <div class="col1">
+                                                                <input value="@Model.CreateMedicalViewModel[i].DrugNames[j].DrugName" asp-for="CreateMedicalViewModel[i].DrugNames[j].DrugName" class="form-control" placeholder="Drug Name" />
+                                                            </div>
+                                                            <div class="col1">
+                                                                <input value="@Model.CreateMedicalViewModel[i].DrugNames[j].Dosage" asp-for="CreateMedicalViewModel[i].DrugNames[j].Dosage" class="form-control" placeholder="Dosage" />
+                                                            </div>
+                                                            <div class="close_button" onclick="removeDrug(this)">
+                                                                <button type="button" class="btn btn-close btn-danger remove-drug" aria-label="Close"></button>
+                                                            </div>
+                                                        </div>
+                                                         }
+                                                         else{
+                                                        <div class="drug_input field-@patient.PatientNo.ToString()" data-patient-id="@patient.PatientNo" data-index="@j-@patient.PatientNo" style="display:none">
+                                                            <div class="col1">
+                                                                <input value="@Model.CreateMedicalViewModel[i].DrugNames[j].DrugName" asp-for="CreateMedicalViewModel[i].DrugNames[j].DrugName" class="form-control" placeholder="Drug Name" />
+                                                            </div>
+                                                            <div class="col1">
+                                                                <input value="@Model.CreateMedicalViewModel[i].DrugNames[j].Dosage" asp-for="CreateMedicalViewModel[i].DrugNames[j].Dosage" class="form-control" placeholder="Dosage" />
+                                                            </div>
+                                                            <div class="close_button" onclick="removeDrug(this)">
+                                                                <button type="button" class="btn btn-close btn-danger remove-drug" aria-label="Close"></button>
+                                                            </div>
+                                                        </div>
+                                                             }
+                                                         }
+                                                     }
+                                                    </div>
+                                                </div>
+                                            *@
+                                            <input asp-for="CreateMedicalViewModel[i].PatientNo" value="@patient.PatientNo" style="display:none" />
+                                            <input name="index" value="@i" style="display:none" />
+
+                                            <div class="modal-footer px-0">
+                                                @if(patient.HasVisitedLab)
+                                                {
+                                                <button type="button" onclick="toggleLabReport(1, 'lab-report-@patient.PatientNo', 'exampleModal-@patient.PatientNo')" class="auth-button">View Lab Report</button>
+                                                }
+                                                <div style="display:grid; grid-template-columns:repeat(3, 1fr);gap:10px;width:100%">
+                                                    <button type="button" class="auth-button w-100" style="margin-bottom: 0; font-size:1.3em" onclick="toggleView('exampleModal', 'diagnose', '@patient.PatientNo')">Give Drugs</button>
+                                                    <button type="button" class="auth-button w-100" style="margin-bottom: 0; font-size: 1.3em" onclick="toggleView('exampleModal', 'lab-request', '@patient.PatientNo')">Lab Request</button>
+                                                    <button type="button" class="auth-button w-100" style="margin-bottom: 0; font-size: 1.3em" onclick="toggleView('exampleModal', 'ward-request', '@patient.PatientNo')">Admit</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        }
+                </tbody>
+            </table>
+
+            <nav class="py-3" aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    @if (Model.QueueViewModel.CurrentPage > 1)
+                        {
+                    <li class="page-item"><a class="page-link" href="@Url.Action("DoctorQueue", new { page = Model.QueueViewModel.CurrentPage - 1, search = Model.QueueViewModel.Search })">Previous</a></li>
+                        }
+
+                    @for (int i = 1; i <= Model.QueueViewModel.TotalPatients / Model.QueueViewModel.PageSize + 1; i++)
+                        {
+                    <li class="page-item"><a href="@Url.Action("DoctorQueue", new { page = i, search = Model.QueueViewModel.Search })" class="@(i == Model.QueueViewModel.CurrentPage ? "active page-link" : "page-link")">@i</a></li>
+                        }
+
+                    @if (Model.QueueViewModel.CurrentPage < Model.QueueViewModel.TotalPatients / Model.QueueViewModel.PageSize + 1)
+                        {
+                    <li class="page-item"><a class="page-link" href="@Url.Action("DoctorQueue", new { page = Model.QueueViewModel.CurrentPage + 1, search = Model.QueueViewModel.Search })">Next</a></li>
+                        }
+                </ul>
+            </nav>
+                    }
+                    else
+                    {
+            <p class="p-3 no-patinet">No patients in line.</p>
+                    }
+
+            <button id="button1">Click me</button>
+            <div id="emptyDiv"></div>
+        </div>
+    </div>
+</div>
+
+<partial name="FooterPartial" />
+
+@section scripts {
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#button1").on("click", function () {
+                $.get("/Staff/MyJson", function (data) {
+                    $('#emptyDiv').html(data.def)
+                })
+            })
+        })
+    </script>
+    <script>
+        $(document).ready(function () {
+            // Function to add drug input fields
+            var maxDrugFields = 10;
+
+            function addDrug(item) {
+                console.log('add drug' + item)
+                item = item.toString();
+                if ($(`.field-${item}:visible`).length < maxDrugFields) {
+                    $('.last-drug').removeClass('last-drug');
+                    let div = $(`.field-${item}:hidden:first`).show();
+                    div.show();
+                    $(`.field-${item}:visible:last`).addClass('last-drug');
+                }
+            }
+
+            // Function to remove drug input field (in case of error check .drug_input or add a new class to replace drug_input)
+            function removeDrug(index, patientNo) {
+                console.log("remove drug: " + patientNo)
+                $(`.field-${patientNo}[data-index="${index}"]:visible`).removeClass('last-drug');
+                var drugField = $(`.field-${patientNo}[data-index="${index}"]:visible`);
+                if (drugField.length > 0) {
+                    drugField.removeClass('last-drug');
+                    drugField.hide();
+                    $(`.field-${patientNo}:visible:last`).addClass('last-drug');
+                    drugField.find('input').val('');
+                }
+            }
+
+            // Add More Drugs button click event
+            $('[id^="addMoreDrugs-"]').click(function () {
+                var patientId = $(this).data('patient-id');
+                console.log('add drugs' + patientId)
+                addDrug(patientId);
+            });
+
+            // Remove Drug button click event
+            $('[id^="drugFields-"]').on('click', '.remove-drug', function () {
+                var removeIndex = $(this).closest('.drug_input').data('index');
+                var patientNo = $(this).closest('.drug_input').data('patient-id');
+                console.log("remove drugs: " + patientNo)
+                removeDrug(removeIndex, patientNo);
+            });
+        });
+    </script>
+    <script>
+        $('#multiple-select-field').select2({
+            theme: "bootstrap-5",
+            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+            placeholder: $(this).data('placeholder'),
+            closeOnSelect: false,
+        });
+
+        function showOptions(className) {
+            options = document.getElementsByClassName(className)
+            if (options[0].style.visibility == "hidden") {
+                options[0].style.visibility = "visible"
+                options[0].style.top = "30px"
+                options[0].style.opacity = 1
+            } else {
+                options[0].style.visibility = "hidden"
+                options[0].style.opacity = 0
+                options[0].style.top = 0
+            }
+        }
+
+        function toggleLabReport(value, labId, modalId) {
+            let lab = document.getElementById(labId);
+            let backdrop = document.querySelector('.modal-backdrop');
+            let modalclass = document.getElementsByClassName(modalId);
+            let modal = new bootstrap.Modal(document.getElementById(modalId));
+
+            if (value === 0) {
+                console.log("modal appear");
+                modal.show();
+                lab.style.display = "none";
+            } else {
+                console.log("modal vanish");
+                modalclass[0].style.display = "none";
+                lab.style.display = "flex";
+                if (backdrop) backdrop.remove();
+            }
+        }
+    </script>
+    <script>
+        function togglelabview(patientNo, nextId) {
+            let elements = document.querySelectorAll(`[id^="lab-${patientNo}"]`);
+            let next = document.getElementById(nextId);
+
+            elements.forEach(element => {
+                element.style.display = 'none';
+            });
+
+            if (next) {
+                next.style.display = 'block';
+            } else {
+                console.error("Elements not found.");
+            }
+        }
+    </script>
+    <script>
+        function toggleView(currentView, nextView, patientNo) {
+
+            if (currentView) {
+                currentView = document.querySelectorAll(`[id^="${currentView}-${patientNo}"]`)
+
+                currentView.forEach(e => {
+                    e.style.display = "none"
+                })
+                let backdrop = document.querySelector('.modal-backdrop');
+                if (backdrop) backdrop.remove();
+            }
+
+            if (nextView === 'exampleModal') {
+                let modal = new bootstrap.Modal(document.querySelector(`[id^="${nextView}-${patientNo}"]`));
+                modal.show();
+            } else if (nextView) {
+                let next = document.querySelector(`[id^="${nextView}-${patientNo}"]`)
+                next.style.display = "flex"
+            }
+        }
+    </script>
+    <script>
+        let backdrop = document.querySelector('.modal-backdrop');
+        if (backdrop) {
+            console.log("removing backdrop")
+            backdrop.addEventListener("click", e => {
+                backdrop.remove()
+            })
+        }
+    </script>
+}
+
+<script>
+    let keys = [
+        ['Aspirin', 'Tablet'],
+        ['Lisinopril', 'Tablet'],
+        ['Metformin', 'Tablet'],
+        ['Simvastatin', 'Tablet'],
+        ['Levothyroxine', 'Tablet'],
+        ['Amoxicillin', 'Tablet'],
+        ['Omeprazole', 'Tablet'],
+        ['Atorvastatin', 'Tablet'],
+        ['Hydrochlorothiazide', 'Tablet'],
+        ['Metoprolol', 'Tablet'],
+        ['Gabapentin', 'Capsule'],
+        ['Losartan', 'Tablet'],
+        ['Amlodipine', 'Tablet'],
+        ['Albuterol', 'Inhaler'],
+        ['Sertraline', 'Tablet'],
+        ['Furosemide', 'Tablet'],
+        ['Escitalopram', 'Tablet'],
+        ['Ibuprofen', 'Tablet'],
+        ['Ciprofloxacin', 'Tablet'],
+        ['Codeine', 'Syrup'],
+        ['Promethazine', 'Syrup'],
+        ['Dextromethorphan', 'Syrup'],
+        ['Cough Syrup', 'Syrup']
+    ];
+
+    let drugs = {
+        'Aspirin': 'Tablet',
+        'Lisinopril': 'Tablet',
+        'Metformin': 'Tablet',
+        'Simvastatin': 'Tablet',
+        'Levothyroxine': 'Tablet',
+        'Amoxicillin': 'Tablet',
+        'Omeprazole': 'Tablet',
+        'Atorvastatin': 'Tablet',
+        'Hydrochlorothiazide': 'Tablet',
+        'Metoprolol': 'Tablet',
+        'Gabapentin': 'Capsule',
+        'Losartan': 'Tablet',
+        'Amlodipine': 'Tablet',
+        'Albuterol': 'Inhaler',
+        'Sertraline': 'Tablet',
+        'Furosemide': 'Tablet',
+        'Escitalopram': 'Tablet',
+        'Ibuprofen': 'Tablet',
+        'Ciprofloxacin': 'Tablet',
+        'Codeine': 'Syrup',
+        'Promethazine': 'Syrup',
+        'Dextromethorphan': 'Syrup',
+        'Cough Syrup': 'Syrup'
+    };
+
+    const resultBox = document.querySelector('.result-box')
+    const inputBox = document.getElementById("input-box")
+    const dosageSelect = document.querySelector('.dosage-select')
+
+    console.log(drugs['Cough Syrup'])
+
+    inputBox.addEventListener('keyup', function () {
+        search();
+    });
+
+    function search() {
+        let result = []
+        let input = inputBox.value
+        if (input.length) {
+            resultBox.style.display = 'block'
+            result = keys.filter((word) => {
+                return word[0].toLowerCase().includes(input.toLowerCase())
+            })
+        }
+        display(result)
+
+        if (!result.length) {
+            resultBox.innerHTML = ''
+            resultBox.style.display = 'none'
+        }
+    }
+
+    function display(result) {
+        const content = result.map((list) => {
+            return "<li onclick='selectInput(this)'>" + list[0] + "</li>"
+        })
+
+        resultBox.innerHTML = "<ul>" + content.join('') + "</ul>"
+    }
+
+    function selectInput(list) {
+        resultBox.style.display = 'none'
+        inputBox.value = list.innerHTML
+        resultBox.innerHTML = ''
+        switchDosage(list.innerHTML)
+    }
+
+    function switchDosage(drug) {
+        if (drugs[drug] == 'Tablet') {
+            dosageSelect.innerHTML = `
+            <option>1 Tab</option>
+            <option>2 Tab</option>
+            <option>3 Tab</option>
+            `
+        } else if (drugs[drug] == 'Syrup') {
+            dosageSelect.innerHTML = `
+            <option>5-10 ml</option>
+            <option>10-20 mg</option>
+            <option>15-30 mg</option>
+            `
+        }
+    }
+</script>

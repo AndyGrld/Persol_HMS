@@ -59,7 +59,7 @@ body {
 
 .nav {
   position: absolute;
-  width: 100vw;
+  width: 100%;
   left: 0;
 }
 
@@ -77,7 +77,7 @@ body {
 
 .left {
   border-right: 1px solid rgba(0, 0, 0, 0.1);
-  min-height: 100vh;
+  min-height: 100%;
   position: fixed;
   width: 200px;
   margin-right: 10px;
@@ -294,16 +294,46 @@ table td, table thead {
 
 .doc-flex {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
 }
 .doc-flex label {
   font-size: 1.1em;
+  margin: 2px;
 }
 .doc-flex textarea {
-  margin-left: 20px;
+  margin-top: 5px 0;
 }
 .doc-flex textarea:focus {
   box-shadow: none;
+}
+
+#input-box {
+  width: 100%;
+}
+
+.result-box {
+  padding: 0;
+  border: 1px solid rgb(0, 0, 0);
+  width: 100%;
+  max-height: 140px;
+  overflow-y: scroll;
+  position: absolute;
+  left: 0;
+  top: 56px;
+  background-color: rgb(198, 229, 255);
+  display: none;
+}
+.result-box ul {
+  padding: 0;
+  margin: 0;
+}
+.result-box ul li {
+  list-style-type: none;
+  cursor: pointer;
+}
+.result-box ul li:hover {
+  background-color: rgb(106, 188, 255);
 }
 
 .scroll {
@@ -619,6 +649,7 @@ table td, table thead {
   color: var(--btn-color);
   width: 100%;
   margin-bottom: 5px;
+  transition: 0.2s;
 }
 .auth-button:hover {
   color: var(--text-color);
@@ -806,8 +837,16 @@ table td, table thead {
   grid-template-columns: repeat(3, 1fr);
 }
 
-input[type=number] {
-  appearance: textfield;
-  -moz-appearance: textfield;
-  -webkit-appearance: textfield;
+.pagination .page-link {
+  color: var(--text-color);
+}
+.pagination .page-link:hover {
+  background-color: #d0ebff;
+}
+.pagination .active {
+  background-color: var(--btn-color);
+  color: var(--text-color);
+}
+.pagination .active:hover {
+  background-color: #afd8ff;
 }/*# sourceMappingURL=site.css.map */
