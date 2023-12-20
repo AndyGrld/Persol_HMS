@@ -22,6 +22,79 @@ public class StaffController : Controller
         _context = context;
     }
 
+    public async Task<ActionResult> AddDrug(IFormCollection myForm)
+    {
+        try {
+            
+            var drugName = myForm["drugName"];
+            var dosage = myForm["dosage"];
+            var timeOfDay = myForm["timeOfDay"];
+            var timeToTake = myForm["beforeOrAfter"];
+            var notes = myForm["notes"];
+            var patientNo = myForm["patientNo"];
+            var date = DateTime.Now.Date;
+
+            var drugExists = await _context.Drugs.FirstOrDefaultAsync(d => d.DrugName.Equals(drugName) && d.Date.Date == DateTime.Now.Date);
+            if (drugExists != null) {
+                drugExists.Dosage = myForm["dosage"];
+                drugExists.TimeOfDay = myForm["timeOfDay"];
+                drugExists.TimeToTake = myForm["beforeOrAfter"];
+                drugExists.Note = myForm["notes"];
+                _context.Drugs.Update(drugExists);
+                _context.SaveChangesAsync();
+                return Json(new { message = "Drug has updated", type = "warning", DrugName = drugExists.DrugName, Dosage = drugExists.Dosage });
+            }
+            
+            var latestMedical = _context.Medicals.OrderByDescending(m => m.ID).FirstOrDefault(m => m.PatientNo.Equals(patientNo));
+
+            var patientInQueue = await _context.Queues.FirstOrDefaultAsync(q => q.PatientNo.Equals(patientNo));
+
+            if(latestMedical == null || DateTime.Now.Date != latestMedical.Date.Date)
+            {
+                var vital = await _context.Vitals.OrderBy(l => l.Id).LastOrDefaultAsync(v => v.PatientNo.Equals(patientNo));
+                Medical newMedical = new Medical
+                {
+                    VitalsID = vital.Id,
+                    PatientNo = patientNo,
+                    Date = date,
+                };
+                _context.Medicals.Add(newMedical);
+                await _context.SaveChangesAsync();
+            }
+
+            var fromStore = await _context.DrugStores.FirstOrDefaultAsync(ds => ds.DrugName.Equals(drugName));
+            
+            Drug newDrug = new Drug
+            {
+                DrugName = drugName,
+                Dosage = dosage,
+                TimeOfDay = timeOfDay,
+                TimeToTake = timeToTake,
+                Note = notes,
+                Date = date,
+                PatientNo = patientNo,
+                MedicalID = latestMedical.ID
+            };
+            if(fromStore != null)
+            {
+                newDrug.Price = fromStore.Price;
+            }
+            int id = _context.Drugs.Count() == 0 ? 1 : _context.Drugs.Max(d => d.ID) + 1;
+            newDrug.ID = id;
+            _context.Drugs.Add(newDrug);
+            patientInQueue.HasDrugs = true;
+            await _context.SaveChangesAsync();
+
+            return Json(new { message = $"{drugName} added successfully!", type = "success", DrugName = drugName[0], Dosage = dosage[0] });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+
+            return Json(new { error = "An error occurred while processing the request." });
+        }
+    }
+
 
 
     public JsonResult MyJson()
@@ -94,14 +167,12 @@ public class StaffController : Controller
                 {
                     var latestMedical = _context.Medicals
                         .Include(m => m.Drugs)
-                        .Include(m => m.Symptom)
                         .OrderByDescending(m => m.ID)
                         .FirstOrDefault(m => m.PatientNo == patient.PatientNo);
 
                     var labs = _context.Labs.Where(l => l.MedicalID == latestMedical.ID).ToList();
 
                     // mapping values
-                    createMedicalViewModel.Symptoms = latestMedical.Symptom.Symptoms;
                     createMedicalViewModel.Diagnoses = latestMedical.Diagnoses;
                     createMedicalViewModel.DrugNames = _context.Drugs.Where(d  => d.MedicalID == latestMedical.ID).ToList();
                     createMedicalViewModel.visitedLabs = labs;
@@ -200,21 +271,20 @@ public class StaffController : Controller
 
         List<CreateMedicalViewModel> createMedicalViews = new List<CreateMedicalViewModel>();
 
+
         foreach(var patient in patientsInLine)
         {
             CreateMedicalViewModel createMedicalViewModel = new();
-            if(patient.HasVisitedLab)
+            if(patient.HasVisitedLab || patient.HasDrugs)
             {
                 var latestMedical = _context.Medicals
                     .Include(m => m.Drugs)
-                    .Include(m => m.Symptom)
                     .OrderByDescending(m => m.ID)
                     .FirstOrDefault(m => m.PatientNo == patient.PatientNo);
 
                 var labs = _context.Labs.Where(l => l.MedicalID == latestMedical.ID).ToList();
 
                 // mapping values
-                createMedicalViewModel.Symptoms = latestMedical.Symptom.Symptoms;
                 createMedicalViewModel.Diagnoses = latestMedical.Diagnoses;
                 createMedicalViewModel.DrugNames = _context.Drugs.Where(d  => d.MedicalID == latestMedical.ID).ToList();
                 createMedicalViewModel.visitedLabs = labs;
@@ -240,7 +310,8 @@ public class StaffController : Controller
         var viewModel = new DoctorQueueModel
         {
             CreateMedicalViewModel = createMedicalViews,
-            QueueViewModel = model
+            QueueViewModel = model,
+            AvailableDrugs = _context.DrugStores.ToList(),
         };
 
         return View(viewModel);
@@ -254,7 +325,6 @@ public class StaffController : Controller
             // Retrieve the patient's latest medical record
             var latestMedical = _context.Medicals
                 .Include(m => m.Drugs)
-                .Include(m => m.Symptom)
                 .OrderByDescending(m => m.Date)
                 .FirstOrDefault(m => m.PatientNo == patientId);
             
@@ -337,33 +407,19 @@ public class StaffController : Controller
             }
 
             if (!string.IsNullOrEmpty(saveModel.PatientNo) &&
-                saveModel.Diagnoses != null &&
-                saveModel.Symptoms != null)
+                saveModel.Diagnoses != null)
             {
 
                 var patientfromQueue = await _context.Queues.FirstOrDefaultAsync(q => q.PatientNo == saveModel.PatientNo);
-                var symptoms = new Symptom();
                 var medicalRecord = new Medical();
 
                 if (patientfromQueue.HasVisitedLab) {
                     medicalRecord = _context.Medicals
                         .Include(m => m.Drugs)
-                        .Include(m => m.Symptom)
                         .OrderByDescending(m => m.Date)
                         .FirstOrDefault(m => m.PatientNo == saveModel.PatientNo);
-                    symptoms = await _context.Symptoms.FirstOrDefaultAsync(s => s.ID == medicalRecord.ID);
-                    symptoms.Symptoms = saveModel.Symptoms;
-                    _context.Symptoms.Update(symptoms);
                     _context.SaveChanges();
                 }
-                else {
-                    symptoms.ID = _context.Symptoms.Count() == 0 ? 1 : _context.Symptoms.Max(s => s.ID) + 1;
-                    symptoms.PatientNo = saveModel.PatientNo;
-                    symptoms.Symptoms = saveModel.Symptoms;
-                    symptoms.Date = DateTime.Now.Date;
-                    _context.Symptoms.Add(symptoms);
-                    _context.SaveChanges();
-                };
 
                 var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(saveModel.PatientNo));
                 var vital = await _context.Vitals.OrderBy(l => l.Id).LastOrDefaultAsync(v => v.PatientNo.Equals(saveModel.PatientNo));
@@ -378,11 +434,6 @@ public class StaffController : Controller
                     medicalRecord.IsAdmitted = isAdmitted;
                     medicalRecord.DateAdmitted = isAdmitted == true ? DateTime.Now.Date : null;
 
-                    if (symptoms != null)
-                    {
-                        medicalRecord.SymptomsID = symptoms.ID;
-                        medicalRecord.Symptom = symptoms;
-                    }
                     if (patient != null)
                     {
                         medicalRecord.Patient = patient;
@@ -1199,8 +1250,6 @@ public class StaffController : Controller
             .Include(p => p.Medicals)
                 .ThenInclude(m => m.Vital)
             .Include(p => p.Medicals)
-                .ThenInclude(m => m.Symptom)
-            .Include(p => p.Medicals)
                 .ThenInclude(m => m.Drugs)
             .Include(p => p.Medicals)
                 .ThenInclude(m => m.Labs)
@@ -1217,7 +1266,6 @@ public class StaffController : Controller
             Date = m.Date,
             Vital = m.Vital,
             Diagnoses = m.Diagnoses,
-            Symptom = m.Symptom,
             Drugs = m.Drugs,
             Labs = m.Labs
         }) .OrderByDescending(m => m.Date).ToList();
@@ -1298,19 +1346,8 @@ public class StaffController : Controller
             return RedirectToHome();
         }
         if (!string.IsNullOrEmpty(model.PatientNo) && model.Diagnoses != null &&
-            model.DrugNames.Count() > 1 && model.Symptoms != null)
+            model.DrugNames.Count() > 1)
         {
-
-            var symptoms = new Symptom
-            {
-                ID = _context.Symptoms.Count() == 0 ? 1 : _context.Symptoms.Max(s => s.ID) + 1,
-                PatientNo = model.PatientNo,
-                Symptoms = model.Symptoms,
-                Date = DateTime.Now.Date,
-
-            };
-            _context.Symptoms.Add(symptoms);
-            await _context.SaveChangesAsync();
 
             var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(model.PatientNo));
             var vital = await _context.Vitals.OrderBy(l => l.Id).LastOrDefaultAsync(v => v.PatientNo.Equals(model.PatientNo));
@@ -1325,12 +1362,6 @@ public class StaffController : Controller
                 IsAdmitted = model.IsAdmitted,
                 DateAdmitted = model.IsAdmitted == true ? DateTime.Now.Date : (DateTime?)null
             };
-
-            if (symptoms != null)
-            {
-                medicalRecord.SymptomsID = symptoms.ID;
-                medicalRecord.Symptom = symptoms;
-            }
 
             if (patient != null)
             {

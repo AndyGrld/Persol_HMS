@@ -12,8 +12,7 @@ namespace Persol_HMS.Models
         public DateTime Date { get; set; }//
         [ForeignKey(nameof(Vital))]
         public int VitalsID { get; set; }//
-        [ForeignKey(nameof(Symptom))]
-        public int SymptomsID { get; set; }//
+        public string? Symptoms { get; set; }//
         public string? Diagnoses { get; set; }//
         public string? WardName { get; set; }//
         [DataType(DataType.Currency)]
@@ -26,7 +25,6 @@ namespace Persol_HMS.Models
         
         public virtual Vital Vital { get; set; }//
         public virtual List<Drug> Drugs { get; set; }//
-        public virtual Symptom Symptom { get; set; }//
         public virtual List<Lab> Labs { get; set; }
         public virtual Patient Patient { get; set; }//
     }

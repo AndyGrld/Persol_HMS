@@ -18,7 +18,6 @@ namespace Persol_HMS.Models.ViewModels
         public DateTime Date { get; set; }
         public Vital Vital { get; set; }
         public string Diagnoses { get; set; }
-        public Symptom Symptom { get; set; }
         public List<Drug> Drugs { get; set; }
         public List<Lab> Labs { get; set; }
     }

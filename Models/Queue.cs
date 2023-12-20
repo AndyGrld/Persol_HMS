@@ -15,6 +15,7 @@ namespace Persol_HMS.Models
         public string? LabName { get; set; }
 
         public string Status { get; set; }
+        public bool HasDrugs { get; set; } = false;
         public bool HasVisitedLab { get; set; } = false;
         public DateTime DateCreated { get; set; }
         public virtual Patient Patient { get; set; }

@@ -308,6 +308,21 @@ table td, table thead {
   box-shadow: none;
 }
 
+.drugs-table {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  border: 1px solid black;
+  font-size: 17px;
+  min-width: 300px;
+}
+.drugs-table div {
+  padding: 3px;
+}
+
+#addDrug input, #addDrug select {
+  height: 30px;
+}
+
 #input-box {
   width: 100%;
 }
