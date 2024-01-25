@@ -22,6 +22,18 @@ public class StaffController : Controller
         _context = context;
     }
 
+    public async Task<IActionResult> DeleteDrug(string drugName, string patientNo){
+        var drugToDelete = await _context.Drugs.FirstOrDefaultAsync(d => d.DrugName.Equals(drugName) &&
+            d.PatientNo.Equals(patientNo) && d.Date.Date == DateTime.Now.Date);
+        if(drugToDelete != null){
+            _context.Drugs.Remove(drugToDelete);
+            await _context.SaveChangesAsync();
+            return Json(new {success = true, message = "Drug deleted successfully"});
+        }else{
+            return Json(new { error = "An error occurred while processing the request." });
+        }
+    }
+
     public async Task<ActionResult> AddDrug(IFormCollection myForm)
     {
         try {
@@ -34,7 +46,7 @@ public class StaffController : Controller
             var patientNo = myForm["patientNo"];
             var date = DateTime.Now.Date;
 
-            var drugExists = await _context.Drugs.FirstOrDefaultAsync(d => d.DrugName.Equals(drugName) && d.Date.Date == DateTime.Now.Date);
+            var drugExists = await _context.Drugs.FirstOrDefaultAsync(d => d.DrugName.Equals(drugName) && d.Date.Date == DateTime.Now.Date && d.PatientNo.Equals(patientNo));
             if (drugExists != null) {
                 drugExists.Dosage = myForm["dosage"];
                 drugExists.TimeOfDay = myForm["timeOfDay"];
@@ -42,7 +54,7 @@ public class StaffController : Controller
                 drugExists.Note = myForm["notes"];
                 _context.Drugs.Update(drugExists);
                 _context.SaveChangesAsync();
-                return Json(new { message = "Drug has updated", type = "warning", DrugName = drugExists.DrugName, Dosage = drugExists.Dosage });
+                return Json(new { message = "Drug has updated", type = "warning", DrugName = drugExists.DrugName, Dosage = drugExists.Dosage , PatientNo =  patientNo});
             }
             
             var latestMedical = _context.Medicals.OrderByDescending(m => m.ID).FirstOrDefault(m => m.PatientNo.Equals(patientNo));
@@ -85,7 +97,7 @@ public class StaffController : Controller
             patientInQueue.HasDrugs = true;
             await _context.SaveChangesAsync();
 
-            return Json(new { message = $"{drugName} added successfully!", type = "success", DrugName = drugName[0], Dosage = dosage[0] });
+            return Json(new { message = $"{drugName} added successfully!", type = "success", DrugName = drugName[0], Dosage = dosage[0], PatientNo =  patientNo});
         }
         catch (Exception ex)
         {
