@@ -34,6 +34,55 @@ public class StaffController : Controller
         }
     }
 
+    public async Task<ActionResult> AddLab(IFormCollection myForm)
+    {
+        try{
+            var diagnosis = myForm["diagnosis"];
+            var labName = myForm["selectLabNames"];
+            var patientNo = myForm["patientNo"];
+
+            var labExists = await _context.Labs.FirstOrDefaultAsync(l => l.LabName.Equals(labName) && l.Date.Date == DateTime.Now.Date && l.PatientNo.Equals(patientNo));
+            if (labExists != null) {
+                labExists.Diagnosis = diagnosis;
+                _context.Labs.Update(labExists);
+                await _context.SaveChangesAsync();
+                return Json(new { message = $"{labName} lab has been updated", type = "warning", LabName = labName});
+            }
+
+            var latestMedical = _context.Medicals
+                .OrderByDescending(m => m.ID)
+                .FirstOrDefault(m => m.PatientNo.Equals(patientNo));
+
+            var newLab = new Lab(){
+                ID = _context.Labs.Count() == 0 ? 1 : _context.Labs.Max(d => d.ID) + 1,
+                LabName = labName,
+                Diagnosis = diagnosis,
+                PatientNo = patientNo,
+                Date = DateTime.Now.Date
+            };
+
+            if(latestMedical != null){
+                Console.WriteLine("Data saved, latest medical received");
+                newLab.MedicalID = latestMedical.ID;
+            }else{
+                int id = _context.Medicals.Count() == 0 ? 1 : _context.Medicals.Max(d => d.ID) + 1;
+                var newMedical = new Medical(){
+                    ID = id
+                };
+                _context.Medicals.Add(newMedical);
+                newLab.MedicalID = newMedical.ID;
+            }
+
+            _context.Labs.Add(newLab);
+            await _context.SaveChangesAsync();
+            return Json(new { message = "Lab Request added successfully", type = "success"});
+        }
+        catch(Exception ex){
+            Console.WriteLine(ex.Message);
+            return Json(new { message = "done processing"});
+        }
+    }
+
     public async Task<ActionResult> AddDrug(IFormCollection myForm)
     {
         try {

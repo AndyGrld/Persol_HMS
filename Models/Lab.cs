@@ -11,8 +11,9 @@ namespace Persol_HMS.Models
         public string PatientNo { get; set; }
         public string LabName { get; set; }
         [Required(ErrorMessage = "Please select a lab result.")]
-        public string Result { get; set; }
-        public string Notes { get; set; }
+        public string? Result { get; set; }
+        public string? Notes { get; set; }
+        public string? Diagnosis { get; set; }
         public DateTime Date { get; set; }
         [ForeignKey(nameof(Medical))]
         public int? MedicalID { get; set; }

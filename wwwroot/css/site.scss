@@ -16,6 +16,11 @@ a{
 		display:none;
 	}
 }
+.center{
+	display:flex;
+	align-items: center;
+	justify-content: center;
+}
 html {
 	font-size: 14px;
 	position: relative;
@@ -671,7 +676,21 @@ table td, table thead {
 		font-size: 18px;
 		.login-card{
 			width: max-content;
-			scale: 1.1
+			scale: 1.1;
+
+			.registerform{
+				label{
+					font-size: 17px;
+					padding: 5px;
+				}
+				input{
+					width: 450px;
+					height: 40px;
+				}
+				select, button{
+					width: 450px;
+				}
+			}
 		}
 	}
 }
@@ -699,6 +718,42 @@ table td, table thead {
 }
 .to-register a{
 	color: var(--btn-text-color);
+}
+@media screen and (max-width: 1000px) {
+	.login-page{
+		grid-template-columns: 1fr;
+		.login-left{
+			position: absolute;
+			height: 100vh;
+			z-index: -50;
+			img{
+				filter:brightness(.4)
+			}
+		}
+		.login-right{
+			.login-card{
+				h1{
+					padding-left: 30px;
+					font-size: 30px;
+				}
+				scale: 1.1;
+				form{
+					margin: 0 30px;
+				}
+				.registerform{
+					input, select, button{
+						width: 350px;
+					}
+				}
+			}
+			a{
+				color:var(--btn-color);
+			}
+		}
+	}
+	.to-register{
+		color: rgb(203, 226, 235);
+	}
 }
 
 

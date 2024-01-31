@@ -15,6 +15,12 @@ a {
   display: none;
 }
 
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 html {
   font-size: 14px;
   position: relative;
@@ -672,6 +678,17 @@ table td, table thead {
   width: max-content;
   scale: 1.1;
 }
+.login-page .login-right .login-card .registerform label {
+  font-size: 17px;
+  padding: 5px;
+}
+.login-page .login-right .login-card .registerform input {
+  width: 450px;
+  height: 40px;
+}
+.login-page .login-right .login-card .registerform select, .login-page .login-right .login-card .registerform button {
+  width: 450px;
+}
 
 .login-title, .register-title {
   font-weight: 700;
@@ -701,6 +718,38 @@ table td, table thead {
   color: var(--btn-text-color);
 }
 
+@media screen and (max-width: 1000px) {
+  .login-page {
+    grid-template-columns: 1fr;
+  }
+  .login-page .login-left {
+    position: absolute;
+    height: 100vh;
+    z-index: -50;
+  }
+  .login-page .login-left img {
+    filter: brightness(0.4);
+  }
+  .login-page .login-right .login-card {
+    scale: 1.1;
+  }
+  .login-page .login-right .login-card h1 {
+    padding-left: 30px;
+    font-size: 30px;
+  }
+  .login-page .login-right .login-card form {
+    margin: 0 30px;
+  }
+  .login-page .login-right .login-card .registerform input, .login-page .login-right .login-card .registerform select, .login-page .login-right .login-card .registerform button {
+    width: 350px;
+  }
+  .login-page .login-right a {
+    color: var(--btn-color);
+  }
+  .to-register {
+    color: rgb(203, 226, 235);
+  }
+}
 .vitals-card, .queue-grid {
   grid-column: 2/5;
 }

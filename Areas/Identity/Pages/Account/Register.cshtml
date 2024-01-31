@@ -8,13 +8,13 @@
 <div class="login-page">
     <div class="login-right">
 		<div class="login-card">
-			<h1 class="register-title">Welcome to <span>Persol HMS<span></h1>
+			<h1 style="margin:0;position: relative; top: 5px" class="register-title">Welcome to <span>Persol HMS<span></h1>
 			<div class="">
 				<div class="fs-6">
-					<h1  class="fs-3">@ViewData["Title"]</h1>
+					<h1 class="fs-4 to-register">@ViewData["Title"]</h1>
 				</div>
-                <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                    <div class="my-3">
+                <form class="registerform" id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                    <div class="my-1">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <div class="form-floating">
                             <input asp-for="Input.FirstName" class="form-control" autocomplete="firstname" aria-required="true" />
@@ -22,42 +22,42 @@
                             <span asp-validation-for="Input.FirstName" class="text-danger"></span>
                         </div>
                     </div>
-                    <div class="my-3">
+                    <div class="my-1">
                         <div class="form-floating">
                             <input asp-for="Input.MiddleName" class="form-control" autocomplete="middlename" aria-required="true" />
                             <label asp-for="Input.MiddleName"></label>
                             <span asp-validation-for="Input.MiddleName" class="text-danger"></span>
                         </div>
                     </div>
-                    <div class="my-3">
+                    <div class="my-1">
                         <div class="form-floating">
                             <input asp-for="Input.LastName" class="form-control" autocomplete="lastname" aria-required="true" />
                             <label asp-for="Input.LastName"></label>
                             <span asp-validation-for="Input.LastName" class="text-danger"></span>
                         </div>
                     </div>
-                    <div class="my-3">
+                    <div class="my-1">
                         <div class="form-floating">
                             <input asp-for="Input.UserName" class="form-control" autocomplete="username" aria-required="true" />
                             <label asp-for="Input.UserName"></label>
                             <span asp-validation-for="Input.UserName" class="text-danger"></span>
                         </div>
                     </div>
-                    <div class="my-3">
+                    <div class="my-1">
                         <div class="form-floating">
                             <input asp-for="Input.Email" class="form-control" type="email" autocomplete="email" aria-required="true" />
                             <label asp-for="Input.Email"></label>
                             <span asp-validation-for="Input.Email" class="text-danger"></span>
                         </div>
                     </div>
-                    <div class="my-3">
+                    <div class="my-1">
                         <div class="form-floating">
                             <input asp-for="Input.DateOfBirth" class="form-control" type="date" aria-required="true" />
                             <label asp-for="Input.DateOfBirth"></label>
                             <span asp-validation-for="Input.DateOfBirth" class="text-danger"></span>
                         </div>
                     </div>
-                    <div class="my-3">
+                    <div class="my-1">
                         <div class="form-floating">
                             <select asp-for="Input.DepartmentId" class="form-select" id="floatingSelect" aria-label="Floating label select example">
                                 <option selected>Select Department</option>
@@ -71,14 +71,14 @@
                             <span asp-validation-for="Input.DepartmentId" class="text-danger"></span>
                         </div>
                     </div>
-                    <div class="my-3">
+                    <div class="my-1">
                         <div class="form-floating">
                             <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" />
                             <label asp-for="Input.Password"></label>
                             <span asp-validation-for="Input.Password" class="text-danger"></span>
                         </div>
                     </div>
-                    <div class="my-3">
+                    <div class="my-1">
                         <div class="form-floating">
                             <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" />
                             <label asp-for="Input.ConfirmPassword"></label>
