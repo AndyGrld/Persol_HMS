@@ -22,13 +22,75 @@ public class StaffController : Controller
         _context = context;
     }
 
-    public async Task<IActionResult> DeleteDrug(string drugName, string patientNo){
-        var drugToDelete = await _context.Drugs.FirstOrDefaultAsync(d => d.DrugName.Equals(drugName) &&
+    
+
+    [HttpPost]
+    public async Task<IActionResult> SendToPharmacy(string patientNo)
+    {
+        try{
+            ViewBag.deptId = GetDepartmentId();
+            if (ViewBag.deptId != 3)
+            {
+                return RedirectToHome();
+            }
+            Console.WriteLine($"=============> {patientNo} <===============");
+            var patientInLine = await _context.Queues.FirstOrDefaultAsync(q => q.PatientNo.Equals(patientNo));
+
+            var latestMedical = _context.Medicals
+                        .Include(m => m.Drugs)
+                        .OrderByDescending(m => m.ID)
+                        .FirstOrDefault(m => m.PatientNo == patientNo && m.Date == DateTime.Now.Date);
+            
+            if(latestMedical != null){
+                var drugs = _context.Drugs.Where(d => d.MedicalID == latestMedical.ID).ToList();
+                if(drugs != null){
+                    if(drugs.Count() > 0){
+                        var PharmacyQueueNo = GetNextQueueNumber("Pharmacy");
+                        var PharmacyQueue = new Queue
+                        {
+                            PatientNo = patientNo,
+                            QueueNo = PharmacyQueueNo,
+                            Status = "Pharmacy",
+                            DateCreated = DateTime.Now
+                        };
+                        _context.Queues.Add(PharmacyQueue);
+                        TempData["D_ConfirmationMessage"] = $"Patient's medical details added successfully, patient is {PharmacyQueueNo} in pharmacy queue.";
+                    }
+                }
+            }else{
+                // discharge patient if no drugs were given and patient has no medical bill for the day
+                RemovePatientFromQueue("Doctor", patientNo);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(DoctorQueue));
+        }
+        catch (Exception ex)
+        {
+            TempData["D_WarningMessage"] = $"An error occured while processing patient's medicals, please try again.";
+            return RedirectToAction(nameof(DoctorQueue));
+        }
+    }
+
+    public async Task<IActionResult> DeleteDrug(string Name, string patientNo){
+        var drugToDelete = await _context.Drugs.FirstOrDefaultAsync(d => d.DrugName.Equals(Name) &&
             d.PatientNo.Equals(patientNo) && d.Date.Date == DateTime.Now.Date);
         if(drugToDelete != null){
             _context.Drugs.Remove(drugToDelete);
             await _context.SaveChangesAsync();
             return Json(new {success = true, message = "Drug deleted successfully"});
+        }else{
+            return Json(new { error = "An error occurred while processing the request." });
+        }
+    }
+
+    public async Task<IActionResult> DeleteLab(string Name, string patientNo){
+        var labToDelete = await _context.Labs.FirstOrDefaultAsync(d => d.LabName.Equals(Name) &&
+            d.PatientNo.Equals(patientNo) && d.Date.Date == DateTime.Now.Date);
+        if(labToDelete != null){
+            _context.Labs.Remove(labToDelete);
+            await _context.SaveChangesAsync();
+            return Json(new {success = true, message = "Lab record deleted successfully"});
         }else{
             return Json(new { error = "An error occurred while processing the request." });
         }
@@ -62,20 +124,25 @@ public class StaffController : Controller
             };
 
             if(latestMedical != null){
-                Console.WriteLine("Data saved, latest medical received");
                 newLab.MedicalID = latestMedical.ID;
             }else{
                 int id = _context.Medicals.Count() == 0 ? 1 : _context.Medicals.Max(d => d.ID) + 1;
-                var newMedical = new Medical(){
+                var vital = await _context.Vitals.OrderBy(l => l.Id).LastOrDefaultAsync(v => v.PatientNo.Equals(patientNo));
+                Medical newMedical = new Medical
+                {
+                    VitalsID = vital.Id,
+                    PatientNo = patientNo,
+                    Date = DateTime.Now.Date,
                     ID = id
                 };
                 _context.Medicals.Add(newMedical);
+                await _context.SaveChangesAsync();
                 newLab.MedicalID = newMedical.ID;
             }
 
             _context.Labs.Add(newLab);
             await _context.SaveChangesAsync();
-            return Json(new { message = "Lab Request added successfully", type = "success"});
+            return Json(new { message = "Lab Request added successfully", type = "success", LabName = labName[0], PatientNo = patientNo[0], Diagnosis = diagnosis[0]});
         }
         catch(Exception ex){
             Console.WriteLine(ex.Message);
@@ -102,7 +169,7 @@ public class StaffController : Controller
                 drugExists.TimeToTake = myForm["beforeOrAfter"];
                 drugExists.Note = myForm["notes"];
                 _context.Drugs.Update(drugExists);
-                _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
                 return Json(new { message = "Drug has updated", type = "warning", DrugName = drugExists.DrugName, Dosage = drugExists.Dosage , PatientNo =  patientNo});
             }
             
@@ -236,7 +303,7 @@ public class StaffController : Controller
                     // mapping values
                     createMedicalViewModel.Diagnoses = latestMedical.Diagnoses;
                     createMedicalViewModel.DrugNames = _context.Drugs.Where(d  => d.MedicalID == latestMedical.ID).ToList();
-                    createMedicalViewModel.visitedLabs = labs;
+                    createMedicalViewModel.VisitedLabs = labs;
                     createMedicalViewModel.DateAdmitted = latestMedical.DateAdmitted;
 
                     createMedicalViews.Add(createMedicalViewModel);
@@ -304,7 +371,6 @@ public class StaffController : Controller
         }
 
         int pageSize = 10;
-
         var query = _context.Queues.AsQueryable();
 
         if(!string.IsNullOrEmpty(search))
@@ -329,34 +395,34 @@ public class StaffController : Controller
 
         var patientsInLine = query.ToList();
         var totalPatients = query.Count();
-
         List<CreateMedicalViewModel> createMedicalViews = new List<CreateMedicalViewModel>();
-
 
         foreach(var patient in patientsInLine)
         {
             CreateMedicalViewModel createMedicalViewModel = new();
+            var labs = new List<Lab>();
+            var latestMedical = _context.Medicals
+                .Include(m => m.Drugs)
+                .OrderByDescending(m => m.ID)
+                .FirstOrDefault(m => m.PatientNo == patient.PatientNo);
+
             if(patient.HasVisitedLab || patient.HasDrugs)
             {
-                var latestMedical = _context.Medicals
-                    .Include(m => m.Drugs)
-                    .OrderByDescending(m => m.ID)
-                    .FirstOrDefault(m => m.PatientNo == patient.PatientNo);
-
-                var labs = _context.Labs.Where(l => l.MedicalID == latestMedical.ID).ToList();
-
                 // mapping values
                 createMedicalViewModel.Diagnoses = latestMedical.Diagnoses;
                 createMedicalViewModel.DrugNames = _context.Drugs.Where(d  => d.MedicalID == latestMedical.ID).ToList();
-                createMedicalViewModel.visitedLabs = labs;
                 createMedicalViewModel.DateAdmitted = latestMedical.DateAdmitted;
+            }
+            if(latestMedical != null){
+                labs = _context.Labs.Where(l => l.MedicalID == latestMedical.ID).ToList();
+                if(labs == null){
+                    createMedicalViewModel.VisitedLabs = new List<Lab>();
+                }else{
+                    createMedicalViewModel.VisitedLabs = labs;
+                }
+            }
 
-                createMedicalViews.Add(createMedicalViewModel);
-            }
-            else
-            {
-                createMedicalViews.Add(createMedicalViewModel);
-            }
+            createMedicalViews.Add(createMedicalViewModel);
         }
 
         var model = new QueueViewModel

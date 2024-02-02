@@ -30,7 +30,7 @@
             {
                 <div class="lab-report" id="lab-report-@patient.PatientNo">
                     <div class="form-card">
-                        @foreach(var lab in @Model.CreateMedicalViewModel[i].visitedLabs){
+                        @foreach(var lab in @Model.CreateMedicalViewModel[i].VisitedLabs){
                             @if(index == 0){
                                 <div id="lab-@patient.PatientNo-@index">
                                     <h2 id="title" class="p-3">
@@ -85,7 +85,7 @@
                         <hr style="margin-bottom:15px">
                         <div>
                             <ul class="pagination justify-content-center">
-                                @for (int pageIndex = 0; pageIndex < Model.CreateMedicalViewModel[i].visitedLabs.Count; pageIndex++)
+                                @for (int pageIndex = 0; pageIndex < Model.CreateMedicalViewModel[i].VisitedLabs.Count; pageIndex++)
                                 {
                                     <li onclick="togglelabview('@patient.PatientNo', 'lab-@patient.PatientNo-@pageIndex')" class="page-link">
                                         @(pageIndex + 1)

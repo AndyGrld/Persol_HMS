@@ -340,14 +340,14 @@ table td, table thead {
   overflow: scroll;
 }
 
-.drugs-table {
+.lab-table, .drugs-table {
   display: grid;
   grid-template-columns: 1fr 3fr 1fr;
   border: 1px solid black;
   font-size: 17px;
   min-width: 200px;
 }
-.drugs-table div {
+.lab-table div, .drugs-table div {
   padding: 3px;
 }
 

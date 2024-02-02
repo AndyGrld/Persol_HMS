@@ -40,7 +40,7 @@
         {
         <div class="lab-report" id="lab-report-@patient.PatientNo">
             <div class="form-card" style="border-radius:5px">
-                @foreach(var lab in @Model.CreateMedicalViewModel[i].visitedLabs){
+                @foreach(var lab in @Model.CreateMedicalViewModel[i].VisitedLabs){
                 @if(index == 0){
                 <div id="lab-@patient.PatientNo-@index">
                     <h2 id="title" class="p-3" style="padding: 0 !important">
@@ -95,7 +95,7 @@
                 <hr style="margin-bottom:15px">
                 <div>
                     <ul class="pagination justify-content-center">
-                        @for (int pageIndex = 0; pageIndex < Model.CreateMedicalViewModel[i].visitedLabs.Count; pageIndex++)
+                        @for (int pageIndex = 0; pageIndex < Model.CreateMedicalViewModel[i].VisitedLabs.Count; pageIndex++)
                         {
                             <li onclick="togglelabview('@patient.PatientNo', 'lab-@patient.PatientNo-@pageIndex')" class="page-link">
                                 @(pageIndex + 1)
@@ -153,7 +153,7 @@
                                         <div style="border-top:1px solid black;border-right:1px solid black">@drug.DrugName</div>
                                         <div style="border-top:1px solid black;border-right:1px solid black" id='@drug.DrugName'>@drug.Dosage</div>
                                         <div style="border-top:1px solid black;display:flex;align-items:center;justify-content:center">
-                                            <button class="btn btn-danger delete-drug"
+                                            <button class="btn btn-danger delete-drug" data-toDelete="Drug"
                                                 data-drugname="@drug.DrugName" id="@($"{drug.DrugName.Replace(" ", "_")}-{patient.PatientNo}")"
                                                 data-patientNo="@patient.PatientNo">
                                                 Delete
@@ -165,7 +165,12 @@
                         }
                     </div>
                     <div style="position:relative;height:40px">
-                        <button style="top:10px;position:absolute;right:0" class="btn btn-primary">Submit</button>
+                        <form method="post" asp-action="SendToPharmacy">
+                            <input name="patientNo" type="hidden" value="@patient.PatientNo"/>
+                            <button style="top:10px;position:absolute;right:0" class="btn btn-primary">
+                                Submit
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -248,15 +253,48 @@
                 <hr style="margin:2px 0" />
                 <div style="padding: 10px calc(1rem + 10px)">
                     <div style="position:relative;height:40px">
-                        <button type="button" style="position: absolute; right: 0" onclick="toggleView('lab-request', 'give-labs', '@patient.PatientNo')" class="btn btn-success">Add</button>
+                        <button type="button" style="position: absolute; right: 0" onclick="toggleView('lab-request', 'give-labs', '@patient.PatientNo')" class="btn btn-success">
+                            Add
+                        </button>
                     </div>
-                    <div style="display:grid;grid-template-columns:auto auto auto;border:1px solid black;font-size:18px">
-                        <div style="padding: 3px; border-right: 1px solid black; border-bottom: 1px solid black">Type</div>
-                        <div style="padding: 3px; border-right: 1px solid black; border-bottom: 1px solid black">Result</div>
-                        <div style="padding: 3px; border-bottom: 1px solid black">Status</div>
-                        <div style="padding: 3px; border-right: 1px solid black;">X-ray</div>
-                        <div style="padding: 3px; border-right: 1px solid black;">Some result</div>
-                        <div style="padding: 3px;">Some kind of progress</div>
+                    <div class="lab-table">
+                        <div style="border-right:1px solid black">
+                            Type
+                        </div>
+                        <div style="border-right:1px solid black">
+                            Diagnosis
+                        </div>
+                        <div style="padding: 3px">
+                            Actions
+                        </div>
+                        @{
+                            @if(Model.CreateMedicalViewModel[i].VisitedLabs != null){
+                                var labList = new List<Lab>();
+                                @for (int l = 0; l < 10; l++)
+                                {
+                                    var newLab = new Lab();
+                                    @if(Model.CreateMedicalViewModel[i].VisitedLabs.Count() > l)
+                                    {
+                                        newLab = Model.CreateMedicalViewModel[i].VisitedLabs[l];
+                                    }
+                                    labList.Add(newLab);
+                                }
+                                Model.CreateMedicalViewModel[i].VisitedLabs = labList;
+                                @foreach (var lab in Model.CreateMedicalViewModel[i].VisitedLabs){
+                                    @if(!String.IsNullOrEmpty(lab.LabName)){
+                                        <div style="border-top:1px solid black;border-right:1px solid black">@lab.LabName</div>
+                                        <div style="border-top:1px solid black;border-right:1px solid black" id='@lab.LabName'>@lab.Diagnosis</div>
+                                        <div style="border-top:1px solid black;display:flex;align-items:center;justify-content:center">
+                                            <button class="btn btn-danger delete-drug" data-toDelete="Lab"
+                                                data-drugname="@lab.LabName" id="@($"{lab.LabName.Replace(" ", "_")}-{patient.PatientNo}")"
+                                                data-patientNo="@patient.PatientNo">
+                                                Delete
+                                            </button>
+                                        </div>
+                                    }
+                                }
+                            }
+                        }
                     </div>
                     <div style="position:relative;height:40px">
                         <button style="top:10px;position:absolute;right:0" class="btn btn-primary">Submit</button>
@@ -267,7 +305,7 @@
 
 
         @* add labs *@
-        <div class="modal-card-overlay" style='display:flex' id="give-labs-@patient.PatientNo">
+        <div class="modal-card-overlay" style='display:none' id="give-labs-@patient.PatientNo">
             <div class="form-card modal-card">
                 <div style="padding: 10px calc(1rem + 10px); display: flex; justify-content: space-between">
                     <h2 id="title" class="p-3" style="padding: 0 !important">
@@ -282,7 +320,7 @@
                     <div style="padding: 10px calc(1rem + 10px)">
                         <h4 style="margin:10px 0;padding:0">Type</h4>
                         <div class="select-options" id="labFieldsTemplate">
-                            <h4 id="selector" onClick="showOptions('b-@patient.QueueNo')">Select Lab</h4>
+                            <h4 id="b-selector" onClick="showOptions('b-@patient.QueueNo')">Select Lab</h4>
                             <div style="visibility:hidden;opacity:0;top:0;transition:.3s" class="b-@patient.QueueNo">
                                 @foreach(var labName in Model.CreateMedicalViewModel[i].AvailableLabNames)
                                 {
@@ -330,7 +368,7 @@
                 <hr style="margin:2px 0" />
                 <div style="padding: 10px calc(1rem + 10px)">
                     <div class="select-options mb-3" id="WardsTemplate">
-                        <h4 id="selector" onClick="showOptions('a-@patient.QueueNo')">Select Ward Name</h4>
+                        <h4 id="a-selector" onClick="showOptions('a-@patient.QueueNo')">Select Ward Name</h4>
                         <div style="visibility:hidden;opacity:0;top:0;transition:.3s" class="a-@patient.QueueNo">
                             @foreach(var wardName in Model.CreateMedicalViewModel[i].AvailableWardNames)
                             {
@@ -516,14 +554,15 @@
             $(".delete-drug").click(function(e){
                 var drugName = $(this).data('drugname')
                 var patientNo = $(this).data('patientno')
+                var toDelete  = $(this).data("todelete")
 
-                var confirmDelete = confirm("Are you sure you want to delete this drug?")
+                var confirmDelete = confirm("Are you sure you want to delete this?")
 
                 if(confirmDelete){
                     $.ajax({
                         method: "POST",
-                        url: '/Staff/DeleteDrug',
-                        data: {drugName: drugName, patientNo: patientNo},
+                        url: `/Staff/Delete${toDelete}`,
+                        data: {Name: drugName, patientNo: patientNo},
                         success: function(data){
                             var parentDiv = $("#" + drugName.replace(/ /g, "_") + "-" + patientNo).closest('div')
                             parentDiv.prev().prev().remove();
@@ -531,8 +570,8 @@
                             parentDiv.remove();
                         },
                         error: function(error){
-                            console.error("Error deleting drug", error)
-                            alert("Error deleting drug")
+                            console.error("Error deleting lab", error)
+                            alert("Error deleting lab")
                         }
                     })
                 }
@@ -561,13 +600,15 @@
                                 <button type="button" style="position:absolute;right: 0" data-bs-dismiss="alert" class="btn-close" aria-label="Close"></button>
                             </div >
                         `);
+                        console.log(response.labName)
+                        console.log(response.patientNo)
                         if (response.type == "success") {
-                            $(".drugs-table").append(`
-                                <div style="border-top:1px solid black;border-right:1px solid black">${response.drugName}</div>
-                                <div style="border-top:1px solid black;border-right:1px solid black" id='${response.drugName}'>${response.dosage}</div>
+                            $(".lab-table").append(`
+                                <div style="border-top:1px solid black;border-right:1px solid black">${response.labName}</div>
+                                <div style="border-top:1px solid black;border-right:1px solid black" id='${response.diagnosis}'>Has not been to lab yet</div>
                                 <div style="border-top:1px solid black;display:flex;align-items:center;justify-content:center">
-                                    <button class="btn btn-danger delete-drug"
-                                        data-drugname="${response.drugName}" id="${response.drugName.replace(/ /g, "_")}-${response.patientNo}"
+                                    <button class="btn btn-danger delete-drug" data-toDelete="Lab"
+                                        data-drugname="${response.labName}" id="${response.labName.replace(/ /g, "_")}-${response.patientNo}"
                                         data-patientNo="${response.patientNo}">
                                         Delete
                                     </button>
@@ -576,7 +617,7 @@
                             setTimeout(() => {
                                 $(".added").remove();
                             }, "4000");
-                            toggleView('give-drugs', 'diagnose', dataArray[5].value)
+                            toggleView('give-labs', 'lab-request', response.patientNo)
                         }
                         else if (response.type == 'warning') {
                             let change = document.getElementById(response.drugName)
@@ -584,11 +625,11 @@
                             setTimeout(() => {
                                 $(".added").remove();
                             }, "4000");
-                            toggleView('give-drugs', 'diagnose', dataArray[5].value)
+                            toggleView('give-labs', 'lab-request', response.patientNo)
                         }
-                        $(this).reset()
                         document.querySelector("#selector").innerText = "Select Lab"
                         diagnosis.innerText = ""
+                        $("#addLab").reset()
                     },
                     error: function(error){
                         console.error("An error occured during the form processing")
@@ -631,7 +672,7 @@
                                 <div style="border-top:1px solid black;border-right:1px solid black">${response.drugName}</div>
                                 <div style="border-top:1px solid black;border-right:1px solid black" id='${response.drugName}'>${response.dosage}</div>
                                 <div style="border-top:1px solid black;display:flex;align-items:center;justify-content:center">
-                                    <button class="btn btn-danger delete-drug"
+                                    <button class="btn btn-danger delete-drug" data-toDelete="Drug"
                                         data-drugname="${response.drugName}" id="${response.drugName.replace(/ /g, "_")}-${response.patientNo}"
                                         data-patientNo="${response.patientNo}">
                                         Delete
@@ -716,6 +757,7 @@
         });
 
         function showOptions(className) {
+            let inputName, prefix
             options = document.getElementsByClassName(className)
             if (options[0].style.visibility == "hidden") {
                 options[0].style.visibility = "visible"
@@ -726,10 +768,17 @@
                 options[0].style.opacity = 0
                 options[0].style.top = 0
                 setTimeout(() => {
-                    innertext =  document.querySelector('input[name="SelectLabNames"]:checked').value
+                    if (className.includes("b-")){
+                        inputName = "SelectLabNames"
+                        prefix = "b-"
+                    }else{
+                        inputName = "SelectWardNames"
+                        prefix= "a-"
+                    }
+                    innertext =  document.querySelector(`.${className} input[name="${inputName}"]:checked`).value
                     if(innertext != ""){
                         console.log(innertext)
-                        document.querySelector("#selector").innerText = innertext
+                        document.querySelector(`#${prefix}selector`).innerText = innertext
                     }
                 }, 50)
             }
@@ -827,8 +876,6 @@
     const resultBox = document.querySelector('.result-box')
     const inputBox = document.getElementById("input-box")
     const dosageSelect = document.querySelector('.dosage-select')
-
-    console.log(drugs['Cough Syrup'])
 
     inputBox.addEventListener('keyup', function () {
         search();

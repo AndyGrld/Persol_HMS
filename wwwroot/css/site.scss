@@ -338,7 +338,7 @@ table td, table thead {
 	z-index:5;
 	overflow: scroll;
 }
-.drugs-table{
+.lab-table, .drugs-table{
 	display:grid;
 	grid-template-columns:1fr 3fr 1fr;
 	border:1px solid black;
