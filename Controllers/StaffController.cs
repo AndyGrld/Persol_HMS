@@ -22,7 +22,124 @@ public class StaffController : Controller
         _context = context;
     }
 
-    
+    [HttpPost]
+    public async Task<IActionResult> SendToWard(IFormCollection myForm){
+        try{
+            ViewBag.deptId = GetDepartmentId();
+            if (ViewBag.deptId != 3)
+            {
+                return RedirectToHome();
+            }
+
+            string patientNo = myForm["patientNo"];
+            string wardName = myForm["selectWardNames"];
+
+            Console.WriteLine($"============={patientNo}=============");
+            Console.WriteLine($"============={wardName}=============");
+            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.PatientNo.Equals(patientNo));
+            var medicalRecord = await _context.Medicals.OrderBy(m => m.ID).LastOrDefaultAsync(m => m.PatientNo.Equals(patientNo) && m.Date == DateTime.Now.Date);
+
+            if(medicalRecord == null){
+                int id = _context.Medicals.Count() == 0 ? 1 : _context.Medicals.Max(d => d.ID) + 1;
+                var vital = await _context.Vitals.OrderBy(l => l.Id).LastOrDefaultAsync(v => v.PatientNo.Equals(patientNo));
+                medicalRecord = new Medical
+                {
+                    VitalsID = vital.Id,
+                    PatientNo = patientNo,
+                    Date = DateTime.Now.Date,
+                    ID = id
+                };
+                _context.Medicals.Add(medicalRecord);
+                await _context.SaveChangesAsync();
+            }
+
+            AdmittedPatient admittedPatient = new AdmittedPatient()
+            {
+                ID = _context.AdmittedPatients.Count() == 0 ? 1 : _context.AdmittedPatients.Max(d => d.ID) + 1,
+                PatientNo = patientNo,
+                PatientName = patient.FirstName + " " + patient.LastName,
+                DateAdmitted = DateTime.Now,
+                WardName = wardName,
+                MedicalID = medicalRecord.ID
+            };
+
+            _context.AdmittedPatients.Add(admittedPatient);
+            RemovePatientFromQueue("Doctor", patientNo);
+            await _context.SaveChangesAsync();
+            
+            TempData["D_ConfirmationMessage"] = $"Patient has been admitted to ward.";
+            return RedirectToAction(nameof(DoctorQueue));
+        }
+        catch(Exception e){
+            TempData["D_WarningMessage"] = $"An error occured while processing patient's medicals, please try again.";
+            return RedirectToAction(nameof(DoctorQueue));
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> SendToLab(string patientNo)
+    {
+        try{
+            ViewBag.deptId = GetDepartmentId();
+            if (ViewBag.deptId != 3)
+            {
+                return RedirectToHome();
+            }
+            var patientInLine = await _context.Queues.FirstOrDefaultAsync(q => q.PatientNo.Equals(patientNo));
+
+            var latestMedical = _context.Medicals
+                        .Include(m => m.Drugs)
+                        .OrderByDescending(m => m.ID)
+                        .FirstOrDefault(m => m.PatientNo == patientNo && m.Date == DateTime.Now.Date);
+            
+            if(latestMedical != null){
+                var labs = _context.Labs.Where(l => l.MedicalID == latestMedical.ID).ToList();
+                // if patient has to visit any lab
+                if(labs != null){
+                    if(labs.Count() > 0){
+                        string labNames = "";
+                        foreach (var lab in labs)
+                        {
+                            labNames += " " + lab.LabName;
+                        }
+                        var labQueueNo = GetNextQueueNumber("Lab");
+                        var labQueue = new Queue
+                        {
+                            LabName = labNames.Trim(),
+                            PatientNo = patientNo,
+                            QueueNo = labQueueNo,
+                            Status = "Lab",
+                            DateCreated = DateTime.Now
+                        };
+                        _context.Queues.Add(labQueue);
+                        RemovePatientFromQueue("Doctor", patientNo);
+                        await _context.SaveChangesAsync();
+                        TempData["D_ConfirmationMessage"] = $"Patient's medical details added successfully, patient is {labQueueNo} in lab queue.";
+                    }
+                }// if no labs are to be taken, check if patient was given drugs
+                else{
+                    return await SendToPharmacy(patientNo);
+                }
+            }else{
+                // discharge patient if no drugs were given and patient has no medical bill for the day
+                var isDoneQueueNo = GetNextQueueNumber("IsDone");
+                var isDoneQueue = new Queue
+                {
+                    PatientNo = patientNo,
+                    QueueNo = isDoneQueueNo,
+                    Status = "IsDone",
+                    DateCreated = DateTime.Now
+                };
+                TempData["D_ConfirmationMessage"] = $"Patient may exit the hospital.";
+            }
+            return RedirectToAction(nameof(DoctorQueue));
+
+        }
+        catch(Exception e){
+            TempData["D_WarningMessage"] = $"An error occured while processing patient's medicals, please try again.";
+            return RedirectToAction(nameof(DoctorQueue));
+        }
+    }
 
     [HttpPost]
     public async Task<IActionResult> SendToPharmacy(string patientNo)
@@ -33,7 +150,6 @@ public class StaffController : Controller
             {
                 return RedirectToHome();
             }
-            Console.WriteLine($"=============> {patientNo} <===============");
             var patientInLine = await _context.Queues.FirstOrDefaultAsync(q => q.PatientNo.Equals(patientNo));
 
             var latestMedical = _context.Medicals
@@ -56,11 +172,42 @@ public class StaffController : Controller
                         _context.Queues.Add(PharmacyQueue);
                         TempData["D_ConfirmationMessage"] = $"Patient's medical details added successfully, patient is {PharmacyQueueNo} in pharmacy queue.";
                     }
+                }else if(latestMedical.Bill > 0){            
+                    var CashierQueueNo = GetNextQueueNumber("Cashier");
+                    var CashierQueue = new Queue
+                    {
+                        PatientNo = patientNo,
+                        QueueNo = CashierQueueNo,
+                        Status = "Cashier",
+                        DateCreated = DateTime.Now
+                    };
+                    _context.Queues.Add(CashierQueue);
+                    TempData["D_ConfirmationMessage"] = $"Patient's medical details added successfully, patient is {CashierQueueNo} in cashier queue.";
+                }
+                else{
+                    var isDoneQueueNo = GetNextQueueNumber("IsDone");
+                    var isDoneQueue = new Queue
+                    {
+                        PatientNo = patientNo,
+                        QueueNo = isDoneQueueNo,
+                        Status = "IsDone",
+                        DateCreated = DateTime.Now
+                    };
+                    TempData["D_ConfirmationMessage"] = $"Patient may exit the hospital.";
                 }
             }else{
                 // discharge patient if no drugs were given and patient has no medical bill for the day
-                RemovePatientFromQueue("Doctor", patientNo);
+                var isDoneQueueNo = GetNextQueueNumber("IsDone");
+                var isDoneQueue = new Queue
+                {
+                    PatientNo = patientNo,
+                    QueueNo = isDoneQueueNo,
+                    Status = "IsDone",
+                    DateCreated = DateTime.Now
+                };
+                TempData["D_ConfirmationMessage"] = $"Patient may exit the hospital.";
             }
+            RemovePatientFromQueue("Doctor", patientNo);
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(DoctorQueue));
@@ -102,6 +249,8 @@ public class StaffController : Controller
             var diagnosis = myForm["diagnosis"];
             var labName = myForm["selectLabNames"];
             var patientNo = myForm["patientNo"];
+            var diagnoses = myForm["diagnoses"];
+            var symptoms = myForm["symptoms"];
 
             var labExists = await _context.Labs.FirstOrDefaultAsync(l => l.LabName.Equals(labName) && l.Date.Date == DateTime.Now.Date && l.PatientNo.Equals(patientNo));
             if (labExists != null) {
@@ -133,7 +282,9 @@ public class StaffController : Controller
                     VitalsID = vital.Id,
                     PatientNo = patientNo,
                     Date = DateTime.Now.Date,
-                    ID = id
+                    ID = id,
+                    Symptoms = symptoms,
+                    Diagnoses = diagnoses
                 };
                 _context.Medicals.Add(newMedical);
                 await _context.SaveChangesAsync();
@@ -161,6 +312,8 @@ public class StaffController : Controller
             var notes = myForm["notes"];
             var patientNo = myForm["patientNo"];
             var date = DateTime.Now.Date;
+            var diagnoses = myForm["diagnoses"];
+            var symptoms = myForm["symptoms"];
 
             var drugExists = await _context.Drugs.FirstOrDefaultAsync(d => d.DrugName.Equals(drugName) && d.Date.Date == DateTime.Now.Date && d.PatientNo.Equals(patientNo));
             if (drugExists != null) {
@@ -185,6 +338,8 @@ public class StaffController : Controller
                     VitalsID = vital.Id,
                     PatientNo = patientNo,
                     Date = date,
+                    Symptoms = symptoms,
+                    Diagnoses = diagnoses
                 };
                 _context.Medicals.Add(newMedical);
                 await _context.SaveChangesAsync();
@@ -978,6 +1133,16 @@ public class StaffController : Controller
             if (patient != null)
             {
                 var medical = await _context.Medicals.OrderBy(m => m.ID).LastOrDefaultAsync(m => m.PatientNo == labView.Labs[0].PatientNo);
+                var oldLabs = _context.Labs.Where(l => l.MedicalID == medical.ID).ToList();
+                string labs = "";
+                if(oldLabs != null){
+                    if(oldLabs.Count() > 0){
+                        foreach(var olab in oldLabs){
+                            labs += " " + olab.LabName;
+                        }
+                        labs.Trim();
+                    }
+                }
                 
                 var lab = new Persol_HMS.Models.Lab();
                 foreach(var labTaken in labView.Labs)
@@ -990,9 +1155,14 @@ public class StaffController : Controller
                         Notes = labTaken.Notes,
                         Result = labTaken.Result,
                         Date = DateTime.Today,
-                        MedicalID = medical.ID
+                        MedicalID = medical.ID,
+                        Status = "Completed"
                     };
-                    _context.Labs.Add(lab);
+                    if(!string.IsNullOrEmpty(labs) && labs.Contains(lab.LabName)){
+                        _context.Labs.Update(lab);
+                    }else{
+                        _context.Labs.Add(lab);
+                    }
 					await _context.SaveChangesAsync();
                 }
 
@@ -1040,22 +1210,43 @@ public class StaffController : Controller
                 var lab = new Persol_HMS.Models.Lab();
                 var queueDetails = await _context.Queues.FirstOrDefaultAsync(q => q.PatientNo == labView.patient.PatientNo);
                 List<string> labNames = queueDetails.LabName.Split(" ").ToList();
+
+                var oldLabs = _context.Labs.Where(l => l.MedicalID == medical.ID).ToList();
+                string labs = "";
+                if(oldLabs != null){
+                    if(oldLabs.Count() > 0){
+                        foreach(var olab in oldLabs){
+                            labs += " " + olab.LabName;
+                        }
+                        labs.Trim();
+                    }
+                }
+
                 foreach(var labTaken in labView.Labs)
                 {
                     if (!string.IsNullOrEmpty(labTaken.Result) && !string.IsNullOrEmpty(labTaken.Notes))
                     {
-                        lab = new Persol_HMS.Models.Lab
-                        {
-                            ID = _context.Labs.Count() == 0 ? 1 : _context.Labs.Max(s => s.ID) + 1,
-                            PatientNo = patient.PatientNo,
-                            LabName = labTaken.LabName,
-                            Notes = labTaken.Notes,
-                            Result = labTaken.Result,
-                            Date = DateTime.Today,
-                            MedicalID = medical.ID
-                        };
+                        if(!string.IsNullOrEmpty(labs) && labs.Contains(labTaken.LabName)){
+                            lab = await _context.Labs.OrderBy(l => l.ID).LastOrDefaultAsync(l => l.LabName.Equals(labTaken.LabName));
+                            lab.Notes = labTaken.Notes;
+                            lab.Result = labTaken.Result;
+                            lab.Status = "Done";
+                            _context.Labs.Update(lab);
+                        }else{
+                            lab = new Persol_HMS.Models.Lab
+                            {
+                                ID = _context.Labs.Count() == 0 ? 1 : _context.Labs.Max(s => s.ID) + 1,
+                                PatientNo = patient.PatientNo,
+                                LabName = labTaken.LabName,
+                                Notes = labTaken.Notes,
+                                Result = labTaken.Result,
+                                Date = DateTime.Today,
+                                MedicalID = medical.ID,
+                                Status = "Done"
+                            };
+                            _context.Labs.Add(lab);
+                        }
                         labNames.Remove(labTaken.LabName);
-                        _context.Labs.Add(lab);
                         await _context.SaveChangesAsync();
                     }
                 }
@@ -1065,10 +1256,10 @@ public class StaffController : Controller
                     foreach(var labName in labNames){
                         remainingLabs += " " + labName;
                     }
-                    queueDetails.LabName = remainingLabs.Trim();;
+                    queueDetails.LabName = remainingLabs.Trim();
                     _context.Queues.Update(queueDetails);
-                    await _context.SaveChangesAsync();
                     TempData["L_ConfirmationMessage"] = $"Patient's lab updated successfully";
+                    await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Lab));
                 }
 
@@ -1393,6 +1584,7 @@ public class StaffController : Controller
             Date = m.Date,
             Vital = m.Vital,
             Diagnoses = m.Diagnoses,
+            Symptoms = m.Symptoms,
             Drugs = m.Drugs,
             Labs = m.Labs
         }) .OrderByDescending(m => m.Date).ToList();

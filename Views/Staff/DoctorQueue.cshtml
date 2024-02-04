@@ -85,7 +85,7 @@
                         <p>
                             @lab.Result
                         </p>
-                        <button type="button">Show Files</button>
+                        @* <button type="button">Show Files</button> *@
                     </div>
                 </div>
             }
@@ -297,7 +297,12 @@
                         }
                     </div>
                     <div style="position:relative;height:40px">
-                        <button style="top:10px;position:absolute;right:0" class="btn btn-primary">Submit</button>
+                        <form method="post" asp-action="SendToLab">
+                            <input name="patientNo" type="hidden" value="@patient.PatientNo"/>
+                            <button style="top:10px;position:absolute;right:0" class="btn btn-primary">
+                                Submit
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -354,46 +359,51 @@
         </div>
 
 
+        @*Add wards*@
         @*Ward modal*@
         <div class="modal-card-overlay" style='display:none' id="ward-request-@patient.PatientNo">
             <div class="form-card modal-card">
-                <div style="padding: 10px calc(1rem + 10px); display: flex; justify-content: space-between">
-                    <h2 id="title" class="p-3" style="padding: 0 !important">
-                        <p style="margin:0;padding:0">
-                            Admit Patient
-                        </p>
-                    </h2>
-                    <h2 style="cursor:pointer" onclick="toggleView('ward-request', 'exampleModal', '@patient.PatientNo')">X</h2>
-                </div>
-                <hr style="margin:2px 0" />
-                <div style="padding: 10px calc(1rem + 10px)">
-                    <div class="select-options mb-3" id="WardsTemplate">
-                        <h4 id="a-selector" onClick="showOptions('a-@patient.QueueNo')">Select Ward Name</h4>
-                        <div style="visibility:hidden;opacity:0;top:0;transition:.3s" class="a-@patient.QueueNo">
-                            @foreach(var wardName in Model.CreateMedicalViewModel[i].AvailableWardNames)
-                            {
-                            <p>
-                                <input style="cursor:pointer" type="radio" id="w-@i-@wardName" value="@wardName" name="SelectWardNames" />
-                                <label onClick="showOptions('a-@patient.QueueNo')" for="w-@i-@wardName">@wardName</label>
+                <form id='admitPatient'>
+                    <div style="padding: 10px calc(1rem + 10px); display: flex; justify-content: space-between">
+                        <h2 id="title" class="p-3" style="padding: 0 !important">
+                            <p style="margin:0;padding:0">
+                                Admit Patient
                             </p>
-                            }
-                            <p>
-                                <input style="cursor:pointer" type="radio" id="no_ward" value="" name="SelectWardNames" />
-                                <label onClick="showOptions('a-@patient.QueueNo')" for="no_ward">None</label>
-                            </p>
+                        </h2>
+                        <h2 style="cursor:pointer" onclick="toggleView('ward-request', 'exampleModal', '@patient.PatientNo')">X</h2>
+                    </div>
+                    <hr style="margin:2px 0" />
+                    <div style="padding: 10px calc(1rem + 10px)">
+                        <div class="select-options mb-3" id="WardsTemplate">
+                            <h4 id="a-selector" onClick="showOptions('a-@patient.QueueNo')">Select Ward Name</h4>
+                            <div style="visibility:hidden;opacity:0;top:0;transition:.3s" class="a-@patient.QueueNo">
+                                @foreach(var wardName in Model.CreateMedicalViewModel[i].AvailableWardNames)
+                                {
+                                <p>
+                                    <input style="cursor:pointer" type="radio" id="w-@i-@wardName" value="@wardName" name="SelectWardNames" />
+                                    <label onClick="showOptions('a-@patient.QueueNo')" for="w-@i-@wardName">@wardName</label>
+                                </p>
+                                }
+                                <p>
+                                    <input style="cursor:pointer" type="radio" id="no_ward" value="" name="SelectWardNames" />
+                                    <label onClick="showOptions('a-@patient.QueueNo')" for="no_ward">None</label>
+                                </p>
+                            </div>
+                        </div>
+                        <input type="hidden" value="@patient.PatientNo" name="patientNo" />
+                        <div style="position:relative;height:40px">
+                            <button style="top:10px;position:absolute;right:0" class="btn btn-primary">
+                                Submit
+                            </button>
                         </div>
                     </div>
-                    <div style="position:relative;height:40px">
-                        <button style="top:10px;position:absolute;right:0" class="btn btn-primary">Submit</button>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
         }
 
 
 
-        @*Add wards*@
         <div class="form-card main-card" style="@(Model.QueueViewModel.TotalPatients > 8 ? "height:950px" : "height:800px")">
             <h2 id="title" class="p-3">
                 <p>
@@ -471,13 +481,21 @@
                                                     <div class="diagnose_col">
                                                         <div class="mb-2 doc-flex">
                                                             <label asp-for="CreateMedicalViewModel[i].Symptoms" class="form-label">Symptoms</label>
-                                                            <textarea asp-for="CreateMedicalViewModel[i].Symptoms" class="form-control" rows="3" placeholder="Enter Symptoms Here"></textarea>
+                                                            <textarea asp-for="CreateMedicalViewModel[i].Symptoms"
+                                                                class="form-control" rows="3"
+                                                                placeholder="Enter Symptoms Here"
+                                                                id="symptoms">
+                                                            </textarea>
                                                         </div>
                                                     </div>
                                                     <div class="diagnose_col">
                                                         <div class="mb-2 doc-flex">
                                                             <label asp-for="CreateMedicalViewModel[i].Diagnoses" class="form-label">Diagnoses</label>
-                                                            <textarea asp-for="CreateMedicalViewModel[i].Diagnoses" class="form-control" rows="3" placeholder="Enter Diagnoses Here"></textarea>
+                                                            <textarea asp-for="CreateMedicalViewModel[i].Diagnoses"
+                                                                class="form-control" rows="3"
+                                                                placeholder="Enter Diagnosis Here"
+                                                                id="diagnoses">
+                                                            </textarea>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -579,14 +597,69 @@
             })
         })
     </script>
+    @* admit patient using ajax *@
+    <script>
+        $(document).ready(function(){
+            $("#admitPatient").submit(function(e){
+                e.preventDefault()
+                
+                var diagnoses = document.querySelector('#diagnoses')
+                var symptoms = document.querySelector('#symptoms')
+
+                if(symptoms.value === ""){
+                    alert("Symptoms textarea cannot be empty")
+                    return
+                }
+                if(diagnoses.value === ""){
+                    alert("Diagnosis textarea cannot be empty")
+                    return
+                }
+
+                var admitForm = $(this).serialize() + `&Diagnoses=${diagnoses.value}&Symptoms=${symptoms}`;
+
+                var confirmAdmit = confirm("Are you sure you want to admit patient");
+                if(confirmAdmit){
+                    $.ajax({
+                        method: "POST",
+                        url: "/Staff/SendToWard",
+                        data: admitForm,
+                        success: function(data){
+                            window.location.href = "DoctorQueue"
+                        },
+                        error: function(error){
+                            let body = document.getElementsByTagName("body")
+                            $("body").append(`
+                                <div class="alert alert-danger added">
+                                    An error occured, patient could not be admitted
+                                    <button type="button" style="position:absolute;right: 0" data-bs-dismiss="alert" class="btn-close" aria-label="Close"></button>
+                                </div >
+                            `);
+                        }
+                    })
+                }
+            })
+        })
+    </script>
     @* add to lab using ajax *@
     <script>
         $(document).ready(function() {
             $("#addLab").submit(function(e){
                 e.preventDefault()
                 var labName = document.querySelector('input[name="SelectLabNames"]:checked')
-                var diagnosis = document.getElementById("lab_diagnosis")
-                var formData = $(this).serialize() + `&Diagnosis=${diagnosis.value}`;
+                var lab_diagnosis = document.getElementById("lab_diagnosis")
+                var diagnoses = document.querySelector('#diagnoses')
+                var symptoms = document.querySelector('#symptoms')
+
+                if(symptoms.value === ""){
+                    alert("Symptoms textarea cannot be empty")
+                    return
+                }
+                if(diagnoses.value === ""){
+                    alert("Diagnosis textarea cannot be empty")
+                    return
+                }
+
+                var formData = $(this).serialize() + `&Diagnosis=${lab_diagnosis.value}&Diagnoses=${diagnoses.value}&Symptoms=${symptoms}`;
 
                 $.ajax({
                     method: "POST",
@@ -600,8 +673,6 @@
                                 <button type="button" style="position:absolute;right: 0" data-bs-dismiss="alert" class="btn-close" aria-label="Close"></button>
                             </div >
                         `);
-                        console.log(response.labName)
-                        console.log(response.patientNo)
                         if (response.type == "success") {
                             $(".lab-table").append(`
                                 <div style="border-top:1px solid black;border-right:1px solid black">${response.labName}</div>
@@ -627,8 +698,8 @@
                             }, "4000");
                             toggleView('give-labs', 'lab-request', response.patientNo)
                         }
+                        lab_diagnosis.innerText = ""
                         document.querySelector("#selector").innerText = "Select Lab"
-                        diagnosis.innerText = ""
                         $("#addLab").reset()
                     },
                     error: function(error){
@@ -645,10 +716,20 @@
         $(document).ready(function () {
             $("#addDrug").submit(function (e) {
                 e.preventDefault();
-                console.log("Adding drug")
+                var diagnoses = document.querySelector('#diagnoses')
+                var symptoms = document.querySelector('#symptoms')
+
+                if(symptoms.value === ""){
+                    alert("Symptoms textarea cannot be empty")
+                    return
+                }
+                if(diagnoses.value === ""){
+                    alert("Diagnosis textarea cannot be empty")
+                    return
+                }
 
                 // Serialize the form data
-                var formData = $(this).serialize();
+                var formData = $(this).serialize()  + `&Diagnoses=${diagnoses.value}&Symptoms=${symptoms}`;
                 var dataArray = formData.split("&").map(function (item) {
                     var pair = item.split("=");
                     return { name: pair[0], value: decodeURIComponent(pair[1]) };
@@ -708,7 +789,6 @@
             var maxDrugFields = 10;
 
             function addDrug(item) {
-                console.log('add drug' + item)
                 item = item.toString();
                 if ($(`.field-${item}:visible`).length < maxDrugFields) {
                     $('.last-drug').removeClass('last-drug');
@@ -720,7 +800,6 @@
 
             // Function to remove drug input field (in case of error check .drug_input or add a new class to replace drug_input)
             function removeDrug(index, patientNo) {
-                console.log("remove drug: " + patientNo)
                 $(`.field-${patientNo}[data-index="${index}"]:visible`).removeClass('last-drug');
                 var drugField = $(`.field-${patientNo}[data-index="${index}"]:visible`);
                 if (drugField.length > 0) {
@@ -734,7 +813,6 @@
             // Add More Drugs button click event
             $('[id^="addMoreDrugs-"]').click(function () {
                 var patientId = $(this).data('patient-id');
-                console.log('add drugs' + patientId)
                 addDrug(patientId);
             });
 
@@ -742,7 +820,6 @@
             $('[id^="drugFields-"]').on('click', '.remove-drug', function () {
                 var removeIndex = $(this).closest('.drug_input').data('index');
                 var patientNo = $(this).closest('.drug_input').data('patient-id');
-                console.log("remove drugs: " + patientNo)
                 removeDrug(removeIndex, patientNo);
             });
         });
@@ -777,7 +854,6 @@
                     }
                     innertext =  document.querySelector(`.${className} input[name="${inputName}"]:checked`).value
                     if(innertext != ""){
-                        console.log(innertext)
                         document.querySelector(`#${prefix}selector`).innerText = innertext
                     }
                 }, 50)
@@ -791,11 +867,9 @@
             let modal = new bootstrap.Modal(document.getElementById(modalId));
 
             if (value === 0) {
-                console.log("modal appear");
                 modal.show();
                 lab.style.display = "none";
             } else {
-                console.log("modal vanish");
                 modalclass[0].style.display = "none";
                 lab.style.display = "flex";
                 if (backdrop) backdrop.remove();
@@ -849,7 +923,6 @@
     <script>
         let backdrop = document.querySelector('.modal-backdrop');
         if (backdrop) {
-            console.log("removing backdrop")
             backdrop.addEventListener("click", e => {
                 backdrop.remove()
             })
