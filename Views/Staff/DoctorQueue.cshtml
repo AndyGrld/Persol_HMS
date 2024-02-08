@@ -202,9 +202,9 @@
                         <div>
                             <h4>Dosage</h4>
                             <select name="dosage" class="dosage-select" style="width:100%">
-                                <option value="1 tab">1 tab</option>
-                                <option value="2 tab">2 tab</option>
-                                <option value="3 tab">3 tab</option>
+                                <option value="1 tab">1 Tab</option>
+                                <option value="2 tab">2 Tab</option>
+                                <option value="3 tab">3 Tab</option>
                             </select>
                         </div>
                         <div>
@@ -993,11 +993,11 @@
             <option value="2 tab">2 Tab</option>
             <option value="3 tab">3 Tab</option>
             `
-        } else if (drugs[drug] == '0') {
+        } else if (drugs[drug] == '2') {
             dosageSelect.innerHTML = `
-            <option value="5-10 ml">5-10 ml</option>
-            <option value="10-20 mg">10-20 mg</option>
-            <option value="15-30 mg">15-30 mg</option>
+            <option value="5-10 ml">10 ml</option>
+            <option value="10-20 mg">20 ml</option>
+            <option value="15-30 mg">30 ml</option>
             `
         }
     }

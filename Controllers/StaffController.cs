@@ -564,6 +564,7 @@ public class StaffController : Controller
             if(patient.HasVisitedLab || patient.HasDrugs)
             {
                 // mapping values
+                createMedicalViewModel.Symptoms = latestMedical.Symptoms;
                 createMedicalViewModel.Diagnoses = latestMedical.Diagnoses;
                 createMedicalViewModel.DrugNames = _context.Drugs.Where(d  => d.MedicalID == latestMedical.ID).ToList();
                 createMedicalViewModel.DateAdmitted = latestMedical.DateAdmitted;
